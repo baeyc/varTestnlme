@@ -1,0 +1,30 @@
+Package: varTestnlme
+Type: Package
+Title: Variance Components testing for Linear and Nonlinear Mixed Effects Models
+Version: 0.1.0
+Authors@R: person("Charlotte", "Baey", email = "charlotte.baey@univ-lille.fr",
+  role = c("aut", "cre"))
+Maintainer: The package maintainer <charlotte.baey@univ-lille.fr>
+Description: An implementation of the Likelihood ratio Test (LRT) for testing that,
+    in a (non)linear mixed effects model, the variances of a subset of the random
+    effects are equal to zero. There is no restriction on the subset of variances
+    that can be tested: for example, it is possible to test that all the variances
+    are equal to zero. Note that the implemented test is asymptotic.
+    This package should be used on model fits from packages nlme, lmer, and saemix.
+License: GPL (>= 2)
+Encoding: UTF-8
+LazyData: true
+Imports: 
+    mvtnorm,
+    alabama,
+    Matrix,
+    merDeriv,
+    matrixcalc,
+    anocva,
+    corpcor,
+    quadprog,
+    lme4,
+    nlme,
+    saemix,
+    methods
+RoxygenNote: 6.1.1
