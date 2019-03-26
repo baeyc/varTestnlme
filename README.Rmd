@@ -1,0 +1,52 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+devtools::load_all()
+```
+# varTestnlme
+
+Implements the likelihood ratio test (LRT) for testing the presence of random effects in linear, generalized linear and nonlinear mixed-effects model. The test can be used to answer questions of the type:
+
+  * should a certain subset of random effects be in fact considered as fixed effects?
+  * is there any random effects in the model?
+  * are there any correlation between two subsets of random effects?
+  
+It is possible to compare two models with different random effects, provided that the random structures of the two models are **nested**.
+
+The package works on models that were fitted using `nlme`, `lme4` or `saemix` packages.
+
+## Installation
+
+Install the development version from Github:
+
+```{r}
+# install.packages("devtools")
+devtools::install_github("baeyc/varTestnlme")
+```
+
+
+## Example
+
+```{r}
+# First, fit models from your preferred mixed-effects models package
+require(nlme)
+fm1Indom.lis <- nlsList(conc ~ SSbiexp(time, A1, lrc1, A2, lrc2),data = Indometh)
+m1 <- nlme(fm1Indom.lis,random = pdDiag(A1 + lrc1 + A2 + lrc2 ~ 1))
+m0 <- nlme(fm1Indom.lis,random = pdDiag(A1 + lrc1 ~ 1))
+
+# Then, simply use the varTest function to compare the two models
+# It will automatically detect the covariance structures
+varTest(m1,m0)
+```
+
+
