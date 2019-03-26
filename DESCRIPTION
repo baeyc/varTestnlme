@@ -4,6 +4,8 @@ Title: Variance Components testing for Linear and Nonlinear Mixed Effects Models
 Version: 0.1.0
 Authors@R: person("Charlotte", "Baey", email = "charlotte.baey@univ-lille.fr",
   role = c("aut", "cre"))
+URL: http://github.com/baeyc/varTestnlme
+BugReports: http://github.com/baeyc/varTestnlme/issues  
 Maintainer: The package maintainer <charlotte.baey@univ-lille.fr>
 Description: An implementation of the Likelihood ratio Test (LRT) for testing that,
     in a (non)linear mixed effects model, the variances of a subset of the random
