@@ -86,7 +86,7 @@ modelStructnlme <- function(m1,m0){
 
   diag <- (covStruct1 == "pdDiag" || covStruct1 == "pdIdent" || !("co" %in% dd$type))
   blockDiag <- (covStruct1 == "pdBlocked")
-  full <- !diag & !blockDiag
+  full <- !diag & !blockDiag #!!! compound symmetry !!!
 
   if (blockDiag){
     dimBlock1 <- lengths(vc1) # gives the number of elements in each block
@@ -144,16 +144,14 @@ modelStructlme4 <- function(m1,m0,linmodel){
 
   # retrieve names of parameters to identify their order in the FIM and in the cone
   #nbTotParam <- ncol(invfim1)
-  if (linmodel){
-    invfim1 <- merDeriv::vcov.lmerMod(m1,full=T)
-    invfim0 <- merDeriv::vcov.lmerMod(m0,full=T)
-  }else{
-    invfim1 <- merDeriv::vcov.glmerMod(m1,full=T)
-    invfim0 <- merDeriv::vcov.glmerMod(m0,full=T)
-  }
-  nameParams1 <- dimnames(invfim1)[[2]]
-  nameParams0 <- dimnames(invfim0)[[2]]
+  if (randm0) nameParams0 <- c(namesFE0,paste0("cov_",names(getME(m0,"theta"))),"residual")
+  if (!randm0) nameParams0 <- c(namesFE0,"residual")
+  nameParams1 <- c(namesFE1,paste0("cov_",names(getME(m1,"theta"))),"residual")
   paramTested <- !(nameParams1 %in% nameParams0)
+  
+  # create a dataset with the list of parameters and: their tyoe (fixed, variance or correlation)
+  # whether they are tested equal to 0 or not, and if they are tested, if it's as a subpart of a block
+  # or in a block which is fully tested
   dd <- data.frame(names=nameParams1,tested=paramTested)
   dd$type <- c(rep("beta",nbFixEff1),substr(dd$names[(nbFixEff1+1):nrow(dd)],1,2))
   indRes <- as.numeric(rownames(dd[dd$type=="re",])) # get indices of residual parameters
@@ -174,6 +172,9 @@ modelStructlme4 <- function(m1,m0,linmodel){
     }
     dd[nrow(dd)-nrow(ddco)+isVariance,]$type <- "sd"
     dd$covInBlock[dd$type=="sd"] <- 1
+  }else{
+    dd$covInBlock[dd$type=="beta"] <- NA
+    dd$covInBlock[dd$type!="beta"] <- 1
   }
 
   if(blockDiag){
@@ -187,7 +188,6 @@ modelStructlme4 <- function(m1,m0,linmodel){
       dd$block[unlist(loc)] <- i
     }
     dd$block[dd$type=="beta"] <- 0
-
   }
 
   return(list(detailStruct=dd,
@@ -204,8 +204,9 @@ modelStructsaemix <- function(m1,m0){
   nbFixEff1 <- sum(m1@model@fixed.estim>0)
   namesRE0 <- m0@model@name.random
   namesRE1 <- m1@model@name.random
+  nameFixedTested <- namesFE1[!(namesFE1%in%namesFE0)]
   nameVarTested <- namesRE1[!(namesRE1%in%namesRE0)]
-  nameVarTested <- gsub("omega2.","",nameVarTested)
+  #nameVarTested <- gsub("omega2.","",nameVarTested)
   nbRanEff0 <- length(namesRE0)
   nbRanEff1 <- length(namesRE1)
   nbRanEffTest <- nbRanEff1-nbRanEff0
@@ -216,6 +217,11 @@ modelStructsaemix <- function(m1,m0){
   diag <- (sum(covStruct1)==sum(diag(covStruct1)))
   full <- (min(covStruct1)==1)
   blockDiag <- !diag & !full
+  
+  nbCompVar1 <- sum(m1@model@covariance.model)
+  nbCompVar0 <- sum(m0@model@covariance.model)
+  nbCov1 <- (nbCompVar1 - nbRanEff1)/2
+  nbCov0 <- (nbCompVar0 - nbRanEff0)/2
 
   # dimension of residual error
   if (m1@model@error.model == "combined"){
@@ -225,12 +231,11 @@ modelStructsaemix <- function(m1,m0){
   }
 
   if(nbRanEff0==nbRanEff1) stop("Error: there are the same number of random effects in models m0 and m1. Please check the models' formulation.")
-  if(min(covStruct1-covStruct0) < 0) stop("Error: the models should be nested, but it seems that some random effects are in m0 but not in m1")
-
-  # retrieve names of parameters to identify their order in the FIM and in the cone
-  #nbTotParam <- ncol(invfim1)
-  nameFix1 <- c(m1@model@name.fixed[m1@model@fixed.estim>0])
-
+  if(randm0) if (min(covStruct1-covStruct0) < 0) stop("Error: the models should be nested, but it seems that some random effects are in m0 but not in m1")
+  
+  # create a dataset with the list of parameters and: their tyoe (fixed, variance or correlation)
+  # whether they are tested equal to 0 or not, and if they are tested, if it's as a subpart of a block
+  # or in a block which is fully tested  
   dd <- expand.grid(rownames(covStruct1),rownames(covStruct1))
   names(dd) <- c("var1","var2")
   dd$names <- paste(dd[,1],dd[,2],sep=".")
@@ -242,8 +247,21 @@ modelStructsaemix <- function(m1,m0){
   dd <- dd[dd$lowertri & !dd$zero1,]
   dd$zero1 <- dd$lowertri <- dd$diag <- NULL
 
-  dd <- rbind(data.frame(names=nameFix1,var1=rep(NA,length(nameFix1)),var2=rep(NA,length(nameFix1)),type=rep("beta",length(nameFix1)),tested=rep(FALSE,length(nameFix1))),dd)
-
+  dd <- rbind(data.frame(names=namesFE1,var1=rep(NA,length(namesFE1)),var2=rep(NA,length(namesFE1)),type=rep("beta",length(namesFE1)),tested=rep(FALSE,length(namesFE1))),dd)
+  ddco <- dd[dd$type=="co",]
+  
+  if (nrow(ddco)>0){
+    dd$covTested <- dd$covInBlock <- NA
+    for (i in 1:nrow(ddco)){
+      dd[dd$type=="co",][i,]$covTested <- dd[dd$type=="co",][i,]$tested*(!(dd$var1[dd$type=="co"][i] %in% nameVarTested) & !(dd$var2[dd$type=="co"][i] %in% nameVarTested))
+      dd[dd$type=="co",][i,]$covInBlock <- dd[dd$type=="co",][i,]$tested*(dd$var1[dd$type=="co"][i] %in% nameVarTested) & (dd$var2[dd$type=="co"][i] %in% nameVarTested) # identify covariances that are tested as part of a block of the covariance matrix tested
+    }
+    dd$covInBlock[dd$type=="sd"] <- 1
+  }else{
+    dd$covInBlock[dd$type=="beta"] <- NA
+    dd$covInBlock[dd$type!="beta"] <- 1
+  }
+  
   if (blockDiag){
     # identify block structure using spectral clustering
     D <- apply(covStruct1,1,sum)
@@ -261,19 +279,16 @@ modelStructsaemix <- function(m1,m0){
       dd$block[unlist(loc)] <- i
     }
     dd$block[dd$type=="beta"] <- 0
-
-    ## CHECK BELOW
-    if (nrow(ddco)>0){
-      dd$covTested <- NA
-      dd$covInBlock <- NA
-      for (i in 1:nrow(ddco)){
-        dd[dd$type=="co",][i,]$covTested <- dd[dd$type=="co",][i,]$tested*(!(dd$var1[dd$type=="co"][i] %in% nameVarTested) & !(dd$var2[dd$type=="co"][i] %in% nameVarTested))
-        dd[dd$type=="co",][i,]$covInBlock <- dd[dd$type=="co",][i,]$tested*(dd$var1[dd$type=="co"][i] %in% nameVarTested) & (dd$var2[dd$type=="co"][i] %in% nameVarTested) # identify covariances that are tested as part of a block of the covariance matrix tested
-      }
-      dd$covInBlock[dd$type=="sd"] <- 1
-    }
   }
   rownames(dd) <- 1:nrow(dd) # reinitialize rownames (used to be indices of elements in the covariance matrix)
+  if (full){
+    dd$block <- 0
+    dd$block[dd$tested] <- 1
+  }
+  if (diag){
+    dd$block <- 1:nrow(dd)
+    dd$block[!dd$tested] <- 0
+  }
 
   return(list(detailStruct=dd,
               nameVarTested=nameVarTested,
