@@ -3,7 +3,6 @@
 \docType{class}
 \name{varTestObject-class}
 \alias{varTestObject-class}
-\alias{vartestObject}
 \alias{varTestObject}
 \title{Class "varTestObject"}
 \description{
@@ -12,10 +11,6 @@ An object of the \code{varTestObject} class, storing the results of the LRT
 \section{Slots}{
 
 \describe{
-\item{\code{pkg}}{the package used to fit the models}
-
-\item{\code{ms}}{the models structures}
-
 \item{\code{lrt}}{the likelihood ratio test statistics}
 
 \item{\code{df}}{the degrees of freedom of the chi-square distributions involved in the mixture}

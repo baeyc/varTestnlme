@@ -1,26 +1,27 @@
-##' @name funcCO
-##' @rdname funcCO
-##'
-##' @title Internal functions for constrained minimization
-##'
-##' @description Groups of functions used for the constrained minimization problem arising in the computation of the
-##' likelihood ratio test statistics.
-##'
-##' @param x A vector
-##' @param cst A list of constants to be passed to the optimisation function
-##' @return value of the objective function, its gradient, and the set of inequality and euqality constraints
-##'
+#' @name funcCO
+#' @rdname funcCO
+#'
+#' @title Internal functions for constrained minimization
+#'
+#' @description Groups of functions used for the constrained minimization problem arising in the computation of the
+#' likelihood ratio test statistics.
+#'
+#' @param x A vector
+#' @param cst A list of constants to be passed to the optimisation function
+#' @return value of the objective function, its gradient, and the set of inequality and euqality constraints
+#'
+#' @noRd
 NULL
 
-##' @rdname funcCO
-##' @export
+#' @rdname funcCO
+#' @export
 objFunction <- function(x,cst){
   return(t(cst$Z-x)%*%cst$invV%*%(cst$Z-x))
 }
 
 
-##' @rdname funcCO
-##' @export
+#' @rdname funcCO
+#' @export
 gradObjFunction <- function(x,cst){
   return(-2*t(cst$Z-x)%*%cst$invV)
 }
@@ -48,8 +49,8 @@ symMatrixFromVect <- function(v){
 }
 
 
-##' @rdname funcCO
-##' @export
+#' @rdname funcCO
+#' @export
 ineqCstr <- function(x,cst){
   r <- cst$cbs@dims$dimGamma$dimSplus # nb of variances tested in each block
   # n0R : nb of components in the cone corresponding to {0} or R
@@ -80,8 +81,8 @@ ineqCstr <- function(x,cst){
 }
 
 
-##' @rdname funcCO
-##' @export
+#' @rdname funcCO
+#' @export
 jacobianIneqCstr <- function(x,cst){
   r <- cst$cbs@dims$dimGamma$dimSplus
   n0R <- cst$cbs@dims$dimBeta$dim0 + cst$cbs@dims$dimBeta$dimR + cst$cbs@dims$dimGamma$dim0 + cst$cbs@dims$dimGamma$dimR # dimensions of spaces {0} and R (corresponding to non-constrained elements)
@@ -118,8 +119,8 @@ jacobianIneqCstr <- function(x,cst){
 }
 
 
-##' @rdname funcCO
-##' @export
+#' @rdname funcCO
+#' @export
 eqCstr <- function(x,cst){
   # equality constraints come from the fixed effects, the untested blocks, the untested covariances in partially tested blocks, and the residual
   nontestedFix <- cst$cbs@dims$dimBeta$dim0
@@ -139,8 +140,8 @@ eqCstr <- function(x,cst){
 }
 
 
-##' @rdname funcCO
-##' @export
+#' @rdname funcCO
+#' @export
 jacobianEqCstr <- function(x,cst){
   n0 <- cst$cbs@dims$dimBeta$dim0 + cst$cbs@dims$dimBeta$dimR + cst$cbs@dims$dimGamma$dim0
   n <- length(x)

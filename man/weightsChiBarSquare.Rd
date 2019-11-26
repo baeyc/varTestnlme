@@ -7,7 +7,7 @@
 \alias{limit}
 \title{Chi-bar-square weights computation}
 \usage{
-weightsChiBarSquare(cbs, control = list(N = 5000))
+weightsChiBarSquare(cbs, control)
 }
 \arguments{
 \item{cbs}{an object of class \code{\link{chibarObject}}, containing the parameters of the chi-bar-square distribution}
@@ -19,7 +19,7 @@ A list containing the degrees of freedom of the chi-bar distributions involved i
 the associated weights.
 }
 \description{
-Computation of the chi-bar-square weigths via Monte Carlo approximation.
+Computation of the chi-bar-square weigths.
 }
 \details{
 The function computes an approximation of the weights of the chi-bar-square distribution
