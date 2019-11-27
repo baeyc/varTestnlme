@@ -37,3 +37,46 @@ chiBarSquareObject <- setClass("chiBarSquareObject",
       return(TRUE)
     }
 )
+
+
+setGeneric("dfchisqbar", function(object){standardGeneric("dfchisqbar")})
+setGeneric("pchisqbar", function(q,object,lower.tail){standardGeneric("pchisqbar")})
+setGeneric("rchisqbar", function(size,object,control){standardGeneric("rchisqbar")})
+
+
+# Degrees of freedom
+
+#' @name dfchisqbar
+#' @title dfchisqbar
+#' @definition Computes the degrees of freedom of the chi-square involved in the mixture
+#' @rdname dfchisqbar-methods
+#' @exportMethod dfchisqbar
+
+setMethod("dfchisqbar",
+          c("chiBarSquareObject"),
+          function(object){
+            # dimLSincluded : dimension of the buggest linear space included in the cone
+            # dimLScontaining : dimension of the smallest linear space containing the cone
+            q <- sum(unlist(object@dims)) # total dimension
+            dimLSincluded <- object@dims$dimBeta$dimR + object@dims$dimGamma$dimR # weights of chi-bar with df=0, ..., dimLSincluded-1 are null
+            if (object@orthan) dimLScontaining <- object@dims$dimBeta$dimR + object@dims$dimGamma$dimR + sum(object@dims$dimGamma$dimSplus) # weights of chi-bar with df=dimLScontaining+1, ..., q are null
+            if (!object@orthan) dimLScontaining <- object@dims$dimBeta$dimR + object@dims$dimGamma$dimR + sum(object@dims$dimGamma$dimSplus*(object@dims$dimGamma$dimSplus+1)/2)
+            return(seq(dimLSincluded,dimLScontaining,1))
+          })
+
+# Cumulative distribution function
+
+#' @name pchisqbar
+#' @title pchisqbar
+#' @definition Cumulative distribution function of the chi-bar-square distribution
+#' @rdname pchisqbar-methods
+#' @exportMethod pchisqbar
+#'
+setMethod("pchisqbar",
+          c("numeric","chiBarSquareObject","logical"),
+          function(q,object,lower.tail=T){
+            paste(lower.tail)
+            paste(q)
+            sum(object@weights * stats::pchisq(q,df=object@df,lower.tail = lower.tail))
+          }
+          )
