@@ -65,7 +65,7 @@ varTest <- function(m1,m0,control = list(N=5000)){ # ajouter paramètres pour op
 
 
   # Constructing chi-bar-square object
-  cbs <- methods::new("chiBarObject")
+  cbs <- methods::new("chiBarSquareObject")
   cbs@orthan <- msdata$structGamma$diag
 
   if (msdata$structGamma$diag || msdata$structGamma$full){
@@ -74,15 +74,18 @@ varTest <- function(m1,m0,control = list(N=5000)){ # ajouter paramètres pour op
     invfim <- invfim[c(neworder,nrow(invfim)-msdata$dims$dimSigma+1),c(neworder,nrow(invfim)-msdata$dims$dimSigma+1)]
 
     if (msdata$structGamma$diag){
-      cbs@dims <- list(dimBeta=msdata$dims$nbFE1,
+      cbs@dims <- list(dimBeta=list(dim0=msdata$dims$nbFE0,
+                                    dimR=msdata$dims$nbFE1-msdata$dims$nbFE0),
                        dimGamma=list(dim0=msdata$dims$nbRE0,
                                      dimR=0,
                                      dimSplus=msdata$dims$nbRE1-msdata$dims$nbRE0),
                        dimSigma=msdata$dims$dimSigma)
     }else{
-      cbs@dims <- list(dimBeta=msdata$dims$nbFE1,
+      nbCovTestedAlone <- (msdata$dims$nbRE0==msdata$dims$nbRE1)*(msdata$dims$nbCov1-msdata$dims$nbCov0) # nb of covariances tested without the corresponding variances being tested
+      cbs@dims <- list(dimBeta=list(dim0=msdata$dims$nbFE0,
+                                    dimR=msdata$dims$nbFE1-msdata$dims$nbFE0),
                        dimGamma=list(dim0=msdata$dims$nbRE0*(msdata$dims$nbRE0+1)/2,
-                                     dimR=(msdata$dims$nbRE0)*(msdata$dims$nbRE1-msdata$dims$nbRE0),
+                                     dimR=(msdata$dims$nbRE0)*(msdata$dims$nbRE1-msdata$dims$nbRE0)+nbCovTestedAlone,
                                      dimSplus=msdata$dims$nbRE1-msdata$dims$nbRE0),
                        dimSigma=msdata$dims$dimSigma)
     }
@@ -101,7 +104,8 @@ varTest <- function(m1,m0,control = list(N=5000)){ # ajouter paramètres pour op
     dimSplus <- floor(sqrt(2*as.vector(table(ddSp$block))))
     rm(ddSp)
 
-    cbs@dims <- list(dimBeta=msdata$dims$nbFE1,
+    cbs@dims <- list(dimBeta=list(dim0=msdata$dims$nbFE0,
+                                  dimR=msdata$dims$nbFE1-msdata$dims$nbFE0),
                      dimGamma=list(dim0=dim0,
                                    dimR=dimR,
                                    dimSplus=dimSplus),
@@ -135,16 +139,54 @@ varTest <- function(m1,m0,control = list(N=5000)){ # ajouter paramètres pour op
   }
 
   # Compute chi-bar-square weights
-  wcbs <- weightsChiBarSquare(cbs,control)
-  pvalue <- sum(wcbs$weights * stats::pchisq(lrt,df=wcbs$df,lower.tail = F))
+  if (length(cbs@df)>1){
+    if (pval.comp %in% c("approx","both")){
+      wcbs <- weightsChiBarSquare(cbs,control)
+      cbs@weights <- wcbs$weights
+      # Two ways to compute the pvalue : using the estimated weights (pvalue1) or computing the empirical pvalue (pvalue2)
+      pvalue1 <- pchisqbar(lrt[1],cbs,lower.tail = F)
+      pvalue2 <- mean(wcbs$randomCBS>=lrt)
+      if (min(wcbs$w)<0) warning("\nSome weights were estimated to be negative. Results can be improved by increasing the sampling size M.\n")
+    }
+  }else{
+    pvalue1 <- pchisq(lrt[1],cbs@df[1],lower.tail = F)
+  }
 
   # print results
-  cat("\nLikelihood ratio test statistics: \n LRT = ",lrt,
-      "\n\nLimiting distribution: \n",
-      " mixture of",length(wcbs$df),"chi-bar-square distributions",
-      "with degrees of freedom",paste(wcbs$df,sep="",collapse = ", "),"\n",
-      " associated weights",paste(round(wcbs$w,3),sep="",collapse = ", "),
-      "\n\np-value:",pvalue)
+  cat(paste("\nLikelihood ratio test statistics: \n LRT = ",format(lrt,digits=5),
+            "\n\nLimiting distribution: \n"))
+  if (length(cbs@df)>1){
+    cat(paste("mixture of",length(cbs@df),"chi-bar-square distributions with degrees of freedom",paste(cbs@df,sep="",collapse = ", "),"\n"))
+    if (pval.comp %in% c("approx","both")){
+      cat(paste(" associated weights and sd: ",paste(paste(round(wcbs$w,3)," (",round(wcbs$sdWeights,3),")",sep=""),sep="",collapse = ", "),
+                "\n\np-value (from estimated weights):",format(pvalue1,digits = 5)))
+      if (length(wcbs$randomCBS)>0) cat(paste("\np-value (from simulated chi-bar-square distribution):",format(pvalue2,digits=5),"\n"))
+    }
+    if (pval.comp %in% c("bounds","both")) cat(paste("\nlower-bound for p-value:",format(lowboundpval,digits=5)," upper bound for p-value:",format(uppboundpval,digits=5)))
+  }else{
+    cat(paste0("  chi-bar-square distributions with ",cbs@df," degree of freedom\n"))
+    cat(paste0("  p-value: ",format(pvalue1,digits=5)))
+  }
 
-  #return(list(lrt=lrt,ddl=wcbs$df,weights=wcbs$w,pvalue))
+
+  # Creating varTestObject
+  vtobj <- vartestObject()
+  vtobj@cbs <- cbs
+  vtobj@lrt <- lrt[1] # to get rid of the logLik object class
+  vtobj@namesTestedParams <- list(fixed=msdata$nameFixedTested,random=msdata$nameVarTested)
+  if (pval.comp %in% c("approx","both")){
+    if (length(cbs@df)>1) {
+      vtobj@chibarsquare <- wcbs$randomCBS
+      vtobj@weights <- as.vector(wcbs$weights)
+      vtobj@sdWeights <- wcbs$sdWeights
+      vtobj@pvalueWeights <- pvalue1
+      vtobj@pvalueMC <- pvalue2
+    }else{
+      vtobj@weights <- cbs@df
+      vtobj@sdWeights <- 0
+      vtobj@pvalueWeights <- pvalue1
+    }
+  }
+
+  invisible(vtobj)
 }

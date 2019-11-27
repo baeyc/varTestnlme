@@ -1,6 +1,6 @@
 #' Chi-bar-square weights computation
 #'
-#' Computation of the chi-bar-square weigths via Monte Carlo approximation.
+#' Computation of the chi-bar-square weigths.
 #'
 #' The function computes an approximation of the weights of the chi-bar-square distribution
 #' \eqn{\bar{\chi}^2(I,C)} arising as the limiting distribution of the likelihood ratio test
@@ -20,91 +20,124 @@
 #'
 #' Silvapulle  MJ, Sen PK, 2011. Constrained statistical inference: order, inequality and shape constraints.
 #' @export weightsChiBarSquare
-weightsChiBarSquare <- function(cbs,control = list(N=5000)){
+#' @importFrom foreach %dopar%
+weightsChiBarSquare <- function(cbs,control){
 
-  # some weights are null, depending on whether the cone includes, or is contained in a linear space
-  dimLSincluded <- cbs@dims$dimGamma$dimR # weights of chi-bar with df=0, ..., dimLSincluded-1 are null
-  if (cbs@orthan) dimLScontaining <- cbs@dims$dimGamma$dimR+sum(cbs@dims$dimGamma$dimSplus) # weights of chi-bar with df=dimLScontaining+1, ..., q are null
-  if (!cbs@orthan) dimLScontaining <- cbs@dims$dimGamma$dimR+sum(cbs@dims$dimGamma$dimSplus*(cbs@dims$dimGamma$dimSplus+1)/2)
-  dimTot <- ncol(cbs@V)
-  df <- seq(dimLSincluded,dimLScontaining,1)
+  # Initialize vector of weights
+  w <- rep(0,length(cbs@df))
 
-  w <- rep(0,length(df))
-
-  b <- cbs@dims$dimBeta
-  r <- sum(cbs@dims$dimGamma$dimSplus)
-  ds <- cbs@dims$dimSigma
-  p <- dimTot-b-ds
+  # define some quantities : b=nb of fixed effects, r=nb of variances being tested equal to 0, ds=dim of residual, p=nb of variance components
+  b <- sum(unlist(cbs@dims$dimBeta)) # size of fixed effects
+  rf <- cbs@dims$dimBeta$dimR # size of tested fixed effects
+  r <- sum(cbs@dims$dimGamma$dimSplus) # number of variances tested
+  ds <- cbs@dims$dimSigma # size of residual
+  #p <- ncol(cbs@V)-b-ds #
   #p <- cbs@dims$dimGamma$dim0 + cbs@dims$dimGamma$dimR + sum(cbs@dims$dimGamma$dimSplus)
+
+  # Initialize vector of simulated chi-bar-square
+  chibarsquare <- numeric()
 
   # Exact weights when testing that r variances are null with r<=3, and for the diagonal case
   # Otherwise, simulation of weights
   if(cbs@orthan){
-    R <- cbind(matrix(0,ncol=cbs@dims$dimBeta+cbs@dims$dimGamma$dim0,nrow=r),
+    R <- cbind(matrix(0,ncol=b+cbs@dims$dimGamma$dim0,nrow=r),
                diag(r),
                matrix(0,nrow=r,ncol=cbs@dims$dimSigma))
     W <- R%*%cbs@V%*%t(R)
     invW <- chol2inv(chol(W))
-    C <- stats::cov2cor(W)
 
     if (r == 1){
       w <- c(0.5,0.5)
+      sdw <- rep(0,2)
     }else if (r == 2){
+      C <- stats::cov2cor(W)
       w[1] <- acos(C[1,2])/(2*pi)
       w[2] <- 0.5
       w[3] <- 0.5-w[1]
+      sdw <- rep(0,3)
     }else if (r == 3){
+      C <- stats::cov2cor(W)
       pC <- corpcor::cor2pcor(C)
       w[4] <- (3*pi - acos(pC[1,2]) - acos(pC[1,3]) - acos(pC[2,3]))/(4*pi)
       w[3] <- (2*pi - acos(C[1,2]) - acos(C[1,3]) - acos(C[2,3]))/(4*pi)
       w[2] <- 0.5 - w[4]
       w[1] <- 0.5 - w[3]
+      sdw <- rep(0,4)
     }else{
       print("Simulating chi-bar-square weights ...")
-      pb = utils::txtProgressBar(min = 0, max = control$N, initial = 0)
-      Z <- mvtnorm::rmvnorm(control$N,mean=rep(0,nrow(W)),sigma=W)
-      chibarsquare <- t(sapply(1:control$N,FUN = function(i){
-                                           projZ <- quadprog::solve.QP(invW, Z[i,]%*%invW, diag(ncol(Z)), rep(0,ncol(Z)), meq=0, factorized=FALSE)$solution
-                                           utils::setTxtProgressBar(pb,i)}))
-      nbPosComp <- apply(chibarsquare,1,FUN = function(x){length(x[x>1e-6])})
-      w <- summary(as.factor(nbPosComp),maxsum=length(df))/control$N
+      Z <- mvtnorm::rmvnorm(control$M,mean=rep(0,nrow(W)),sigma=W)
+      projZ <- t(sapply(1:control$M,FUN = function(i){
+        quadprog::solve.QP(invW, Z[i,]%*%invW, diag(ncol(Z)), rep(0,ncol(Z)), meq=0, factorized=FALSE)$solution}))
+      nbPosComp <- apply(projZ,1,FUN = function(x){length(x[x>1e-6])})
+      w <- summary(as.factor(nbPosComp),maxsum=length(df))/control$M
+      sdw <- sqrt(w*(1-w)/control$M)
     }
   }else if (r == 1){
     w <- c(0.5,0.5)
+    sdw <- rep(0,2)
   }else{
-    invI <- cbs@V[(b+1):dimTot,(b+1):dimTot]
-    I <- cbs@invV[(b+1):dimTot,(b+1):dimTot]
-    Z <- mvtnorm::rmvnorm(control$N,mean=rep(0,nrow(invI)),sigma=invI)
-    chibarsquare <- rep(0,control$N)
+    invI <- cbs@V
+    I <- cbs@invV
+    Z <- mvtnorm::rmvnorm(control$M,mean=rep(0,nrow(invI)),sigma=invI)
+    chibarsquare <- rep(0,control$M)
 
     cat("\nSimulating chi-bar-square weights ...\n")
-    pb = utils::txtProgressBar(min = 0, max = control$N, initial = 0)
-    if (cbs@orthan){
-      chibarsquare <- t(sapply(1:control$N,FUN = function(i){
-                                            x0 <- Z[i,]
-                                            constantes <- list(Z=Z[i,],invV=I,cbs=cbs)
-                                            projZ <- alabama::auglag(par=x0, fn = objFunction, gr = gradObjFunction, hin = ineqCstrDiag, heq = eqCstr, cst=constantes, control.outer=list(trace=F))
-                                            utils::setTxtProgressBar(pb,i)
-                                            return(Z[i,]%*%I%*%Z[i,] - projZ$value)}))
-    }else{
-      chibarsquare <- t(sapply(1:control$N,FUN = function(i){
-                                            x0 <- Z[i,]
-                                            constantes <- list(Z=Z[i,],invV=I,cbs=cbs)
-                                            projZ <- alabama::auglag(par=x0, fn = objFunction, gr = gradObjFunction, hin = ineqCstr, heq = eqCstr, cst=constantes, control.outer=list(trace=F))
-                                            utils::setTxtProgressBar(pb,i)
-                                            return(projZ$value)}))
+    doMC::registerDoMC(cores=control$Mbcores)
+
+    chibarsquare <- foreach::foreach(i=1:control$M, .combine=c) %dopar% {
+    # for (i in 1:control$M){
+          x0 <- Z[i,]
+          constantes <- list(Z = Z[i,], invV = I, cbs = cbs)
+          projZ <- alabama::auglag(par=x0,
+                                   fn = objFunction,
+                                   gr = gradObjFunction,
+                                   hin = ineqCstr,
+                                   heq = eqCstr,
+                                   hin.jac = jacobianIneqCstr,
+                                   heq.jac = jacobianEqCstr,
+                                   cst=constantes,
+                                   control.outer=list(trace=F,method="BFGS",eps=1e-5))
+          # due to the tolerance threshold in auglag, we end up with equality constraints verified up to 1e-5
+          # we set those values to 0 otherwise it results in incorrect projected Z
+          projZzero <- projZ$par
+          projZzero[abs(projZzero)<1e-5] <- 0
+          Z[i,]%*%I%*%Z[i,] - objFunction(projZzero,constantes)
+        }
+    chibarsquare <- chibarsquare[chibarsquare>-1e-04]
+
+    # Approximation of chi-bar-square weights
+    empQuant <- seq(0.001,1,0.001)
+    w_covw <- lapply(empQuant, FUN = function(q){try(approxWeights(chibarsquare,cbs@df,q))})
+    w <- na.omit(t(sapply(1:length(empQuant), FUN = function(i){if (is.null(names(w_covw[[i]]))) {NA*df} else {w_covw[[i]]$w}})))
+    covw <- na.omit(t(sapply(1:length(empQuant), FUN = function(i){if (is.null(names(w_covw[[i]]))) {NA*df} else {sqrt(diag(w_covw[[i]]$covw))}})))
+
+    # Take into account the constraints on the weights : they should be between 0 and 1/2
+    minW <- apply(w,1,min)
+    maxW <- apply(w,1,max)
+    admissibleWeights <- w[minW>0 & maxW<0.5,]
+    sdAdmissibleWeights <- covw[minW>0 & maxW<0.5,]
+
+    # NCOL and NROW can be used on vector
+    eps <- 0
+    while (min(NROW(admissibleWeights),NCOL(admissibleWeights))==0){
+      # if no combination is admissible, relax the constraints
+      admissibleWeights <- w[minW>-(0.05+eps) & maxW<(0.55+eps),]
+      sdAdmissibleWeights <- covw[minW>-(0.05+eps) & maxW<(0.55+eps),]
+      eps <- eps+0.01
     }
 
-    c <- seq(min(chibarsquare*1.1),max(chibarsquare)*0.8,length.out = length(df)-2)
-    aij <- sapply(1:length(df),FUN = function(i){stats::pchisq(c,df=i-1)})
-    pj <- sapply(1:length(c),FUN = function(i){mean(chibarsquare<=c[i])})
+    if (min(NROW(admissibleWeights),NCOL(admissibleWeights)) > 1){
+      # if several weights are admissible, we keep those whose variances are minimal
+      maxvar <- apply(sdAdmissibleWeights,1,max)
+      #meanvar <- apply(sdAdmissibleWeights,1,mean)
+      admissibleWeights <- admissibleWeights[which.min(maxvar),]
+      sdAdmissibleWeights <- sdAdmissibleWeights[which.min(maxvar),]
+    }
 
-    # We add constraints on the weights: sum of weights is equal to 1 and sum of even and odd weights are equal to 1/2
-    aij <- rbind(aij,rep(1,length(df)),rep(c(1,0),length.out=length(df)))
-    pj <- c(pj,1,0.5)
-
-    w <- solve(aij,pj)
+    w <- admissibleWeights
+    sdw <- sdAdmissibleWeights
   }
 
-  return(list(df=df,weights=w))
+  return(list(df=cbs@df,weights=w,sdWeights=sdw,randomCBS=chibarsquare))
 }
+
