@@ -127,11 +127,33 @@ varTest <- function(m1,m0,control = list(N=5000)){ # ajouter paramètres pour op
     cat(paste("model under H0:",deparse(formula(m0),width.cutoff=500),"\n"))
   }
   if (pkg=="nlme"){
-    text1 <- deparse(m1$call$random,width.cutoff=500)
-    text0 <- deparse(m0$call$random,width.cutoff=500)
-    if (!is.null(m1$call$model)){
-      cat(paste("model under H1:",deparse(m1$call$model,width.cutoff=500),"(model),",gsub(".*formula = structure[(]list*|, class*.*$", "", text1),"(random effects)\n"))
-      cat(paste("model under H0:",deparse(m0$call$model,width.cutoff=500),"(model),",gsub(".*formula = structure[(]list*|, class*.*$", "", text0),"(random effects)\n"))
+    cat(paste("model under H1:",deparse(m1$call$fixed,width.cutoff=500),"(fixed effects)",",",deparse(m1$call$random,width.cutoff=500),"(random effects)\n"))
+    if (randm0) cat(paste("model under H0:",deparse(m0$call$fixed,width.cutoff=500),"(fixed effects)",",",deparse(m0$call$random,width.cutoff=500),"(random effects)\n"))
+    if (!randm0) cat(paste("model under H0:",deparse(formula(m0),width.cutoff=500),"(fixed effects)\n"))
+  }
+
+  # Identify the components of the mixture
+  # -> some weights are null, depending on whether the cone includes, or is contained in a linear space
+  cbs@df <- dfchisqbar(cbs)
+
+  uppboundpval <- (1/2)*sum(stats::pchisq(lrt,cbs@df[(length(cbs@df)-1):length(cbs@df)],lower.tail = F))
+  lowboundpval <- (1/2)*sum(stats::pchisq(lrt,cbs@df[1:2],lower.tail = F))
+
+  # Compute FIM only if necessary (i.e. when weights of the chi-bar-square need to be computed)
+  if (pval.comp != "bounds" & length(cbs@df) > 2){
+    if (fim == "extract"){
+      cat("\nExtracting Fisher Information matrix...")
+      if (pkg=="nlme") invfim <- as.matrix(Matrix::bdiag(m1$varFix,m1$apVar)) # error message in case apVar is non positive definite
+      if (pkg=="lme4"){
+        if (linmodel){
+          invfim <- as.matrix(merDeriv::vcov.lmerMod(m1,full=T))
+        }else{
+          invfim <- as.matrix(merDeriv::vcov.glmerMod(m1,full=T))
+        }
+      }
+      if (pkg=="saemix") invfim <- chol2inv(chol(m1@results@fim))
+    }else if (fim == "compute"){
+      cat("Computation of the FIM is not yet implemented")
     }else{
       cat(paste("model under H1:",deparse(m1$call$fixed,width.cutoff=500),"(fixed effects)",",",gsub(".*formula = structure[(]list*|, class*.*$", "", text1),"(random effects)\n"))
       cat(paste("model under H0:",deparse(m0$call$fixed,width.cutoff=500),"(fixed effects)",",",gsub(".*formula = structure[(]list*|, class*.*$", "", text0),"(random effects)\n"))
