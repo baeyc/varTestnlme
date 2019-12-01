@@ -2,6 +2,7 @@
 
 export(approxWeights)
 export(eqCstr)
+export(extractFIMnlme)
 export(gradObjFunction)
 export(ineqCstr)
 export(jacobianEqCstr)

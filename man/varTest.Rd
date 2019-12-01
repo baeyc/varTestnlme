@@ -7,7 +7,8 @@
 \alias{likelihood}
 \title{Variance component testing}
 \usage{
-varTest(m1, m0, control = list(N = 5000))
+varTest(m1, m0, control = list(N = 5000, parallel = F, nbcores = 1, B =
+  1000), pval.comp = "bounds", fim = "extract")
 }
 \arguments{
 \item{m1}{a fit of the model under H1, obtained from \code{\link[nlme]{nlme}}, \code{\link[lme4]{lme4}}
