@@ -16,4 +16,5 @@
 #' variance components in nonlinear mixed effects models. \emph{Computational Statistics and Data Analysis.}
 #' @keywords package
 #' @import methods
+#' @noRd
 NULL

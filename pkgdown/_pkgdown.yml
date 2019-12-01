@@ -1,0 +1,25 @@
+title: varTestnlme
+url: https://baeyc.github.io/varTestnlme/
+
+authors:
+   Charlotte Baey:
+     href: https://math.univ-lille1.fr/~baey/
+
+template:
+   params:
+     bootswatch: flatly
+     
+navbar:
+  left:
+    - icon: fa-home
+      href: index.html
+    - icon: fa-file-code-o
+      text: "Functions"
+      href: reference/index.html      
+  right:
+    - icon: fa-newspaper-o
+      text: "News"
+      href: news/index.html      
+    - icon: fa-github fa-lg
+      text: "github"
+      href: https://github.com/baeyc/varTestnlme

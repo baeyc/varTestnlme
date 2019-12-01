@@ -24,7 +24,7 @@
 #'
 #' @references Baey C, Cournède P-H, Kuhn E, 2019. Asymptotic distribution of likelihood ratio test
 #' statistics for variance components in nonlinear mixed effects models. \emph{Computational
-#' Statistics and Data Analysis} (in press).
+#' Statistics and Data Analysis} 135:107-122.
 #'
 #' Silvapulle  MJ, Sen PK, 2011. Constrained statistical inference: order, inequality and shape constraints.
 #' @export varTest

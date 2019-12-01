@@ -8,7 +8,7 @@ Authors@R: c(
        ), 
     person("Estelle","Kuhn", ,"estelle.kuhn@inra.fr", role = c("aut"))
   )
-URL: http://github.com/baeyc/varTestnlme
+URL: http://github.com/baeyc/varTestnlme/
 BugReports: http://github.com/baeyc/varTestnlme/issues  
 Maintainer: The package maintainer <charlotte.baey@univ-lille.fr>
 Description: An implementation of the Likelihood ratio Test (LRT) for testing that,
