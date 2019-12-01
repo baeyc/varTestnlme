@@ -1,47 +1,72 @@
-##' @name funcStruct
-##' @rdname funcStruct
-##'
-##' @title Extracting models structures
-##'
-##' @description Functions extracting the structure of the models for each package \code{\link[nlme]{nlme}}, \code{\link[lme4]{lme4}}
-##' and \code{\link[saemix]{saemix}}
-##'
-##'
-##' @param m1 the model under H1
-##' @param m0 the model under H0
-##' @param linmodel (only for \code{modelStructlme4}) a boolean to specify whether the model is linear or not
-##'
-##' @return A list with the following components:
-##' \item{\code{detailStruct}}{a data frame containing 8 variables: \code{name} with the name of the model parameters, \code{var1} and
-##' \code{var2} with the names of the two variances associated with each covariance parameter, \code{type} giving the type of parameter
-##' (\code{beta} for fixed effects, \code{sd} for variances and \code{co} for covariances), \code{tested} equal to \code{TRUE} if the parameter is
-##' tested and \code{FALSE} otherwise, \code{block} giving the block number to which the variance component parameter belongs (equal 0 for
-##' fixed effects), \code{covTested} indicating whether a covariance is tested without the associated variances being tested,
-##' and \code{covInBlock} indicating whether a covariance is tested within a block of the complete covariance matrix}
-##' \item{\code{dims}}{a list with the dimensions of the models (\code{nbFE1} and \code{nbFE0} the number of fixed effects in m1 and m0,
-##' \code{nbRE1} and \code{nbRE0} the number of random effects in m1 and m0 and \code{dimSigma} the number of residual error parameters)}
-##' \item{\code{structGamma}}{the structure of the covariance matrix of the random effects as a list of three logical elements: \code{diag},
-##' \code{full} and \code{blockDiag}, equal to \code{TRUE} if the matrix is diagonal, full or block-diagonal respectively.}
-##' 
-##' @noRd
+#' @name funcStruct
+#' @rdname funcStruct
+#'
+#' @title Extracting models structures
+#'
+#' @description Functions extracting the structure of the models for each package \code{\link[nlme]{nlme}}, \code{\link[lme4]{lme4}}
+#' and \code{\link[saemix]{saemix}}
+#'
+#'
+#' @param m1 the model under H1
+#' @param m0 the model under H0
+#' @param randm0 a boolean stating whether the model under H0 contains any random effect
+#' @param linmodel (only for \code{modelStructlme4}) a boolean to specify whether the model is linear or not
+#'
+#' @return A list with the following components:
+#' \item{\code{detailStruct}}{a data frame containing 8 variables: \code{name} with the name of the model parameters, \code{var1} and
+#' \code{var2} with the names of the two variances associated with each covariance parameter, \code{type} giving the type of parameter
+#' (\code{beta} for fixed effects, \code{sd} for variances and \code{co} for covariances), \code{tested} equal to \code{TRUE} if the parameter is
+#' tested and \code{FALSE} otherwise, \code{block} giving the block number to which the variance component parameter belongs (equal 0 for
+#' fixed effects), \code{covTested} indicating whether a covariance is tested without the associated variances being tested,
+#' and \code{covInBlock} indicating whether a covariance is tested within a block of the complete covariance matrix}
+#' \item{\code{dims}}{a list with the dimensions of the models (\code{nbFE1} and \code{nbFE0} the number of fixed effects in m1 and m0,
+#' \code{nbRE1} and \code{nbRE0} the number of random effects in m1 and m0 and \code{dimSigma} the number of residual error parameters)}
+#' \item{\code{structGamma}}{the structure of the covariance matrix of the random effects as a list of three logical elements: \code{diag},
+#' \code{full} and \code{blockDiag}, equal to \code{TRUE} if the matrix is diagonal, full or block-diagonal respectively.}
+#' 
+#' @noRd
 NULL
 
-##' @rdname funcStruct
-modelStructnlme <- function(m1,m0){
+#' @rdname funcStruct
+modelStructnlme <- function(m1,m0,randm0){
+  # get package used to fit m0
+  pkgm0 <- class(m0)[1]
+  
   # name of the random grouping variable
   nameRE <- names(m1$groups)
-
-  vc0 <- eval(parse(text=paste("m0$modelStruc$reStruct$",nameRE,sep="")))
+  
+  # get the structure of the random effects in m0 and m1
+  if (randm0){
+    vc0 <- eval(parse(text=paste("m0$modelStruc$reStruct$",nameRE,sep="")))
+  }else{
+    vc0 <- NULL
+  }  
   vc1 <- eval(parse(text=paste("m1$modelStruc$reStruct$",nameRE,sep="")))
 
   # Structure of the covariance matrix
-  covStruct0 <- class(vc0)[1]
+  if (randm0) covStruct0 <- class(vc0)[1]
   covStruct1 <- class(vc1)[1]
 
-  namesRE0 <- attr(vc0,"Dimnames")[[1]]
+  # names of fixed and random effects
+  if (randm0){
+    namesRE0 <- attr(vc0,"Dimnames")[[1]]
+    namesFE0 <- names(m0$coefficients$fixed)
+  }else{
+    namesRE0 <- NULL
+    if (pkgm0 == "lm") namesFE0 <- names(stats::coefficients(m0))
+    if (pkgm0 == "nls") namesFE0 <- names(m0$m$getPars())
+  }
   namesRE1 <- attr(vc1,"Dimnames")[[1]]
   nameVarTested <- namesRE1[!(namesRE1%in%namesRE0)]
 
+  namesFE1 <- names(m1$coefficients$fixed)
+  nameFixedTested <- namesFE1[!(namesFE1%in%namesFE0)]
+  
+  # Throwing errors for cases not covered by the package
+  #if ( !!!!!!! ) stop("Error: the current version of the package does not support more than 1 level of random effects")
+  if (!prod(namesFE0 %in% namesFE1)) stop("Error: the models should be nested, but it seems that some fixed effects are in m0 but not in m1")
+  if (!prod(namesRE0 %in% namesRE1)) stop("Error: the models should be nested, but it seems that some random effects are in m0 but not in m1")
+  
   # dimension of the parameters
   nbFixEff0 <- m0$dims$ncol[2]
   nbFixEff1 <- m1$dims$ncol[2]
@@ -52,7 +77,12 @@ modelStructnlme <- function(m1,m0){
   # retrieve names of parameters to identify their order in the FIM and in the cone
   #nbTotParam <- ncol(invfim)
   int1 <- nlme::intervals(m1)
-  int0 <- nlme::intervals(m0)
+  if (randm0){
+    int0 <- nlme::intervals(m0)
+    nameParams0 <- c(rownames(int0$fixed),eval(parse(text=paste("rownames(int0$reStruc$",nameRE,")",sep=""))))
+  }else{
+    nameParams0 <- names(stats::coefficients(m0))
+  }
   nameParams1 <- c(rownames(int1$fixed),eval(parse(text=paste("rownames(int1$reStruc$",nameRE,")",sep=""))))
   nameParams0 <- c(rownames(int0$fixed),eval(parse(text=paste("rownames(int0$reStruc$",nameRE,")",sep=""))))
   paramTested <- !(nameParams1 %in% nameParams0)
@@ -80,9 +110,14 @@ modelStructnlme <- function(m1,m0){
   if (nbFixEff1 != nbFixEff0) stop("Error: the current version of the package does not support simultaneously testing means and variances. Models should have the same fixed effects")
   if (!prod(namesRE0 %in% namesRE1)) stop("Error: the models should be nested, but it seems that some random effects are in m0 but not in m1")
 
-  if(is.null(m1$modelStruct$corStruct)){ # get the dimension of the residual variance
+  # get the dimension of the residual variance
+  # it should be identical under H0 and H1
+  if(is.null(m1$modelStruct$corStruct)){
     dimSigma=1
+    if (randm0 & !is.null(m0$modelStruct$corStruct)) stop("The same model should be used under H0 and H1 for the residual covariance matrix")
   }else{
+    # if no random effects under H0 then the model is fitted with lm which only allow for residual of dimension 1
+    if (!randm0) stop("The same model should be used under H0 and H1 for the residual covariance matrix")
     dimSigma=1+length(m1$modelStruct$corStruct) # to be refined
   }
 
@@ -111,13 +146,17 @@ modelStructnlme <- function(m1,m0){
 
   return(list(detailStruct=dd,
               nameVarTested=nameVarTested,
-              dims=list(nbFE1=nbFixEff1,nbFE0=nbFixEff0,nbRE1=nbRanEff1,nbRE0=nbRanEff0,dimSigma=dimSigma),
+              nameFixedTested=nameFixedTested,
+              dims=list(nbFE1=nbFixEff1,nbFE0=nbFixEff0,nbRE1=nbRanEff1,nbRE0=nbRanEff0,nbCov1=nbCov1,nbCov0=nbCov0,dimSigma=dimSigma),
               structGamma=list(diag=diag,full=full,blockDiag=blockDiag)))
 }
 
 
-##' @rdname funcStruct
-modelStructlme4 <- function(m1,m0,linmodel){
+#' @rdname funcStruct
+modelStructlme4 <- function(m1,m0,linmodel,randm0){
+  # get package used to fit m0
+  pkgm0 <- class(m0)[1]
+  
   # name of the grouping factor
   nameRE <- names(m1@flist)
   if (length(nameRE)>1) stop("Error: the package does not currently support more than one level of random effects")
@@ -125,9 +164,19 @@ modelStructlme4 <- function(m1,m0,linmodel){
   # dimension of the parameters
   nbFixEff0 <- lme4::getME(m0,"p")
   nbFixEff1 <- lme4::getME(m1,"p")
-  namesRE0 <- unlist(m0@cnms)
+  # names of fixed and random effects
+  if (randm0){
+    namesRE0 <- unlist(m0@cnms)
+    namesFE0 <- names(lme4::getME(m0,"fixef"))
+  }else{
+    namesRE0 <- NULL
+    if (pkgm0 %in% c("lm","glm")) namesFE0 <- names(stats::coefficients(m0))
+    if (pkgm0 == "nls") namesFE0 <- names(m0$m$getPars())
+  }
+  namesFE1 <- names(lme4::getME(m1,"fixef"))
   namesRE1 <- unlist(m1@cnms)
   nameVarTested <- namesRE1[!(namesRE1%in%namesRE0)]
+  nameFixedTested <- namesFE1[!(namesFE1%in%namesFE0)]
   nbRanEff0 <- length(namesRE0)
   nbRanEff1 <- length(namesRE1)
   nbRanEffTest <- nbRanEff1-nbRanEff0
@@ -136,14 +185,21 @@ modelStructlme4 <- function(m1,m0,linmodel){
 
   # Structure of the covariance matrix (diagonal, blocked or full)
   nbCompVar1 <- lme4::getME(m1,"devcomp")$dims["nth"]
-  nbCompVar0 <- lme4::getME(m0,"devcomp")$dims["nth"]
+  if (randm0){
+    nbCompVar0 <- lme4::getME(m0,"devcomp")$dims["nth"]
+  }else{
+    nbCompVar0 <- 0
+  }
   diag <- (nbCompVar1==nbRanEff1)
   full <- (nbCompVar1==(nbRanEff1*(nbRanEff1+1)/2))
   blockDiag <- !diag & !full
+  nbCov1 <- nbCompVar1 - nbRanEff1
+  nbCov0 <- nbCompVar0 - nbRanEff0
 
-  ## CHECK IF ML WAS USED AND NOT REML
+  # CHECK IF ML WAS USED AND NOT REML
   if (lme4::isREML(m1) || lme4::isREML(m0)) stop("Error: the models should be fitted using Maximum Likelihood (ML) instead of Restricted ML (REML)")
-
+  if (randm0) if (lme4::isREML(m0)) stop("Error: the models should be fitted using Maximum Likelihood (ML) instead of Restricted ML (REML)")
+  
   # retrieve names of parameters to identify their order in the FIM and in the cone
   #nbTotParam <- ncol(invfim1)
   if (randm0) nameParams0 <- c(namesFE0,paste0("cov_",names(getME(m0,"theta"))),"residual")
@@ -194,17 +250,29 @@ modelStructlme4 <- function(m1,m0,linmodel){
 
   return(list(detailStruct=dd,
               nameVarTested=nameVarTested,
-              dims=list(nbFE1=nbFixEff1,nbFE0=nbFixEff0,nbRE1=nbRanEff1,nbRE0=nbRanEff0,dimSigma=1),
+              nameFixedTested=nameFixedTested,
+              dims=list(nbFE1=nbFixEff1,nbFE0=nbFixEff0,nbRE1=nbRanEff1,nbRE0=nbRanEff0,nbCov1=nbCov1,nbCov0=nbCov0,dimSigma=1*!(pkgm0%in%c("glm"))),
               structGamma=list(diag=diag,full=full,blockDiag=blockDiag)))
 }
 
 
-##' @rdname funcStruct
-modelStructsaemix <- function(m1,m0){
+#' @rdname funcStruct
+modelStructsaemix <- function(m1,m0,randm0){
+  # get package used to fit m0
+  pkgm0 <- class(m0)[1]
+  
   # dimension of the parameters
   nbFixEff0 <- sum(m0@model@fixed.estim>0)
   nbFixEff1 <- sum(m1@model@fixed.estim>0)
-  namesRE0 <- m0@model@name.random
+  # names of fixed and random effects
+  if (randm0){
+    namesRE0 <- m0@model@name.random
+    namesFE0 <- m1@model@name.fixed[m1@model@fixed.estim>0]
+  }else{
+    namesRE0 <- NULL
+    if (pkgm0 == "lm" || pkgm0 == "glm") namesFE0 <- names(stats::coefficients(m0))
+    if (pkgm0 == "nls") namesFE0 <- names(m0$m$getPars())
+  }
   namesRE1 <- m1@model@name.random
   nameFixedTested <- namesFE1[!(namesFE1%in%namesFE0)]
   nameVarTested <- namesRE1[!(namesRE1%in%namesRE0)]
@@ -214,7 +282,7 @@ modelStructsaemix <- function(m1,m0){
   nbRanEffTest <- nbRanEff1-nbRanEff0
 
   covStruct1 <- m1@model@covariance.model
-  covStruct0 <- m0@model@covariance.model
+  if (randm0) covStruct0 <- m0@model@covariance.model
 
   diag <- (sum(covStruct1)==sum(diag(covStruct1)))
   full <- (min(covStruct1)==1)
@@ -245,7 +313,11 @@ modelStructsaemix <- function(m1,m0){
   dd$zero1 <- as.vector(covStruct1==0)
   dd$diag <- as.vector(lower.tri(covStruct1,diag = T)) - as.vector(lower.tri(covStruct1,diag = F))
   dd$type <- ifelse(dd$diag==1,"sd","co")
-  dd$tested <- as.vector(covStruct0==0)
+  if (randm0){
+    dd$tested <- as.vector(covStruct0==0)
+  }else{
+    dd$tested <- TRUE
+  }
   dd <- dd[dd$lowertri & !dd$zero1,]
   dd$zero1 <- dd$lowertri <- dd$diag <- NULL
 
@@ -294,7 +366,8 @@ modelStructsaemix <- function(m1,m0){
 
   return(list(detailStruct=dd,
               nameVarTested=nameVarTested,
-              dims=list(nbFE1=nbFixEff1,nbFE0=nbFixEff0,nbRE1=nbRanEff1,nbRE0=nbRanEff0,dimSigma=dimSigma),
+              nameFixedTested=nameFixedTested,
+              dims=list(nbFE1=nbFixEff1,nbFE0=nbFixEff0,nbRE1=nbRanEff1,nbRE0=nbRanEff0,nbCov1=nbCov1,nbCov0=nbCov0,dimSigma=dimSigma),
               structGamma=list(diag=diag,full=full,blockDiag=blockDiag)))
 }
 

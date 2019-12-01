@@ -28,31 +28,75 @@
 #'
 #' Silvapulle  MJ, Sen PK, 2011. Constrained statistical inference: order, inequality and shape constraints.
 #' @export varTest
-varTest <- function(m1,m0,control = list(N=5000)){ # ajouter paramètres pour option de calcul
-
+varTest <- function(m1,m0,control = list(N=5000,
+                                         parallel = F,
+                                         nbcores = 1,
+                                         B=1000),
+                    pval.comp = "bounds",
+                    fim = "extract"){
+  
+  # Specify default arguments in control
+  if (!is.null(control)) {
+    optionNames <- names(control)
+    if (!"M" %in% optionNames) control$M=5000
+    if (!"parallel" %in% optionNames) control$parallel=F
+    if (!"nbcores" %in% optionNames) control$nbcores=1
+    if (!"B" %in% optionNames) control$B=1000
+  }
+  
   cat("Variance components testing in mixed-effects models\n")
-
+  
   # Identify the packages from which m0 and m1 come from
   cl0 <- class(m0)
   cl1 <- class(m1)
   if (cl0[1] != cl1[1]) stop("Error: models m0 and m1 should be fitted with the same function from the same package")
-  ## NB : HANDLE THE CASE WHERE ALL THE RANDOM EFFECTS ARE TESTED (m0 would be fitted using lm or gls, ...)
-
+  
+  # Identify whether there is any random effects under m0
+  randm0 <- TRUE # boolean to indicate whether there are any random effects under H0. This constant is modified if m0 is fitted using lm, glm or nls
+  if (cl0[1] %in% c("lm","glm","nls")){ # if there is no random term in m0 it means that we are testing that ALL the variances are null
+    
+    if (cl0[1] == "lm" & !linmodel) stop("Models should be nested, but m1 is nonlinear while m0 is linear. Please check the formulation.")
+    if ((cl0[1] %in% c("glm") || cl0[1] == "nls") & linmodel) stop("Models should be nested, but m1 is linear while m0 is not. Please check the formulation.")
+    if (cl1[1] == "nlmerMod" & cl0[1] != "nls") stop("Models should be nested, but m1 is nonlinear while m0 is not. Please check the formulation.")
+    if (cl1[1] == "glmerMod" & !(cl0[1] %in% c("glm"))) stop("Models should be nested, but m1 is generalized linear while m0 is not. Please check the formulation.")
+    if (pkg == "saemix") warning("We cannot check that the model formulation under H0 and H1 is identical. Please make sure it is the case.")
+    
+    randm0 <- FALSE
+  }else if (cl0[1] != cl1[1]){ # if m0 and m1 both have random effects but are fitted from different package we throw an error
+    stop("Error: models m0 and m1 should be fitted with the same function from the same package")
+  }
+  
+  # Check for non nested models in nlme package
+  if (cl1[1] == "nlme"){
+    if (cl0[1] == "nlme") if((m1$call$model != m0$call$model)) stop("Models should be nested. Check the nonlinear model")
+    if (cl0[1] == "nls") if((m1$call$model != m0$call$formula)) stop("Models should be nested. Check the nonlinear model")
+  }
+  # TODO : the same for saemix and lme4
+  
   linmodel <- ("lme" %in% cl1 || cl1 %in% "lmerMod")
   if (cl1[1] %in% "nlmerMod") stop("Error: the Fisher information matrix is not available for nonlinear mixed effect models fitted with nlmer() of package lme4. Please use nlme or saemix packages.")
   pkg <- pckName(m1)
-
-  if (pkg=="nlme") msdata <- modelStructnlme(m1,m0)
-  if (pkg=="lme4") msdata <- modelStructlme4(m1,m0,linmodel)
-  if (pkg=="saemix") msdata <- modelStructsaemix(m1,m0)
-
+  
+  if (pkg=="nlme") msdata <- modelStructnlme(m1,m0,randm0)
+  if (pkg=="lme4") msdata <- modelStructlme4(m1,m0,linmodel,randm0)
+  if (pkg=="saemix") msdata <- modelStructsaemix(m1,m0,randm0)
+  
   cat("(models fitted using the",pkg,"package)\n\n")
-
+  
   # LRT and Fisher Information Matrix
-  if (pkg=="nlme") lrt <- -2*(m0$logLik - m1$logLik)
-  if (pkg=="lme4") lrt <- -2*(stats::logLik(m0) - stats::logLik(m1))
-  if (pkg=="saemix") lrt <- -2*(m0@results@ll.is - m1@results@ll.is)
-
+  # LRT
+  if (randm0){
+    if (pkg=="nlme") lrt <- -2*(m0$logLik - m1$logLik)
+    if (pkg=="lme4") lrt <- -2*(stats::logLik(m0) - stats::logLik(m1))
+    if (pkg=="saemix") lrt <- -2*(m0@results@ll.is - m1@results@ll.is)
+  }else{
+    ll0 <- stats::logLik(m0)
+    if (pkg=="nlme") lrt <- -2*(ll0 - m1$logLik)
+    if (pkg=="lme4") lrt <- -2*(ll0 - stats::logLik(m1))
+    if (pkg=="saemix") lrt <- -2*(ll0 - m1@results@ll.is)
+  }
+  
+  # FIM
   if (pkg=="nlme") invfim <- as.matrix(Matrix::bdiag(m1$varFix,m1$apVar)) # error message in case apVar is non positive definite
   if (pkg=="lme4"){
     if (linmodel){
@@ -62,17 +106,17 @@ varTest <- function(m1,m0,control = list(N=5000)){ # ajouter paramètres pour op
     }
   }
   if (pkg=="saemix") invfim <- chol2inv(chol(m1@results@fim))
-
-
+  
+  
   # Constructing chi-bar-square object
   cbs <- methods::new("chiBarSquareObject")
   cbs@orthan <- msdata$structGamma$diag
-
+  
   if (msdata$structGamma$diag || msdata$structGamma$full){
     # reorder FIM so that the tested variances are at the end, before the residual covariance structure
     neworder <- as.numeric(rownames(msdata$detailStruct[order(msdata$detailStruct$tested,msdata$detailStruct$names),]))
     invfim <- invfim[c(neworder,nrow(invfim)-msdata$dims$dimSigma+1),c(neworder,nrow(invfim)-msdata$dims$dimSigma+1)]
-
+    
     if (msdata$structGamma$diag){
       cbs@dims <- list(dimBeta=list(dim0=msdata$dims$nbFE0,
                                     dimR=msdata$dims$nbFE1-msdata$dims$nbFE0),
@@ -89,21 +133,21 @@ varTest <- function(m1,m0,control = list(N=5000)){ # ajouter paramètres pour op
                                      dimSplus=msdata$dims$nbRE1-msdata$dims$nbRE0),
                        dimSigma=msdata$dims$dimSigma)
     }
-
+    
   }else if (msdata$structGamma$blockDiag){
     # get indices for the re-ordered parameters : first the fixed effects, then the variances and covariances which are NOT tested,
     # then the covariances tested that are not part of a tested block of sub-matrix, and then the blocks of subsets of variances tested
     dd <- msdata$detailStruct[order(msdata$detailStruct$tested,msdata$detailStruct$block,msdata$detailStruct$covInBlock),]
     neworder <- as.numeric(rownames(dd))
     invfim <- invfim[c(neworder,nrow(invfim)-msdata$dims$dimSigma+1),c(neworder,nrow(invfim)-msdata$dims$dimSigma+1)]
-
+    
     dim0 <- nrow(dd[!dd$tested,])-msdata$dims$nbFE1
     #dimRplus <- length(dd$names[dd$tested & dd$diagBlock])
     dimR <- length(dd$names[dd$covInBlock!=1 & dd$type=="co" & dd$tested])
     ddSp <- dd[dd$tested & dd$covInBlock,]
     dimSplus <- floor(sqrt(2*as.vector(table(ddSp$block))))
     rm(ddSp)
-
+    
     cbs@dims <- list(dimBeta=list(dim0=msdata$dims$nbFE0,
                                   dimR=msdata$dims$nbFE1-msdata$dims$nbFE0),
                      dimGamma=list(dim0=dim0,
@@ -113,14 +157,14 @@ varTest <- function(m1,m0,control = list(N=5000)){ # ajouter paramètres pour op
   }
   cbs@V <- invfim
   cbs@invV <- chol2inv(chol(invfim))
-
+  
   if (length(msdata$nameVarTested)==1){
     cat(paste("Testing that the variance of",msdata$nameVarTested,"is null\n"))
   }else{
     cat(paste("Testing that the variances of",paste(msdata$nameVarTested,sep="",collapse = " and "),"are null\n"))
   }
-
-
+  
+  
   ## TO COMPLETE
   if (pkg=="lme4"){
     cat(paste("model under H1:",deparse(formula(m1),width.cutoff=500),"\n"))
@@ -131,14 +175,14 @@ varTest <- function(m1,m0,control = list(N=5000)){ # ajouter paramètres pour op
     if (randm0) cat(paste("model under H0:",deparse(m0$call$fixed,width.cutoff=500),"(fixed effects)",",",deparse(m0$call$random,width.cutoff=500),"(random effects)\n"))
     if (!randm0) cat(paste("model under H0:",deparse(formula(m0),width.cutoff=500),"(fixed effects)\n"))
   }
-
+  
   # Identify the components of the mixture
   # -> some weights are null, depending on whether the cone includes, or is contained in a linear space
   cbs@df <- dfchisqbar(cbs)
-
+  
   uppboundpval <- (1/2)*sum(stats::pchisq(lrt,cbs@df[(length(cbs@df)-1):length(cbs@df)],lower.tail = F))
   lowboundpval <- (1/2)*sum(stats::pchisq(lrt,cbs@df[1:2],lower.tail = F))
-
+  
   # Compute FIM only if necessary (i.e. when weights of the chi-bar-square need to be computed)
   if (pval.comp != "bounds" & length(cbs@df) > 2){
     if (fim == "extract"){
@@ -155,11 +199,10 @@ varTest <- function(m1,m0,control = list(N=5000)){ # ajouter paramètres pour op
     }else if (fim == "compute"){
       cat("Computation of the FIM is not yet implemented")
     }else{
-      cat(paste("model under H1:",deparse(m1$call$fixed,width.cutoff=500),"(fixed effects)",",",gsub(".*formula = structure[(]list*|, class*.*$", "", text1),"(random effects)\n"))
-      cat(paste("model under H0:",deparse(m0$call$fixed,width.cutoff=500),"(fixed effects)",",",gsub(".*formula = structure[(]list*|, class*.*$", "", text0),"(random effects)\n"))
-    }
+      stop("Unknown option for fim. Please use fim='extract' or fim='compute'")
+    }  
   }
-
+  
   # Compute chi-bar-square weights
   if (length(cbs@df)>1){
     if (pval.comp %in% c("approx","both")){
@@ -173,7 +216,7 @@ varTest <- function(m1,m0,control = list(N=5000)){ # ajouter paramètres pour op
   }else{
     pvalue1 <- pchisq(lrt[1],cbs@df[1],lower.tail = F)
   }
-
+  
   # print results
   cat(paste("\nLikelihood ratio test statistics: \n LRT = ",format(lrt,digits=5),
             "\n\nLimiting distribution: \n"))
@@ -189,10 +232,10 @@ varTest <- function(m1,m0,control = list(N=5000)){ # ajouter paramètres pour op
     cat(paste0("  chi-bar-square distributions with ",cbs@df," degree of freedom\n"))
     cat(paste0("  p-value: ",format(pvalue1,digits=5)))
   }
-
-
+  
+  
   # Creating varTestObject
-  vtobj <- vartestObject()
+  vtobj <- varTestObject()
   vtobj@cbs <- cbs
   vtobj@lrt <- lrt[1] # to get rid of the logLik object class
   vtobj@namesTestedParams <- list(fixed=msdata$nameFixedTested,random=msdata$nameVarTested)
@@ -209,6 +252,6 @@ varTest <- function(m1,m0,control = list(N=5000)){ # ajouter paramètres pour op
       vtobj@pvalueWeights <- pvalue1
     }
   }
-
+  
   invisible(vtobj)
 }
