@@ -1,6 +1,8 @@
 home:
    title: Variance components testing in mixed-effect models
 
+url: https://baeyc.github.io/varTestnlme/
+
 authors:
    Charlotte Baey:
      href: https://math.univ-lille1.fr/~baey/
