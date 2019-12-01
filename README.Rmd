@@ -39,7 +39,7 @@ devtools::install_github("baeyc/varTestnlme")
 
 ```{r}
 # First, fit models from your preferred mixed-effects models package
-require(nlme)
+library(nlme)
 fm1Indom.lis <- nlsList(conc ~ SSbiexp(time, A1, lrc1, A2, lrc2),data = Indometh)
 m1 <- nlme(fm1Indom.lis,random = pdDiag(A1 + lrc1 + A2 + lrc2 ~ 1))
 m0 <- nlme(fm1Indom.lis,random = pdDiag(A1 + lrc1 ~ 1))

@@ -22,6 +22,8 @@
 ##' \code{nbRE1} and \code{nbRE0} the number of random effects in m1 and m0 and \code{dimSigma} the number of residual error parameters)}
 ##' \item{\code{structGamma}}{the structure of the covariance matrix of the random effects as a list of three logical elements: \code{diag},
 ##' \code{full} and \code{blockDiag}, equal to \code{TRUE} if the matrix is diagonal, full or block-diagonal respectively.}
+##' 
+##' @noRd
 NULL
 
 ##' @rdname funcStruct

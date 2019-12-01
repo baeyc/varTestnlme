@@ -24,6 +24,7 @@
 #' @author Charlotte Baey <\email{charlotte.baey@univ-lille.fr}>
 #'
 #' @export approxWeights
+#' @noRd
 approxWeights <- function(x,df,q){
   maxcbs <- max(0,quantile(x,q))
   epsilon <- pchisq(maxcbs,df=max(df))

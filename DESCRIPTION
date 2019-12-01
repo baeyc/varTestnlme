@@ -2,10 +2,12 @@ Package: varTestnlme
 Type: Package
 Title: Variance Components testing for Linear and Nonlinear Mixed Effects Models
 Version: 0.1.0
-Authors: as.person(c(
-    "Charlotte Baey <charlotte.baey@univ-lille.fr> [aut, cre]", 
-    "Estelle Kuhn <estelle.kuhn@inra.fr> [aut]"
-  ))
+Authors@R: c(
+    person("Charlotte","Baey", ,"charlotte.baey@univ-lille.fr", role = c("aut", "cre"),
+       comment = c(ORCID= "0000-0002-1413-1058")
+       ), 
+    person("Estelle","Kuhn", ,"estelle.kuhn@inra.fr", role = c("aut"))
+  )
 URL: http://github.com/baeyc/varTestnlme
 BugReports: http://github.com/baeyc/varTestnlme/issues  
 Maintainer: The package maintainer <charlotte.baey@univ-lille.fr>
