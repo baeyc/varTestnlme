@@ -6,8 +6,6 @@
 #' @name chiBarSquareObject-class
 #' @docType class
 #' @aliases chiBarSquareObject-class chiBarSquareObject
-#' @section Objects from the Class:
-#' An object of the chiBarSquareObject contains the following slots:
 #' @slot V a positive-definite matrix
 #' @slot dims the set of dimensions defining the cone
 #' @slot orthant logical, equals \code{TRUE} is the cone is the nonnegative orthant of R^r

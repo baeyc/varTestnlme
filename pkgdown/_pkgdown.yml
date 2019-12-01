@@ -1,0 +1,10 @@
+home:
+   title: Variance components testing in mixed-effect models
+
+authors:
+   Charlotte Baey:
+     href: https://math.univ-lille1.fr/~baey/
+
+template:
+   params:
+     bootswatch: flatly
