@@ -187,7 +187,14 @@ varTest <- function(m1,m0,control = list(N=5000,
   if (pval.comp != "bounds" & length(cbs@df) > 2){
     if (fim == "extract"){
       cat("\nExtracting Fisher Information matrix...")
-      if (pkg=="nlme") invfim <- as.matrix(Matrix::bdiag(m1$varFix,m1$apVar)) # error message in case apVar is non positive definite
+      if (pkg=="nlme"){
+        if (msdata$structGamma$diag) struct <- "diag"
+        if (msdata$structGamma$full) struct <- "full"
+        if (msdata$structGamma$blockDiag) struct <- "blockDiag"
+        apVarTheta <- extractFIMnlme(m1,struct)
+        invfim <- as.matrix(Matrix::bdiag(m1$varFix,apVarTheta)) # error message in case apVar is non positive definite
+        colnames(invfim) <- rownames(invfim) <- c(names(m1$coefficients$fixed),colnames(apVarTheta))
+      }
       if (pkg=="lme4"){
         if (linmodel){
           invfim <- as.matrix(merDeriv::vcov.lmerMod(m1,full=T))
