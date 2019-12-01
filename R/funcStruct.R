@@ -120,6 +120,8 @@ modelStructnlme <- function(m1,m0,randm0){
     if (!randm0) stop("The same model should be used under H0 and H1 for the residual covariance matrix")
     dimSigma=1+length(m1$modelStruct$corStruct) # to be refined
   }
+  nbCov1 <- length(nameParams1) - nbFixEff1 - nbRanEff1# - dimSigma
+  nbCov0 <- length(nameParams0) - nbFixEff0 - nbRanEff0# - dimSigma
 
   diag <- (covStruct1 == "pdDiag" || covStruct1 == "pdIdent" || !("co" %in% dd$type))
   blockDiag <- (covStruct1 == "pdBlocked")
