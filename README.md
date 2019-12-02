@@ -16,7 +16,7 @@ The package works on models that were fitted using `nlme`, `lme4` or `saemix` pa
 Reference
 ---------
 
-Baey C, Cournède P-H, Kuhn E, 2019. Asymptotic distribution of likelihood ratio test statistics for variance components in nonlinear mixed effects models. 135:107--122 (2019), \[<https://doi.org/10.1016/j.csda.2019.01.014>\]{<https://doi.org/10.1016/j.csda.2019.01.014>}
+Baey C, Cournède P-H, Kuhn E, 2019. Asymptotic distribution of likelihood ratio test statistics for variance components in nonlinear mixed effects models. 135:107--122 (2019), <https://doi.org/10.1016/j.csda.2019.01.014>
 
 Installation
 ------------
@@ -29,12 +29,12 @@ devtools::install_github("baeyc/varTestnlme")
 #> Downloading GitHub repo baeyc/varTestnlme@master
 #> RcppEigen (0.3.3.5.0 -> 0.3.3.7.0) [CRAN]
 #> Installing 1 packages: RcppEigen
-#> Installing package into '/tmp/RtmpWqXCem/temp_libpath102a2778c449'
+#> Installing package into '/tmp/RtmpLZ3DMe/temp_libpath15a55bfddd7d'
 #> (as 'lib' is unspecified)
 #>   
-   checking for file ‘/tmp/RtmpWqXCem/remotes102a3c833245/baeyc-varTestnlme-f57bf25/DESCRIPTION’ ...
+   checking for file ‘/tmp/RtmpLZ3DMe/remotes15a563fc6e81/baeyc-varTestnlme-2a0ac05/DESCRIPTION’ ...
   
-✔  checking for file ‘/tmp/RtmpWqXCem/remotes102a3c833245/baeyc-varTestnlme-f57bf25/DESCRIPTION’ (339ms)
+✔  checking for file ‘/tmp/RtmpLZ3DMe/remotes15a563fc6e81/baeyc-varTestnlme-2a0ac05/DESCRIPTION’ (361ms)
 #> 
   
 ─  preparing ‘varTestnlme’:
@@ -56,7 +56,7 @@ devtools::install_github("baeyc/varTestnlme")
   
    
 #> 
-#> Installing package into '/tmp/RtmpWqXCem/temp_libpath102a2778c449'
+#> Installing package into '/tmp/RtmpLZ3DMe/temp_libpath15a55bfddd7d'
 #> (as 'lib' is unspecified)
 ```
 
