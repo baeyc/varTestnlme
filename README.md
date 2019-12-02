@@ -13,6 +13,11 @@ It is possible to compare two models with different random effects, provided tha
 
 The package works on models that were fitted using `nlme`, `lme4` or `saemix` packages.
 
+Reference
+---------
+
+Baey C, Cournède P-H, Kuhn E, 2019. Asymptotic distribution of likelihood ratio test statistics for variance components in nonlinear mixed effects models. 135:107--122 (2019), \[<https://doi.org/10.1016/j.csda.2019.01.014>\]{<https://doi.org/10.1016/j.csda.2019.01.014>}
+
 Installation
 ------------
 
@@ -21,8 +26,38 @@ Install the development version from Github:
 ``` r
 # install.packages("devtools")
 devtools::install_github("baeyc/varTestnlme")
-#> Skipping install of 'varTestnlme' from a github remote, the SHA1 (21414cf5) has not changed since last install.
-#>   Use `force = TRUE` to force installation
+#> Downloading GitHub repo baeyc/varTestnlme@master
+#> RcppEigen (0.3.3.5.0 -> 0.3.3.7.0) [CRAN]
+#> Installing 1 packages: RcppEigen
+#> Installing package into '/tmp/RtmpWqXCem/temp_libpath102a2778c449'
+#> (as 'lib' is unspecified)
+#>   
+   checking for file ‘/tmp/RtmpWqXCem/remotes102a3c833245/baeyc-varTestnlme-f57bf25/DESCRIPTION’ ...
+  
+✔  checking for file ‘/tmp/RtmpWqXCem/remotes102a3c833245/baeyc-varTestnlme-f57bf25/DESCRIPTION’ (339ms)
+#> 
+  
+─  preparing ‘varTestnlme’:
+#> 
+  
+   checking DESCRIPTION meta-information ...
+  
+✔  checking DESCRIPTION meta-information
+#> 
+  
+─  checking for LF line-endings in source and make files and shell scripts
+#> 
+  
+─  checking for empty or unneeded directories
+#> 
+  
+─  building ‘varTestnlme_0.1.0.tar.gz’
+#> 
+  
+   
+#> 
+#> Installing package into '/tmp/RtmpWqXCem/temp_libpath102a2778c449'
+#> (as 'lib' is unspecified)
 ```
 
 Example
@@ -30,8 +65,7 @@ Example
 
 ``` r
 # First, fit models from your preferred mixed-effects models package
-require(nlme)
-#> Loading required package: nlme
+library(nlme)
 fm1Indom.lis <- nlsList(conc ~ SSbiexp(time, A1, lrc1, A2, lrc2),data = Indometh)
 m1 <- nlme(fm1Indom.lis,random = pdDiag(A1 + lrc1 + A2 + lrc2 ~ 1))
 m0 <- nlme(fm1Indom.lis,random = pdDiag(A1 + lrc1 ~ 1))
@@ -43,15 +77,14 @@ varTest(m1,m0)
 #> (models fitted using the nlme package)
 #> 
 #> Testing that the variances of A2 and lrc2 are null
-#> model under H1: conc ~ SSbiexp(time, A1, lrc1, A2, lrc2) (model), (A1 ~ 1, lrc1 ~ 1, A2 ~ 1, lrc2 ~ 1) (random effects)
-#> model under H0: conc ~ SSbiexp(time, A1, lrc1, A2, lrc2) (model), (A1 ~ 1, lrc1 ~ 1) (random effects)
+#> model under H1: list(A1 ~ 1, lrc1 ~ 1, A2 ~ 1, lrc2 ~ 1) (fixed effects) , structure(list(Subject = structure(c(3.43637993576256, 2.44739674232125, 2.05693983560385, 1.96340665027553), formula = structure(list(A1 ~ 1, lrc1 ~ 1, A2 ~ 1, lrc2 ~ 1), class = "listForm"), Dimnames = list(c("A1", "lrc1", "A2", "lrc2"), c("A1", "lrc1", "A2", "lrc2")), class = c("pdDiag", "pdMat"))), settings = c(0, 1, 0, 1), class = "reStruct") (random effects)
+#> model under H0: list(A1 ~ 1, lrc1 ~ 1, A2 ~ 1, lrc2 ~ 1) (fixed effects) , structure(list(Subject = structure(c(3.43637993576256, 2.44739674232125), formula = structure(list(A1 ~ 1, lrc1 ~ 1), class = "listForm"), Dimnames = list(c("A1", "lrc1"), c("A1", "lrc1")), class = c("pdDiag", "pdMat"))), settings = c(0, 1, 0, 1), class = "reStruct") (random effects)
 #> 
 #> Likelihood ratio test statistics: 
-#>  LRT =  4.560838 
+#>  LRT =  4.5608 
 #> 
 #> Limiting distribution: 
-#>   mixture of 3 chi-bar-square distributions with degrees of freedom 0, 1, 2 
-#>   associated weights 0.249, 0.5, 0.251 
+#> mixture of 3 chi-bar-square distributions with degrees of freedom 0, 1, 2 
 #> 
-#> p-value: 0.04206452
+#> lower-bound for p-value: 0.016356  upper bound for p-value: 0.067476
 ```

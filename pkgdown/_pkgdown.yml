@@ -10,3 +10,12 @@ authors:
 template:
    params:
      bootswatch: flatly
+     
+navbar:
+   components:
+     reference:
+       text: Functions
+       href: reference/index.html
+     news:
+       text: News
+       href: news/index.html

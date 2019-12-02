@@ -25,6 +25,9 @@ It is possible to compare two models with different random effects, provided tha
 
 The package works on models that were fitted using `nlme`, `lme4` or `saemix` packages.
 
+## Reference
+Baey C, Cournède P-H, Kuhn E, 2019. Asymptotic distribution of likelihood ratio test statistics for variance components in nonlinear mixed effects models. \emph{Computational Statistics and Data Analysis} 135:107--122 (2019), [https://doi.org/10.1016/j.csda.2019.01.014]{https://doi.org/10.1016/j.csda.2019.01.014}
+
 ## Installation
 
 Install the development version from Github:

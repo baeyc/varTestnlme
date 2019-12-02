@@ -49,6 +49,7 @@ setGeneric("rchisqbar", function(size,object,control){standardGeneric("rchisqbar
 #' @definition Computes the degrees of freedom of the chi-square involved in the mixture
 #' @rdname dfchisqbar-methods
 #' @exportMethod dfchisqbar
+#' @noRd
 
 setMethod("dfchisqbar",
           c("chiBarSquareObject"),

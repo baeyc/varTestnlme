@@ -2,4 +2,7 @@ pandoc: 1.19.2.4
 pkgdown: 1.4.1
 pkgdown_sha: ~
 articles: []
+urls:
+  reference: https://baeyc.github.io/varTestnlme//reference
+  article: https://baeyc.github.io/varTestnlme//articles
 

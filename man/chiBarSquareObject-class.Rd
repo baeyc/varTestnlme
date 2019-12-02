@@ -18,8 +18,3 @@ An object of the \code{chiBarSquareObject} class, storing the parameters of the 
 \item{\code{orthant}}{logical, equals \code{TRUE} is the cone is the nonnegative orthant of R^r}
 }}
 
-\section{Objects from the Class}{
-
-An object of the chiBarSquareObject contains the following slots:
-}
-

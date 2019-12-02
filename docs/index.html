@@ -49,17 +49,13 @@
   </a>
 </li>
 <li>
-  <a href="reference/index.html">Reference</a>
+  <a href="reference/index.html">Functions</a>
 </li>
-      </ul>
-<ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/baeyc/varTestnlme">
-    <span class="fab fa fab fa-github fa-lg"></span>
-     
-  </a>
+  <a href="news/index.html">News</a>
 </li>
       </ul>
+<ul class="nav navbar-nav navbar-right"></ul>
 </div>
 <!--/.nav-collapse -->
   </div>
@@ -82,43 +78,76 @@
 </ul>
 <p>It is possible to compare two models with different random effects, provided that the random structures of the two models are <strong>nested</strong>.</p>
 <p>The package works on models that were fitted using <code>nlme</code>, <code>lme4</code> or <code>saemix</code> packages.</p>
+<div id="reference" class="section level2">
+<h2 class="hasAnchor">
+<a href="#reference" class="anchor"></a>Reference</h2>
+<p>Baey C, Cournède P-H, Kuhn E, 2019. Asymptotic distribution of likelihood ratio test statistics for variance components in nonlinear mixed effects models. 135:107–122 (2019), [<a href="https://doi.org/10.1016/j.csda.2019.01.014" class="uri">https://doi.org/10.1016/j.csda.2019.01.014</a>]{<a href="https://doi.org/10.1016/j.csda.2019.01.014" class="uri">https://doi.org/10.1016/j.csda.2019.01.014</a>}</p>
+</div>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
 <p>Install the development version from Github:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># install.packages("devtools")</span>
 devtools<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/devtools/man/remote-reexports.html">install_github</a></span>(<span class="st">"baeyc/varTestnlme"</span>)
-<span class="co">#&gt; Skipping install of 'varTestnlme' from a github remote, the SHA1 (21414cf5) has not changed since last install.</span>
-<span class="co">#&gt;   Use `force = TRUE` to force installation</span></code></pre></div>
+<span class="co">#&gt; Downloading GitHub repo baeyc/varTestnlme@master</span>
+<span class="co">#&gt; RcppEigen (0.3.3.5.0 -&gt; 0.3.3.7.0) [CRAN]</span>
+<span class="co">#&gt; Installing 1 packages: RcppEigen</span>
+<span class="co">#&gt; Installing package into '/tmp/RtmpWqXCem/temp_libpath102a2778c449'</span>
+<span class="co">#&gt; (as 'lib' is unspecified)</span>
+<span class="co">#&gt;   </span>
+   checking <span class="cf">for</span> file ‘<span class="op">/</span>tmp<span class="op">/</span>RtmpWqXCem<span class="op">/</span>remotes102a3c833245<span class="op">/</span>baeyc<span class="op">-</span>varTestnlme<span class="op">-</span>f57bf25<span class="op">/</span>DESCRIPTION’ ...
+  
+✔  checking <span class="cf">for</span> file ‘<span class="op">/</span>tmp<span class="op">/</span>RtmpWqXCem<span class="op">/</span>remotes102a3c833245<span class="op">/</span>baeyc<span class="op">-</span>varTestnlme<span class="op">-</span>f57bf25<span class="op">/</span>DESCRIPTION’ (339ms)
+<span class="co">#&gt; </span>
+  
+─  preparing ‘varTestnlme’<span class="op">:</span>
+<span class="co">#&gt; </span>
+<span class="st">  </span>
+<span class="st">   </span>checking DESCRIPTION meta<span class="op">-</span>information ...
+  
+✔  checking DESCRIPTION meta<span class="op">-</span>information
+<span class="co">#&gt; </span>
+  
+─  checking <span class="cf">for</span> LF line<span class="op">-</span>endings <span class="cf">in</span> source and make files and shell scripts
+<span class="co">#&gt; </span>
+  
+─  checking <span class="cf">for</span> empty or unneeded directories
+<span class="co">#&gt; </span>
+  
+─  building ‘varTestnlme_<span class="dv">0</span>.<span class="dv">1</span>.<span class="fl">0.</span>tar.gz’
+<span class="co">#&gt; </span>
+  
+   
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Installing package into '/tmp/RtmpWqXCem/temp_libpath102a2778c449'</span>
+<span class="co">#&gt; (as 'lib' is unspecified)</span></code></pre></div>
 </div>
 <div id="example" class="section level2">
 <h2 class="hasAnchor">
 <a href="#example" class="anchor"></a>Example</h2>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># First, fit models from your preferred mixed-effects models package</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">require</a></span>(nlme)
-<span class="co">#&gt; Loading required package: nlme</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(nlme)
 fm1Indom.lis &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/nlme/man/nlsList.html">nlsList</a></span>(conc <span class="op">~</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/stats/SSbiexp.html">SSbiexp</a></span>(time, A1, lrc1, A2, lrc2),<span class="dt">data =</span> Indometh)
-m1 &lt;-<span class="st"> </span><span class="kw"><a href="reference/extractFIMnlme.html">nlme</a></span>(fm1Indom.lis,<span class="dt">random =</span> <span class="kw"><a href="https://rdrr.io/pkg/nlme/man/pdDiag.html">pdDiag</a></span>(A1 <span class="op">+</span><span class="st"> </span>lrc1 <span class="op">+</span><span class="st"> </span>A2 <span class="op">+</span><span class="st"> </span>lrc2 <span class="op">~</span><span class="st"> </span><span class="dv">1</span>))
-m0 &lt;-<span class="st"> </span><span class="kw"><a href="reference/extractFIMnlme.html">nlme</a></span>(fm1Indom.lis,<span class="dt">random =</span> <span class="kw"><a href="https://rdrr.io/pkg/nlme/man/pdDiag.html">pdDiag</a></span>(A1 <span class="op">+</span><span class="st"> </span>lrc1 <span class="op">~</span><span class="st"> </span><span class="dv">1</span>))
+m1 &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/nlme/man/nlme.html">nlme</a></span>(fm1Indom.lis,<span class="dt">random =</span> <span class="kw"><a href="https://rdrr.io/pkg/nlme/man/pdDiag.html">pdDiag</a></span>(A1 <span class="op">+</span><span class="st"> </span>lrc1 <span class="op">+</span><span class="st"> </span>A2 <span class="op">+</span><span class="st"> </span>lrc2 <span class="op">~</span><span class="st"> </span><span class="dv">1</span>))
+m0 &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/nlme/man/nlme.html">nlme</a></span>(fm1Indom.lis,<span class="dt">random =</span> <span class="kw"><a href="https://rdrr.io/pkg/nlme/man/pdDiag.html">pdDiag</a></span>(A1 <span class="op">+</span><span class="st"> </span>lrc1 <span class="op">~</span><span class="st"> </span><span class="dv">1</span>))
 
 <span class="co"># Then, simply use the varTest function to compare the two models</span>
 <span class="co"># It will automatically detect the covariance structures</span>
-<span class="kw"><a href="reference/varTest.html">varTest</a></span>(m1,m0)
+<span class="kw">varTest</span>(m1,m0)
 <span class="co">#&gt; Variance components testing in mixed-effects models</span>
 <span class="co">#&gt; (models fitted using the nlme package)</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Testing that the variances of A2 and lrc2 are null</span>
-<span class="co">#&gt; model under H1: conc ~ SSbiexp(time, A1, lrc1, A2, lrc2) (model), (A1 ~ 1, lrc1 ~ 1, A2 ~ 1, lrc2 ~ 1) (random effects)</span>
-<span class="co">#&gt; model under H0: conc ~ SSbiexp(time, A1, lrc1, A2, lrc2) (model), (A1 ~ 1, lrc1 ~ 1) (random effects)</span>
+<span class="co">#&gt; model under H1: list(A1 ~ 1, lrc1 ~ 1, A2 ~ 1, lrc2 ~ 1) (fixed effects) , structure(list(Subject = structure(c(3.43637993576256, 2.44739674232125, 2.05693983560385, 1.96340665027553), formula = structure(list(A1 ~ 1, lrc1 ~ 1, A2 ~ 1, lrc2 ~ 1), class = "listForm"), Dimnames = list(c("A1", "lrc1", "A2", "lrc2"), c("A1", "lrc1", "A2", "lrc2")), class = c("pdDiag", "pdMat"))), settings = c(0, 1, 0, 1), class = "reStruct") (random effects)</span>
+<span class="co">#&gt; model under H0: list(A1 ~ 1, lrc1 ~ 1, A2 ~ 1, lrc2 ~ 1) (fixed effects) , structure(list(Subject = structure(c(3.43637993576256, 2.44739674232125), formula = structure(list(A1 ~ 1, lrc1 ~ 1), class = "listForm"), Dimnames = list(c("A1", "lrc1"), c("A1", "lrc1")), class = c("pdDiag", "pdMat"))), settings = c(0, 1, 0, 1), class = "reStruct") (random effects)</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Likelihood ratio test statistics: </span>
-<span class="co">#&gt;  LRT =  4.560838 </span>
+<span class="co">#&gt;  LRT =  4.5608 </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Limiting distribution: </span>
-<span class="co">#&gt;   mixture of 3 chi-bar-square distributions with degrees of freedom 0, 1, 2 </span>
-<span class="co">#&gt;   associated weights 0.249, 0.5, 0.251 </span>
+<span class="co">#&gt; mixture of 3 chi-bar-square distributions with degrees of freedom 0, 1, 2 </span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; p-value: 0.04206452</span></code></pre></div>
+<span class="co">#&gt; lower-bound for p-value: 0.016356  upper bound for p-value: 0.067476</span></code></pre></div>
 </div>
 </div>
   </div>
@@ -127,8 +156,6 @@ m0 &lt;-<span class="st"> </span><span class="kw"><a href="reference/extractFIMn
     <div class="links">
 <h2>Links</h2>
 <ul class="list-unstyled">
-<li>Browse source code at <br><a href="https://github.com/baeyc/varTestnlme">https://​github.com/​baeyc/​varTestnlme</a>
-</li>
 <li>Report a bug at <br><a href="http://github.com/baeyc/varTestnlme/issues%20%20">http://​github.com/​baeyc/​varTestnlme/​issues  </a>
 </li>
 </ul>
@@ -137,6 +164,12 @@ m0 &lt;-<span class="st"> </span><span class="kw"><a href="reference/extractFIMn
 <h2>License</h2>
 <ul class="list-unstyled">
 <li>GPL (&gt;= 2)</li>
+</ul>
+</div>
+<div class="citation">
+<h2>Citation</h2>
+<ul class="list-unstyled">
+<li><a href="authors.html">Citing varTestnlme</a></li>
 </ul>
 </div>
 <div class="developers">
