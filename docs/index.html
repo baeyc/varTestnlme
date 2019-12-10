@@ -103,35 +103,35 @@
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
 <p>Install the development version from Github:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># install.packages("devtools")</span>
-devtools<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/devtools/man/reexports.html">install_github</a></span>(<span class="st">"baeyc/varTestnlme"</span>)</code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="co"># install.packages("devtools")</span></a>
+<a class="sourceLine" id="cb1-2" data-line-number="2">devtools<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/devtools/man/remote-reexports.html">install_github</a></span>(<span class="st">"baeyc/varTestnlme"</span>)</a></code></pre></div>
 </div>
 <div id="example" class="section level2">
 <h2 class="hasAnchor">
 <a href="#example" class="anchor"></a>Example</h2>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># First, fit models from your preferred mixed-effects models package</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(nlme)
-fm1Indom.lis &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/nlme/man/nlsList.html">nlsList</a></span>(conc <span class="op">~</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/stats/SSbiexp.html">SSbiexp</a></span>(time, A1, lrc1, A2, lrc2),<span class="dt">data =</span> Indometh)
-m1 &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/nlme/man/nlme.html">nlme</a></span>(fm1Indom.lis,<span class="dt">random =</span> <span class="kw"><a href="https://rdrr.io/pkg/nlme/man/pdDiag.html">pdDiag</a></span>(A1 <span class="op">+</span><span class="st"> </span>lrc1 <span class="op">+</span><span class="st"> </span>A2 <span class="op">+</span><span class="st"> </span>lrc2 <span class="op">~</span><span class="st"> </span><span class="dv">1</span>))
-m0 &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/nlme/man/nlme.html">nlme</a></span>(fm1Indom.lis,<span class="dt">random =</span> <span class="kw"><a href="https://rdrr.io/pkg/nlme/man/pdDiag.html">pdDiag</a></span>(A1 <span class="op">+</span><span class="st"> </span>lrc1 <span class="op">~</span><span class="st"> </span><span class="dv">1</span>))
-
-<span class="co"># Then, simply use the varTest function to compare the two models</span>
-<span class="co"># It will automatically detect the covariance structures</span>
-<span class="kw">varTest</span>(m1,m0)
-<span class="co">#&gt; Variance components testing in mixed-effects models</span>
-<span class="co">#&gt; (models fitted using the nlme package)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Testing that the variances of A2 and lrc2 are null</span>
-<span class="co">#&gt; model under H1: list(A1 ~ 1, lrc1 ~ 1, A2 ~ 1, lrc2 ~ 1) (fixed effects) , structure(list(Subject = structure(c(3.43637993576256, 2.44739674232125, 2.05693983560385, 1.96340665027553), formula = structure(list(A1 ~ 1, lrc1 ~ 1, A2 ~ 1, lrc2 ~ 1), class = "listForm"), Dimnames = list(c("A1", "lrc1", "A2", "lrc2"), c("A1", "lrc1", "A2", "lrc2")), class = c("pdDiag", "pdMat"))), settings = c(0, 1, 0, 1), class = "reStruct") (random effects)</span>
-<span class="co">#&gt; model under H0: list(A1 ~ 1, lrc1 ~ 1, A2 ~ 1, lrc2 ~ 1) (fixed effects) , structure(list(Subject = structure(c(3.43637993576256, 2.44739674232125), formula = structure(list(A1 ~ 1, lrc1 ~ 1), class = "listForm"), Dimnames = list(c("A1", "lrc1"), c("A1", "lrc1")), class = c("pdDiag", "pdMat"))), settings = c(0, 1, 0, 1), class = "reStruct") (random effects)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Likelihood ratio test statistics: </span>
-<span class="co">#&gt;  LRT =  4.5608 </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Limiting distribution: </span>
-<span class="co">#&gt; mixture of 3 chi-bar-square distributions with degrees of freedom 0, 1, 2 </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; lower-bound for p-value: 0.016356  upper bound for p-value: 0.067476</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="co"># First, fit models from your preferred mixed-effects models package</span></a>
+<a class="sourceLine" id="cb2-2" data-line-number="2"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(nlme)</a>
+<a class="sourceLine" id="cb2-3" data-line-number="3">fm1Indom.lis &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/nlme/man/nlsList.html">nlsList</a></span>(conc <span class="op">~</span><span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/stats/SSbiexp.html">SSbiexp</a></span>(time, A1, lrc1, A2, lrc2),<span class="dt">data =</span> Indometh)</a>
+<a class="sourceLine" id="cb2-4" data-line-number="4">m1 &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/nlme/man/nlme.html">nlme</a></span>(fm1Indom.lis,<span class="dt">random =</span> <span class="kw"><a href="https://rdrr.io/pkg/nlme/man/pdDiag.html">pdDiag</a></span>(A1 <span class="op">+</span><span class="st"> </span>lrc1 <span class="op">+</span><span class="st"> </span>A2 <span class="op">+</span><span class="st"> </span>lrc2 <span class="op">~</span><span class="st"> </span><span class="dv">1</span>))</a>
+<a class="sourceLine" id="cb2-5" data-line-number="5">m0 &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/pkg/nlme/man/nlme.html">nlme</a></span>(fm1Indom.lis,<span class="dt">random =</span> <span class="kw"><a href="https://rdrr.io/pkg/nlme/man/pdDiag.html">pdDiag</a></span>(A1 <span class="op">+</span><span class="st"> </span>lrc1 <span class="op">~</span><span class="st"> </span><span class="dv">1</span>))</a>
+<a class="sourceLine" id="cb2-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb2-7" data-line-number="7"><span class="co"># Then, simply use the varTest function to compare the two models</span></a>
+<a class="sourceLine" id="cb2-8" data-line-number="8"><span class="co"># It will automatically detect the covariance structures</span></a>
+<a class="sourceLine" id="cb2-9" data-line-number="9"><span class="kw">varTest</span>(m1,m0)</a>
+<a class="sourceLine" id="cb2-10" data-line-number="10"><span class="co">#&gt; Variance components testing in mixed-effects models</span></a>
+<a class="sourceLine" id="cb2-11" data-line-number="11"><span class="co">#&gt; (models fitted using the nlme package)</span></a>
+<a class="sourceLine" id="cb2-12" data-line-number="12"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb2-13" data-line-number="13"><span class="co">#&gt; Testing that the variances of A2 and lrc2 are null</span></a>
+<a class="sourceLine" id="cb2-14" data-line-number="14"><span class="co">#&gt; model under H1: list(A1 ~ 1, lrc1 ~ 1, A2 ~ 1, lrc2 ~ 1) (fixed effects) , structure(list(Subject = structure(c(3.43637993576256, 2.44739674232125, 2.05693983560385, 1.96340665027553), formula = structure(list(A1 ~ 1, lrc1 ~ 1, A2 ~ 1, lrc2 ~ 1), class = "listForm"), Dimnames = list(c("A1", "lrc1", "A2", "lrc2"), c("A1", "lrc1", "A2", "lrc2")), class = c("pdDiag", "pdMat"))), settings = c(0, 1, 0, 1), class = "reStruct") (random effects)</span></a>
+<a class="sourceLine" id="cb2-15" data-line-number="15"><span class="co">#&gt; model under H0: list(A1 ~ 1, lrc1 ~ 1, A2 ~ 1, lrc2 ~ 1) (fixed effects) , structure(list(Subject = structure(c(3.43637993576256, 2.44739674232125), formula = structure(list(A1 ~ 1, lrc1 ~ 1), class = "listForm"), Dimnames = list(c("A1", "lrc1"), c("A1", "lrc1")), class = c("pdDiag", "pdMat"))), settings = c(0, 1, 0, 1), class = "reStruct") (random effects)</span></a>
+<a class="sourceLine" id="cb2-16" data-line-number="16"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb2-17" data-line-number="17"><span class="co">#&gt; Likelihood ratio test statistics: </span></a>
+<a class="sourceLine" id="cb2-18" data-line-number="18"><span class="co">#&gt;  LRT =  4.5608 </span></a>
+<a class="sourceLine" id="cb2-19" data-line-number="19"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb2-20" data-line-number="20"><span class="co">#&gt; Limiting distribution: </span></a>
+<a class="sourceLine" id="cb2-21" data-line-number="21"><span class="co">#&gt; mixture of 3 chi-bar-square distributions with degrees of freedom 0, 1, 2 </span></a>
+<a class="sourceLine" id="cb2-22" data-line-number="22"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb2-23" data-line-number="23"><span class="co">#&gt; lower-bound for p-value: 0.016356  upper bound for p-value: 0.067476</span></a></code></pre></div>
 </div>
 </div>
   </div>

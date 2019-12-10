@@ -3,3 +3,4 @@
 *.dll
 .Rproj.user
 .Rhistory
+inst/doc

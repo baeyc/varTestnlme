@@ -7,8 +7,13 @@
 \alias{likelihood}
 \title{Variance component testing}
 \usage{
-varTest(m1, m0, control = list(N = 5000, parallel = F, nbcores = 1, B =
-  1000), pval.comp = "bounds", fim = "extract")
+varTest(
+  m1,
+  m0,
+  control = list(N = 5000, parallel = F, nbcores = 1),
+  pval.comp = "bounds",
+  fim = "extract"
+)
 }
 \arguments{
 \item{m1}{a fit of the model under H1, obtained from \code{\link[nlme]{nlme}}, \code{\link[lme4]{lme4}}
@@ -17,6 +22,11 @@ or \code{\link[saemix]{saemix}}}
 \item{m0}{a fit of the model under H0, obtained from the same package as \code{m0}}
 
 \item{control}{(optional) a list of control options for the computation of the chi-bar-weights}
+
+\item{pval.comp}{(optional) the method to be used to compute the p-value, one of: \code{"bounds"} (the default),
+\code{"approx"} or \code{"both"} (see Details section)}
+
+\item{fim}{(optional) the method to compute the Fisher Information Matrix. Currently, only \code{fim="extract"} is supported.}
 }
 \value{
 A list with the following components:
@@ -33,6 +43,31 @@ assumed to be nested within the model under H1.
 \details{
 It is possible to tests if any subset of the variances are equal to zero. However, the function does not
 currently support nested random effects, and assumes that the random effects are Gaussian.
+
+The asymptotic distribution of the likelihood ratio test is a chi-bar-square, with weights that need to be
+approximated by Monte Carlo methods, apart from some specific cases where they are available explicitly. 
+Therefore, the p-value of the test is not exact but approximated. This computation can be time-consuming, so
+the default behaviour of the function is to provide bounds on the exact p-value, which can be enough in practice
+to decide whether to reject or not the null hypothesis. This is triggered by the option \code{pval.comp="bounds"}.
+To compute an approximation of the exact p-value, one should use the option \code{pval.comp="approx"} or \code{pval.comp="both"}.
+
+The \code{control} argument controls the options for chi-bar-square weights computation. It is a list with the
+following elements: \code{M} the size of the Monte Carlo simulation, \code{parallel} a boolean for parallel computing
+and \code{nbcores} the number of cores to be used in case of parallel computing. Default is \code{M=5000}, \code{parallel=FALSE}
+and \code{nbcores=1}.
+}
+\examples{
+# load nlme package and example dataset
+library(nlme)
+data(Orthodont)
+
+# fit the two models under H1 and H0
+lm1.h1.nlme <- lme(distance ~ 1 + Sex + age + age*Sex, random = ~ 1 + age | Subject, data = Orthodont, method = "ML")
+lm1.h0.nlme <- lme(distance ~ 1 + Sex + age + age*Sex, random = ~ 1 | Subject, data = Orthodont, method = "ML")
+
+# compare them (order is important: m1 comes first)
+varTest(lm1.h1.nlme,lm1.h0.nlme)
+
 }
 \references{
 Baey C, Cournède P-H, Kuhn E, 2019. Asymptotic distribution of likelihood ratio test

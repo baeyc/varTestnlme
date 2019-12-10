@@ -130,8 +130,13 @@ are equal to zero. The test is defined by two hypotheses, H0 and H1, and the mod
 assumed to be nested within the model under H1.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>varTest</span>(<span class='no'>m1</span>, <span class='no'>m0</span>, <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>N</span> <span class='kw'>=</span> <span class='fl'>5000</span>, <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='no'>F</span>, <span class='kw'>nbcores</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>B</span> <span class='kw'>=</span>
-  <span class='fl'>1000</span>), <span class='kw'>pval.comp</span> <span class='kw'>=</span> <span class='st'>"bounds"</span>, <span class='kw'>fim</span> <span class='kw'>=</span> <span class='st'>"extract"</span>)</pre>
+    <pre class="usage"><span class='fu'>varTest</span>(
+  <span class='no'>m1</span>,
+  <span class='no'>m0</span>,
+  <span class='kw'>control</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>N</span> <span class='kw'>=</span> <span class='fl'>5000</span>, <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='no'>F</span>, <span class='kw'>nbcores</span> <span class='kw'>=</span> <span class='fl'>1</span>),
+  <span class='kw'>pval.comp</span> <span class='kw'>=</span> <span class='st'>"bounds"</span>,
+  <span class='kw'>fim</span> <span class='kw'>=</span> <span class='st'>"extract"</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -149,6 +154,15 @@ or <code><a href='https://rdrr.io/pkg/saemix/man/saemix.html'>saemix</a></code><
       <th>control</th>
       <td><p>(optional) a list of control options for the computation of the chi-bar-weights</p></td>
     </tr>
+    <tr>
+      <th>pval.comp</th>
+      <td><p>(optional) the method to be used to compute the p-value, one of: <code>"bounds"</code> (the default),
+<code>"approx"</code> or <code>"both"</code> (see Details section)</p></td>
+    </tr>
+    <tr>
+      <th>fim</th>
+      <td><p>(optional) the method to compute the Fisher Information Matrix. Currently, only <code>fim="extract"</code> is supported.</p></td>
+    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
@@ -163,6 +177,16 @@ or <code><a href='https://rdrr.io/pkg/saemix/man/saemix.html'>saemix</a></code><
 
     <p>It is possible to tests if any subset of the variances are equal to zero. However, the function does not
 currently support nested random effects, and assumes that the random effects are Gaussian.</p>
+<p>The asymptotic distribution of the likelihood ratio test is a chi-bar-square, with weights that need to be
+approximated by Monte Carlo methods, apart from some specific cases where they are available explicitly. 
+Therefore, the p-value of the test is not exact but approximated. This computation can be time-consuming, so
+the default behaviour of the function is to provide bounds on the exact p-value, which can be enough in practice
+to decide whether to reject or not the null hypothesis. This is triggered by the option <code>pval.comp="bounds"</code>.
+To compute an approximation of the exact p-value, one should use the option <code>pval.comp="approx"</code> or <code>pval.comp="both"</code>.</p>
+<p>The <code>control</code> argument controls the options for chi-bar-square weights computation. It is a list with the
+following elements: <code>M</code> the size of the Monte Carlo simulation, <code>parallel</code> a boolean for parallel computing
+and <code>nbcores</code> the number of cores to be used in case of parallel computing. Default is <code>M=5000</code>, <code>parallel=FALSE</code>
+and <code>nbcores=1</code>.</p>
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
     <p>Baey C, Cournède P-H, Kuhn E, 2019. Asymptotic distribution of likelihood ratio test
@@ -170,6 +194,31 @@ statistics for variance components in nonlinear mixed effects models. <em>Comput
 Statistics and Data Analysis</em> 135:107-122.</p>
 <p>Silvapulle  MJ, Sen PK, 2011. Constrained statistical inference: order, inequality and shape constraints.</p>
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='co'># load nlme package and example dataset</span>
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>nlme</span>)
+<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>Orthodont</span>)
+
+<span class='co'># fit the two models under H1 and H0</span>
+<span class='no'>lm1.h1.nlme</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/nlme/man/lme.html'>lme</a></span>(<span class='no'>distance</span> ~ <span class='fl'>1</span> + <span class='no'>Sex</span> + <span class='no'>age</span> + <span class='no'>age</span>*<span class='no'>Sex</span>, <span class='kw'>random</span> <span class='kw'>=</span> ~ <span class='fl'>1</span> + <span class='no'>age</span> <span class='kw'>|</span> <span class='no'>Subject</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>Orthodont</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"ML"</span>)
+<span class='no'>lm1.h0.nlme</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/nlme/man/lme.html'>lme</a></span>(<span class='no'>distance</span> ~ <span class='fl'>1</span> + <span class='no'>Sex</span> + <span class='no'>age</span> + <span class='no'>age</span>*<span class='no'>Sex</span>, <span class='kw'>random</span> <span class='kw'>=</span> ~ <span class='fl'>1</span> <span class='kw'>|</span> <span class='no'>Subject</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>Orthodont</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"ML"</span>)
+
+<span class='co'># compare them (order is important: m1 comes first)</span>
+<span class='fu'>varTest</span>(<span class='no'>lm1.h1.nlme</span>,<span class='no'>lm1.h0.nlme</span>)</div><div class='output co'>#&gt; Variance components testing in mixed-effects models
+#&gt; (models fitted using the nlme package)
+#&gt; 
+#&gt; Testing that the variance of age is null
+#&gt; model under H1: distance ~ 1 + Sex + age + age * Sex (fixed effects) , ~1 + age | Subject (random effects)
+#&gt; model under H0: distance ~ 1 + Sex + age + age * Sex (fixed effects) , ~1 | Subject (random effects)
+#&gt; 
+#&gt; Likelihood ratio test statistics: 
+#&gt;  LRT =  0.83311 
+#&gt; 
+#&gt; Limiting distribution: 
+#&gt; mixture of 2 chi-bar-square distributions with degrees of freedom 1, 2 
+#&gt; 
+#&gt; lower-bound for p-value: 0.51035  upper bound for p-value: 0.51035</div><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -178,6 +227,7 @@ Statistics and Data Analysis</em> 135:107-122.</p>
       <li><a href="#value">Value</a></li>
       <li><a href="#details">Details</a></li>
       <li><a href="#references">References</a></li>
+      <li><a href="#examples">Examples</a></li>
     </ul>
 
     <h2>Author</h2>

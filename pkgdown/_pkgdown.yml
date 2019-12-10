@@ -8,7 +8,27 @@ authors:
 template:
    params:
      bootswatch: flatly
-     
+
+reference:
+  - title: Main functions
+    desc: Main user functions
+    contents:
+      - varTest
+      - extractFIMnlme
+      - weightsChiBarSquare
+  - title: Classes
+    desc: S4 class objects
+    contents:
+      - varTestObject
+      - chiBarSquareObject
+  - title: Other
+    desc: Other utility functions
+    contents:
+      - pchisqbar
+      - plot.varTestObject
+      - print.varTestObject
+      - summary.varTestObject
+
 navbar:
   left:
     - icon: fa-home
