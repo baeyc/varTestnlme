@@ -12,8 +12,8 @@ NULL
 print.varTestObject <- function(x){
   if (length(x@chibarsquare) == 0){
     if (length(x@pvalueWeights) == 0){
-      uppboundpval <- (1/2)*sum(stats::pchisq(lrt,x@df[(length(x@df)-1):length(x@df)],lower.tail = F))
-      lowboundpval <- (1/2)*sum(stats::pchisq(lrt,x@df[1:2],lower.tail = F))
+      uppboundpval <- (1/2)*sum(stats::pchisq(x@lrt,x@cbs@df[(length(x@cbs@df)-1):length(x@cbs@df)],lower.tail = F))
+      lowboundpval <- (1/2)*sum(stats::pchisq(x@lrt,x@cbs@df[1:2],lower.tail = F))
       cat("Variance components testing\n LRT = ",x@lrt,
           paste("\n\nlower-bound for p-value:",format(lowboundpval,digits=5)," upper bound for p-value:",format(uppboundpval,digits=5)))
     }else{

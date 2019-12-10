@@ -31,8 +31,8 @@ summary.varTestObject <- function(x){
 
   if (length(x@chibarsquare) == 0){
     if (length(x@pvalueWeights) == 0){
-      uppboundpval <- (1/2)*sum(stats::pchisq(lrt,x@cbs@df[(length(x@cbs@df)-1):length(x@cbs@df)],lower.tail = F))
-      lowboundpval <- (1/2)*sum(stats::pchisq(lrt,x@cbs@df[1:2],lower.tail = F))
+      uppboundpval <- (1/2)*sum(stats::pchisq(x@lrt,x@cbs@df[(length(x@cbs@df)-1):length(x@cbs@df)],lower.tail = F))
+      lowboundpval <- (1/2)*sum(stats::pchisq(x@lrt,x@cbs@df[1:2],lower.tail = F))
       cat(paste("\nlower-bound for p-value:",format(lowboundpval,digits=5)," upper bound for p-value:",format(uppboundpval,digits=5)))
     }else{
       cat(" associated weights and sd:",paste(paste(round(x@weights,3)," (",round(x@sdWeights,3),")",sep=""),sep="",collapse = ", "),
