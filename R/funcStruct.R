@@ -68,8 +68,8 @@ modelStructnlme <- function(m1,m0,randm0){
   if (!prod(namesRE0 %in% namesRE1)) stop("Error: the models should be nested, but it seems that some random effects are in m0 but not in m1")
   
   # dimension of the parameters
-  nbFixEff0 <- m0$dims$ncol[2]
-  nbFixEff1 <- m1$dims$ncol[2]
+  nbFixEff0 <- length(namesFE0)
+  nbFixEff1 <- length(namesFE1)
   nbRanEff0 <- length(namesRE0)
   nbRanEff1 <- length(namesRE1)
   nbRanEffTest <- nbRanEff1-nbRanEff0
@@ -84,7 +84,6 @@ modelStructnlme <- function(m1,m0,randm0){
     nameParams0 <- names(stats::coefficients(m0))
   }
   nameParams1 <- c(rownames(int1$fixed),eval(parse(text=paste("rownames(int1$reStruc$",nameRE,")",sep=""))))
-  nameParams0 <- c(rownames(int0$fixed),eval(parse(text=paste("rownames(int0$reStruc$",nameRE,")",sep=""))))
   paramTested <- !(nameParams1 %in% nameParams0)
   dd <- data.frame(names=nameParams1,tested=paramTested)
   dd$type <- c(rep("beta",nbFixEff1),substr(dd$names[(nbFixEff1+1):nrow(dd)],1,2))
@@ -107,7 +106,7 @@ modelStructnlme <- function(m1,m0,randm0){
 
   # Throwing errors for cases not covered by the package
   #if ( !!!!!!! ) stop("Error: the current version of the package does not support more than 1 level of random effects")
-  if (nbFixEff1 != nbFixEff0) stop("Error: the current version of the package does not support simultaneously testing means and variances. Models should have the same fixed effects")
+  #if (nbFixEff1 != nbFixEff0) stop("Error: the current version of the package does not support simultaneously testing means and variances. Models should have the same fixed effects")
   if (!prod(namesRE0 %in% namesRE1)) stop("Error: the models should be nested, but it seems that some random effects are in m0 but not in m1")
 
   # get the dimension of the residual variance
@@ -164,16 +163,17 @@ modelStructlme4 <- function(m1,m0,linmodel,randm0){
   if (length(nameRE)>1) stop("Error: the package does not currently support more than one level of random effects")
 
   # dimension of the parameters
-  nbFixEff0 <- lme4::getME(m0,"p")
   nbFixEff1 <- lme4::getME(m1,"p")
   # names of fixed and random effects
   if (randm0){
     namesRE0 <- unlist(m0@cnms)
     namesFE0 <- names(lme4::getME(m0,"fixef"))
+    nbFixEff0 <- lme4::getME(m0,"p")
   }else{
     namesRE0 <- NULL
     if (pkgm0 %in% c("lm","glm")) namesFE0 <- names(stats::coefficients(m0))
     if (pkgm0 == "nls") namesFE0 <- names(m0$m$getPars())
+    nbFixEff0 <- length(namesFE0)
   }
   namesFE1 <- names(lme4::getME(m1,"fixef"))
   namesRE1 <- unlist(m1@cnms)
@@ -199,7 +199,7 @@ modelStructlme4 <- function(m1,m0,linmodel,randm0){
   nbCov0 <- nbCompVar0 - nbRanEff0
 
   # CHECK IF ML WAS USED AND NOT REML
-  if (lme4::isREML(m1) || lme4::isREML(m0)) stop("Error: the models should be fitted using Maximum Likelihood (ML) instead of Restricted ML (REML)")
+  if (lme4::isREML(m1)) stop("Error: the models should be fitted using Maximum Likelihood (ML) instead of Restricted ML (REML)")
   if (randm0) if (lme4::isREML(m0)) stop("Error: the models should be fitted using Maximum Likelihood (ML) instead of Restricted ML (REML)")
   
   # retrieve names of parameters to identify their order in the FIM and in the cone

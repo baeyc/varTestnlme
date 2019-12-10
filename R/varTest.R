@@ -6,6 +6,18 @@
 #'
 #' It is possible to tests if any subset of the variances are equal to zero. However, the function does not
 #' currently support nested random effects, and assumes that the random effects are Gaussian.
+#' 
+#' The asymptotic distribution of the likelihood ratio test is a chi-bar-square, with weights that need to be
+#' approximated by Monte Carlo methods, apart from some specific cases where they are available explicitly. 
+#' Therefore, the p-value of the test is not exact but approximated. This computation can be time-consuming, so
+#' the default behaviour of the function is to provide bounds on the exact p-value, which can be enough in practice
+#' to decide whether to reject or not the null hypothesis. This is triggered by the option \code{pval.comp="bounds"}.
+#' To compute an approximation of the exact p-value, one should use the option \code{pval.comp="approx"} or \code{pval.comp="both"}.
+#' 
+#' The \code{control} argument controls the options for chi-bar-square weights computation. It is a list with the
+#' following elements: \code{M} the size of the Monte Carlo simulation, \code{parallel} a boolean for parallel computing
+#' and \code{nbcores} the number of cores to be used in case of parallel computing. Default is \code{M=5000}, \code{parallel=FALSE}
+#' and \code{nbcores=1}.
 #'
 #' @name varTest
 #' @aliases test lrt likelihood
@@ -14,6 +26,9 @@
 #' or \code{\link[saemix]{saemix}}
 #' @param m0 a fit of the model under H0, obtained from the same package as \code{m0}
 #' @param control (optional) a list of control options for the computation of the chi-bar-weights
+#' @param pval.comp (optional) the method to be used to compute the p-value, one of: \code{"bounds"} (the default),
+#' \code{"approx"} or \code{"both"} (see Details section)
+#' @param fim (optional) the method to compute the Fisher Information Matrix. Currently, only \code{fim="extract"} is supported.
 #' @return A list with the following components:
 #' \item{\code{lrt}}{the likelihood ratio test statistics}
 #' \item{\code{ddl}}{the degrees of freedom of the chi-bar distributions involved in the chi-bar-square distribution}
@@ -21,6 +36,18 @@
 #' \item{\code{pval}}{the p-value of the test}
 #'
 #' @author Charlotte Baey <\email{charlotte.baey@univ-lille.fr}>
+#'
+#' @examples 
+#' # load nlme package and example dataset
+#' library(nlme)
+#' data(Orthodont)
+#' 
+#' # fit the two models under H1 and H0
+#' lm1.h1.nlme <- lme(distance ~ 1 + Sex + age + age*Sex, random = ~ 1 + age | Subject, data = Orthodont, method = "ML")
+#' lm1.h0.nlme <- lme(distance ~ 1 + Sex + age + age*Sex, random = ~ 1 | Subject, data = Orthodont, method = "ML")
+#' 
+#' # compare them (order is important: m1 comes first)
+#' varTest(lm1.h1.nlme,lm1.h0.nlme)
 #'
 #' @references Baey C, Cournède P-H, Kuhn E, 2019. Asymptotic distribution of likelihood ratio test
 #' statistics for variance components in nonlinear mixed effects models. \emph{Computational
@@ -30,8 +57,7 @@
 #' @export varTest
 varTest <- function(m1,m0,control = list(N=5000,
                                          parallel = F,
-                                         nbcores = 1,
-                                         B=1000),
+                                         nbcores = 1),
                     pval.comp = "bounds",
                     fim = "extract"){
   
@@ -41,7 +67,6 @@ varTest <- function(m1,m0,control = list(N=5000,
     if (!"M" %in% optionNames) control$M=5000
     if (!"parallel" %in% optionNames) control$parallel=F
     if (!"nbcores" %in% optionNames) control$nbcores=1
-    if (!"B" %in% optionNames) control$B=1000
   }
   
   cat("Variance components testing in mixed-effects models\n")
@@ -49,7 +74,10 @@ varTest <- function(m1,m0,control = list(N=5000,
   # Identify the packages from which m0 and m1 come from
   cl0 <- class(m0)
   cl1 <- class(m1)
-  if (cl0[1] != cl1[1]) stop("Error: models m0 and m1 should be fitted with the same function from the same package")
+  
+  linmodel <- ("lme" %in% cl1 || cl1 %in% "lmerMod")
+  if (cl1[1] %in% "nlmerMod") stop("Error: the Fisher information matrix is not available for nonlinear mixed effect models fitted with nlmer() of package lme4. Please use nlme or saemix packages.")
+  pkg <- pckName(m1)  
   
   # Identify whether there is any random effects under m0
   randm0 <- TRUE # boolean to indicate whether there are any random effects under H0. This constant is modified if m0 is fitted using lm, glm or nls
@@ -72,10 +100,6 @@ varTest <- function(m1,m0,control = list(N=5000,
     if (cl0[1] == "nls") if((m1$call$model != m0$call$formula)) stop("Models should be nested. Check the nonlinear model")
   }
   # TODO : the same for saemix and lme4
-  
-  linmodel <- ("lme" %in% cl1 || cl1 %in% "lmerMod")
-  if (cl1[1] %in% "nlmerMod") stop("Error: the Fisher information matrix is not available for nonlinear mixed effect models fitted with nlmer() of package lme4. Please use nlme or saemix packages.")
-  pkg <- pckName(m1)
   
   if (pkg=="nlme") msdata <- modelStructnlme(m1,m0,randm0)
   if (pkg=="lme4") msdata <- modelStructlme4(m1,m0,linmodel,randm0)

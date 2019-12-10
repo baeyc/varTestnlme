@@ -32,5 +32,9 @@ Imports:
     lme4,
     nlme,
     saemix,
-    methods
-RoxygenNote: 6.1.1
+    msm
+RoxygenNote: 7.0.2
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
