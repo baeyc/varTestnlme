@@ -33,13 +33,16 @@ navbar:
   left:
     - icon: fa-home
       href: index.html
+    - icon: fa-play-circle
+      text: "Get started"
+      href: articles/varTestnlme.html
     - icon: fa-file-code-o
       text: "Functions"
-      href: reference/index.html      
+      href: reference/index.html
   right:
     - icon: fa-newspaper-o
       text: "News"
-      href: news/index.html      
+      href: news/index.html
     - icon: fa-github fa-lg
       text: "github"
       href: https://github.com/baeyc/varTestnlme

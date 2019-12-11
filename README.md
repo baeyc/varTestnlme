@@ -1,25 +1,34 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-varTestnlme
-===========
 
-[varTestnlme](https://baeyc.github.io/varTestnlme/index.html) implements the likelihood ratio test (LRT) for testing the presence of random effects in linear, generalized linear and nonlinear mixed-effects model. The test can be used to answer questions of the type:
+# varTestnlme
 
--   should a certain subset of random effects be in fact considered as fixed effects?
--   is there any random effects in the model?
--   are there any correlation between two subsets of random effects?
+[varTestnlme](https://baeyc.github.io/varTestnlme/index.html) implements
+the likelihood ratio test (LRT) for testing the presence of random
+effects in linear, generalized linear and nonlinear mixed-effects model.
+The test can be used to answer questions of the type:
 
-It is possible to compare two models with different random effects, provided that the random structures of the two models are **nested**.
+  - should a certain subset of random effects be in fact considered as
+    fixed effects?
+  - is there any random effects in the model?
+  - are there any correlation between two subsets of random effects?
 
-The package works on models that were fitted using `nlme`, `lme4` or `saemix` packages.
+It is possible to compare two models with different random effects,
+provided that the random structures of the two models are **nested**.
 
-Reference
----------
+The package works on models that were fitted using
+[nlme](https://cran.r-project.org/web/packages/nlme/),
+[lme4](https://cran.r-project.org/web/packages/lme4/), or
+[saemix](https://cran.r-project.org/web/packages/saemix/) packages.
 
-Baey C, Cournède P-H, Kuhn E, 2019. Asymptotic distribution of likelihood ratio test statistics for variance components in nonlinear mixed effects models. 135:107--122 (2019), <https://doi.org/10.1016/j.csda.2019.01.014>
+## Reference
 
-Installation
-------------
+Baey C, Cournède P-H, Kuhn E, 2019. Asymptotic distribution of
+likelihood ratio test statistics for variance components in nonlinear
+mixed effects models.  135:107–122 (2019),
+<https://doi.org/10.1016/j.csda.2019.01.014>
+
+## Installation
 
 Install the development version from Github:
 
@@ -28,8 +37,7 @@ Install the development version from Github:
 devtools::install_github("baeyc/varTestnlme")
 ```
 
-Example
--------
+## Example
 
 ``` r
 # First, fit models from your preferred mixed-effects models package
