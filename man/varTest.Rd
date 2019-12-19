@@ -10,7 +10,7 @@
 varTest(
   m1,
   m0,
-  control = list(N = 5000, parallel = F, nbcores = 1),
+  control = list(M = 5000),
   pval.comp = "bounds",
   fim = "extract"
 )
@@ -62,8 +62,10 @@ library(nlme)
 data(Orthodont)
 
 # fit the two models under H1 and H0
-lm1.h1.nlme <- lme(distance ~ 1 + Sex + age + age*Sex, random = ~ 1 + age | Subject, data = Orthodont, method = "ML")
-lm1.h0.nlme <- lme(distance ~ 1 + Sex + age + age*Sex, random = ~ 1 | Subject, data = Orthodont, method = "ML")
+lm1.h1.nlme <- lme(distance ~ 1 + Sex + age + age*Sex, random = ~ 1 + age | Subject, 
+data = Orthodont, method = "ML")
+lm1.h0.nlme <- lme(distance ~ 1 + Sex + age + age*Sex, random = ~ 1 | Subject, 
+data = Orthodont, method = "ML")
 
 # compare them (order is important: m1 comes first)
 varTest(lm1.h1.nlme,lm1.h0.nlme)

@@ -2,9 +2,17 @@
 % Please edit documentation in R/chiBarObject.R
 \name{pchisqbar}
 \alias{pchisqbar}
+\alias{pchisqbar,numeric,chiBarSquareObject,logical-method}
 \title{pchisqbar}
 \usage{
 \S4method{pchisqbar}{numeric,chiBarSquareObject,logical}(q, object, lower.tail = T)
+}
+\arguments{
+\item{q}{the quantile}
+
+\item{object}{a chiBarSquareObject}
+
+\item{lower.tail}{logical, default to TRUE}
 }
 \description{
 pchisqbar

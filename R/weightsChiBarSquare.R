@@ -7,9 +7,8 @@
 #' statistics under the null hypothesis. More details can be found in the references listed below
 #'
 #' @name weightsChiBarSquare
-#' @aliases weights chibarsquare limit
-#'
-#' @param cbs an object of class \code{\link{chibarObject}}, containing the parameters of the chi-bar-square distribution
+#' 
+#' @param cbs an object of class \code{\link{chiBarSquareObject}}, containing the parameters of the chi-bar-square distribution
 #' @param control (optional) a list of control options for the computation of the chi-bar-weights
 #' @return A list containing the degrees of freedom of the chi-bar distributions involved in the chi-bar-square, along with
 #' the associated weights.
@@ -21,8 +20,12 @@
 #' Silvapulle  MJ, Sen PK, 2011. Constrained statistical inference: order, inequality and shape constraints.
 #' @export weightsChiBarSquare
 #' @importFrom foreach %dopar%
+#' @importFrom stats na.omit
 weightsChiBarSquare <- function(cbs,control){
 
+  # global variables
+  df <- i <- NULL
+  
   # Initialize vector of weights
   w <- rep(0,length(cbs@df))
 
@@ -82,10 +85,13 @@ weightsChiBarSquare <- function(cbs,control){
     chibarsquare <- rep(0,control$M)
 
     cat("\nSimulating chi-bar-square weights ...\n")
-    doMC::registerDoMC(cores=control$Mbcores)
+    no_cores <- max(1,parallel::detectCores() - 1)
+    # Initiate cluster
+    doParallel::registerDoParallel(no_cores)
 
-    chibarsquare <- foreach::foreach(i=1:control$M, .combine=c) %dopar% {
-    # for (i in 1:control$M){
+    chibarsquare <- foreach::foreach(i=1:control$M, 
+                                     .packages='varTestnlme', 
+                                     .combine=c) %dopar% {
           x0 <- Z[i,]
           constantes <- list(Z = Z[i,], invV = I, cbs = cbs)
           projZ <- alabama::auglag(par=x0,
@@ -104,7 +110,8 @@ weightsChiBarSquare <- function(cbs,control){
           Z[i,]%*%I%*%Z[i,] - objFunction(projZzero,constantes)
         }
     chibarsquare <- chibarsquare[chibarsquare>-1e-04]
-
+    doParallel::stopImplicitCluster()
+    
     # Approximation of chi-bar-square weights
     empQuant <- seq(0.001,1,0.001)
     w_covw <- lapply(empQuant, FUN = function(q){try(approxWeights(chibarsquare,cbs@df,q))})

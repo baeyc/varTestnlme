@@ -2,15 +2,12 @@
 % Please edit documentation in R/weightsChiBarSquare.R
 \name{weightsChiBarSquare}
 \alias{weightsChiBarSquare}
-\alias{weights}
-\alias{chibarsquare}
-\alias{limit}
 \title{Chi-bar-square weights computation}
 \usage{
 weightsChiBarSquare(cbs, control)
 }
 \arguments{
-\item{cbs}{an object of class \code{\link{chibarObject}}, containing the parameters of the chi-bar-square distribution}
+\item{cbs}{an object of class \code{\link{chiBarSquareObject}}, containing the parameters of the chi-bar-square distribution}
 
 \item{control}{(optional) a list of control options for the computation of the chi-bar-weights}
 }

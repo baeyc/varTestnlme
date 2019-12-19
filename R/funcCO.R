@@ -27,12 +27,8 @@ gradObjFunction <- function(x,cst){
 }
 
 # Function creating a symmetric matrix from its unique elements stored in a vector.
-#
-# @param v A vector
-# @return A matrix containing the elements of \code{v}.
-# @example
-# symMatrixFromVect(c(1,2,3,4,5,6))
-#
+#' @rdname funcCO
+#' @export
 symMatrixFromVect <- function(v){
   n <- length(v)
 
@@ -91,10 +87,10 @@ jacobianIneqCstr <- function(x,cst){
   ds <- cst$cbs@dims$dimSigma
 
   # Jacobian of the inequality constrains
-  jacobian <- matrix(0,nr=length(dimMats),nc=n)
+  jacobian <- matrix(0,nrow=length(dimMats),ncol=n)
 
   if (cst$cbs@orthan){
-    jacobian <- matrix(0,nr=r,nc=n)
+    jacobian <- matrix(0,nrow=r,ncol=n)
     jacobian[1:r,(n0R+1):(n0R+r)] <- diag(r)
   }else{
     if (sum(r) == 1){
@@ -147,7 +143,7 @@ jacobianEqCstr <- function(x,cst){
   n <- length(x)
   ds <- cst$cbs@dims$dimSigma
 
-  jacobian <- matrix(0,nr=n0+ds,nc=n)
+  jacobian <- matrix(0,nrow=n0+ds,ncol=n)
 
   jacobian[1:n0,1:n0] <- diag(n0)
   if (ds>1) jacobian[(n0+1):(n0+ds),(n-ds+1):n] <- diag(ds)
