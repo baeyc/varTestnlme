@@ -15,6 +15,7 @@
 #' @author Charlotte Baey <\email{charlotte.baey@univ-lille.fr}>
 #'
 #' @export extractFIMnlme
+#' @importFrom stats as.formula
 extractFIMnlme <- function(m,struct){
   nameGroup <- names(m$groups)
   namesFE <- names(m$coefficients$fixed)

@@ -12,8 +12,8 @@
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/flatly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
 
@@ -79,38 +79,25 @@ assumed to be nested within the model under H1." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fa fa-home"></span>
+    <span class="fas fa fas fa-home fa-lg"></span>
      
   </a>
 </li>
 <li>
-  <a href="../articles/varTestnlme.html">
-    <span class="fa fa-play-circle"></span>
-     
-    Get started
-  </a>
+  <a href="../articles/varTestnlme.html">Get started</a>
 </li>
 <li>
-  <a href="../reference/index.html">
-    <span class="fa fa-file-code-o"></span>
-     
-    Functions
-  </a>
+  <a href="../reference/index.html">Reference</a>
+</li>
+<li>
+  <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="../news/index.html">
-    <span class="fa fa-newspaper-o"></span>
-     
-    News
-  </a>
-</li>
-<li>
   <a href="https://github.com/baeyc/varTestnlme">
-    <span class="fa fa-github fa-lg"></span>
+    <span class="fab fa fab fa-github fa-lg"></span>
      
-    github
   </a>
 </li>
       </ul>
@@ -207,8 +194,10 @@ Statistics and Data Analysis</em> 135:107-122.</p>
 <span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>Orthodont</span>)
 
 <span class='co'># fit the two models under H1 and H0</span>
-<span class='no'>lm1.h1.nlme</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/nlme/man/lme.html'>lme</a></span>(<span class='no'>distance</span> ~ <span class='fl'>1</span> + <span class='no'>Sex</span> + <span class='no'>age</span> + <span class='no'>age</span>*<span class='no'>Sex</span>, <span class='kw'>random</span> <span class='kw'>=</span> ~ <span class='fl'>1</span> + <span class='no'>age</span> <span class='kw'>|</span> <span class='no'>Subject</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>Orthodont</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"ML"</span>)
-<span class='no'>lm1.h0.nlme</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/nlme/man/lme.html'>lme</a></span>(<span class='no'>distance</span> ~ <span class='fl'>1</span> + <span class='no'>Sex</span> + <span class='no'>age</span> + <span class='no'>age</span>*<span class='no'>Sex</span>, <span class='kw'>random</span> <span class='kw'>=</span> ~ <span class='fl'>1</span> <span class='kw'>|</span> <span class='no'>Subject</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>Orthodont</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"ML"</span>)
+<span class='no'>lm1.h1.nlme</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/nlme/man/lme.html'>lme</a></span>(<span class='no'>distance</span> ~ <span class='fl'>1</span> + <span class='no'>Sex</span> + <span class='no'>age</span> + <span class='no'>age</span>*<span class='no'>Sex</span>, <span class='kw'>random</span> <span class='kw'>=</span> ~ <span class='fl'>1</span> + <span class='no'>age</span> <span class='kw'>|</span> <span class='no'>Subject</span>,
+<span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>Orthodont</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"ML"</span>)
+<span class='no'>lm1.h0.nlme</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/nlme/man/lme.html'>lme</a></span>(<span class='no'>distance</span> ~ <span class='fl'>1</span> + <span class='no'>Sex</span> + <span class='no'>age</span> + <span class='no'>age</span>*<span class='no'>Sex</span>, <span class='kw'>random</span> <span class='kw'>=</span> ~ <span class='fl'>1</span> <span class='kw'>|</span> <span class='no'>Subject</span>,
+<span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>Orthodont</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"ML"</span>)
 
 <span class='co'># compare them (order is important: m1 comes first)</span>
 <span class='fu'>varTest</span>(<span class='no'>lm1.h1.nlme</span>,<span class='no'>lm1.h0.nlme</span>)</div><div class='output co'>#&gt; Variance components testing in mixed-effects models
@@ -245,7 +234,7 @@ Statistics and Data Analysis</em> 135:107-122.</p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by <a href='https://math.univ-lille1.fr/~baey/'>Charlotte Baey</a>, Estelle Kuhn.</p>
+  <p>Developed by Charlotte Baey, Estelle Kuhn.</p>
 </div>
 
 <div class="pkgdown">

@@ -17,9 +17,9 @@ It is possible to compare two models with different random effects,
 provided that the random structures of the two models are **nested**.
 
 The package works on models that were fitted using
-[nlme](https://cran.r-project.org/web/packages/nlme/),
-[lme4](https://cran.r-project.org/web/packages/lme4/), or
-[saemix](https://cran.r-project.org/web/packages/saemix/) packages.
+[nlme](https://CRAN.R-project.org/package=nlme),
+[lme4](https://CRAN.R-project.org/package=lme4), or
+[saemix](https://CRAN.R-project.org/package=saemix) packages.
 
 ## Reference
 

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Extraction of the Fisher Information Matrix for nlme package — extractFIMnlme • varTestnlme</title>
+<title>Internal varTestnlme Functions — varTestnlme-internal • varTestnlme</title>
 
 
 <!-- jquery -->
@@ -35,8 +35,8 @@
 
 
 
-<meta property="og:title" content="Extraction of the Fisher Information Matrix for nlme package — extractFIMnlme" />
-<meta property="og:description" content="Extraction of the Fisher Information Matix for variance components fitted with nlme using Delta method" />
+<meta property="og:title" content="Internal varTestnlme Functions — varTestnlme-internal" />
+<meta property="og:description" content="Internal varTestnlme functions" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -111,50 +111,24 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Extraction of the Fisher Information Matrix for nlme package</h1>
-    <small class="dont-index">Source: <a href='https://github.com/baeyc/varTestnlme/blob/master/R/extractFIMnlme.R'><code>R/extractFIMnlme.R</code></a></small>
-    <div class="hidden name"><code>extractFIMnlme.Rd</code></div>
+    <h1>Internal varTestnlme Functions</h1>
+    
+    <div class="hidden name"><code>varTestnlme-internal.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Extraction of the Fisher Information Matix for variance components fitted with nlme using Delta method</p>
+    <p>Internal varTestnlme functions</p>
     </div>
 
-    <pre class="usage"><span class='fu'>extractFIMnlme</span>(<span class='no'>m</span>, <span class='no'>struct</span>)</pre>
 
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>m</th>
-      <td><p>a model fitted using nlme</p></td>
-    </tr>
-    <tr>
-      <th>struct</th>
-      <td><p>a string giving the structure of the covariance matrix: either <code>diag</code> for a diagonal
-matrix, <code>blockDiag</code> for a block diagonal matrix of <code>full</code> for a matrix with non-zero components</p></td>
-    </tr>
-    </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>the FIM matrix for the variance components</p>
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    <p>This function extract the FIM computed by the nlme for the transformed variance components, and uses
-the Delta method to compute the FIM for the natural variance components (i.e. variances and covariances)</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-      <li><a href="#arguments">Arguments</a></li>
-      <li><a href="#value">Value</a></li>
-      <li><a href="#details">Details</a></li>
     </ul>
 
-    <h2>Author</h2>
-    <p>Charlotte Baey &lt;<a href='mailto:charlotte.baey@univ-lille.fr'>charlotte.baey@univ-lille.fr</a>&gt;</p>
   </div>
 </div>
 

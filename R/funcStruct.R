@@ -204,9 +204,9 @@ modelStructlme4 <- function(m1,m0,linmodel,randm0){
   
   # retrieve names of parameters to identify their order in the FIM and in the cone
   #nbTotParam <- ncol(invfim1)
-  if (randm0) nameParams0 <- c(namesFE0,paste0("cov_",names(getME(m0,"theta"))),"residual")
+  if (randm0) nameParams0 <- c(namesFE0,paste0("cov_",names(lme4::getME(m0,"theta"))),"residual")
   if (!randm0) nameParams0 <- c(namesFE0,"residual")
-  nameParams1 <- c(namesFE1,paste0("cov_",names(getME(m1,"theta"))),"residual")
+  nameParams1 <- c(namesFE1,paste0("cov_",names(lme4::getME(m1,"theta"))),"residual")
   paramTested <- !(nameParams1 %in% nameParams0)
   
   # create a dataset with the list of parameters and: their tyoe (fixed, variance or correlation)
@@ -269,13 +269,14 @@ modelStructsaemix <- function(m1,m0,randm0){
   # names of fixed and random effects
   if (randm0){
     namesRE0 <- m0@model@name.random
-    namesFE0 <- m1@model@name.fixed[m1@model@fixed.estim>0]
+    namesFE0 <- m0@model@name.fixed[m0@model@fixed.estim>0]
   }else{
     namesRE0 <- NULL
     if (pkgm0 == "lm" || pkgm0 == "glm") namesFE0 <- names(stats::coefficients(m0))
     if (pkgm0 == "nls") namesFE0 <- names(m0$m$getPars())
   }
   namesRE1 <- m1@model@name.random
+  namesFE1 <- m1@model@name.fixed[m1@model@fixed.estim>0]
   nameFixedTested <- namesFE1[!(namesFE1%in%namesFE0)]
   nameVarTested <- namesRE1[!(namesRE1%in%namesRE0)]
   #nameVarTested <- gsub("omega2.","",nameVarTested)

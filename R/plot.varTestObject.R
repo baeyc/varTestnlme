@@ -9,13 +9,15 @@
 #'
 #' @param x a object of class \code{\link{varTestObject}} obtained from a call to function \code{\link{varTest}}
 #'
-#'
+#' @importFrom stats pchisq ecdf
+#' @importFrom graphics plot points legend
 NULL
 
 plot.varTestObject <- function(x){
   if (length(x@chibarsquare)==0) stop("Only available when the weights were computed by simulation")
 
   if (requireNamespace("ggplot2", quietly = TRUE)){
+    cbs <- y1 <- df <- NULL # solve "no visible binding for global variable" issue
     d <- data.frame(cbs=x@chibarsquare)
     x1 <- seq(0,max(x@chibarsquare),0.1)
     y <- as.vector(sapply(x@cbs@df,FUN = function(df){pchisq(x1,df)}))
@@ -32,7 +34,7 @@ plot.varTestObject <- function(x){
       ggplot2::scale_linetype_manual(breaks=c("Points"),values=line_types,name="",labels=c("CDF of chi-bar-square using weights estimates")) +
       ggplot2::guides(color = ggplot2::guide_legend(order = 1), linetype = ggplot2::guide_legend(order = 2)) +  ggplot2::theme(legend.position = 'bottom',legend.spacing.x = ggplot2::unit(0.25, 'cm')) + ggplot2::ggtitle("Estimation of chi-bar-square distribution")
   }else{
-    plot(stats::ecdf(x@chibarsquare),cex=0.25,main="Estimation of chi-bar-square distribution")
+    plot(ecdf(x@chibarsquare),cex=0.25,main="Estimation of chi-bar-square distribution")
     x1 <- seq(0,max(x@chibarsquare),0.1)
     ymix <- 0*x1
     for (i in 1:length(x@cbs@df)){

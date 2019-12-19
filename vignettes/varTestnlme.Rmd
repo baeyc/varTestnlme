@@ -22,7 +22,7 @@ library(varTestnlme)
 The **varTesnlme** package is very easy to use. Below are small examples on how to run it for linear, generalized linear and nonlinear mixed-effect models.
 
   
-Mixed-effect models can be run using [nlme](https://cran.r-project.org/web/packages/nlme/) or [lme4](https://cran.r-project.org/web/packages/lme4/), but also using [saemix](https://cran.r-project.org/web/packages/saemix/). **varTestnlme** can be used to compare two nested models using likelihood ratio tests, where the variance of at least one random effect is tested equal to 0. Fixed effects can also be tested simultaneously, as well as covariances.
+Mixed-effect models can be run using [nlme](https://CRAN.R-project.org/package=nlme) or [lme4](https://CRAN.R-project.org/package=lme4), but also using [saemix](https://CRAN.R-project.org/package=saemix). **varTestnlme** can be used to compare two nested models using likelihood ratio tests, where the variance of at least one random effect is tested equal to 0. Fixed effects can also be tested simultaneously, as well as covariances.
 
 ```{r}
 # Load the packages
@@ -60,20 +60,18 @@ vt1.nlme <- varTest(m1,m0)
 
 ### Testing the variances of all random effects 
 In the previous section, the weights of the chi-bar-square distribution where available explicitly. However, it is not always the case. 
-By default, since the computation ofthese weights can be time consuming, the function is computing bounds on the p-value. In many cases this can be enough to decide whether to reject or not the null hypothesis. If more precision is wanted or needed, it is possible to specify it via the option `pval.comp`, which then needs to be set to either `pval.comp="approx"` or to `pval.comp="both"`. In both cases, the `control` argument can be used to control the computation process. It is a list which contains three slots: `M` (default to 5000), the size of the Monte Carlo computation, `parallel` (default to `FALSE`) to specify whether computation should be parallelized, and `nbcores` (default to `1`) to set the number of cores to be used in case of parallel computing.
+By default, since the computation of these weights can be time consuming, the function is computing bounds on the p-value. In many cases this can be enough to decide whether to reject or not the null hypothesis. If more precision is wanted or needed, it is possible to specify it via the option `pval.comp`, which then needs to be set to either `pval.comp="approx"` or to `pval.comp="both"`. In both cases, the `control` argument can be used to control the computation process. It is a list which contains three slots: `M` (default to 5000), the size of the Monte Carlo computation, `parallel` (default to `FALSE`) to specify whether computation should be parallelized, and `nbcores` (default to `1`) to set the number of cores to be used in case of parallel computing.
 
-  
-This is illustrated in the following example where the variances of all the random effects are tested equal to 0. In this case, it turns out that the exact weights are not knwon and should be approximated.
 
-```{r results='hide'}
-m0_noRE <- lm(distance ~ 1 + Sex + age + age*Sex, data = Orthodont)
+```{r}
+m1 <- lme(distance ~ 1 + Sex + age + age*Sex, random = list(Subject = pdDiag(~1+age)), data = Orthodont, method = "ML")
+m0 <- lm(distance ~ 1 + Sex + age + age*Sex, data = Orthodont)
 
+varTest(m1,m0)
 ```
 
+To get the exact p-value one can use
 
-We can first run the function with the default option (`pval.comp="bounds"`):
-
-```{r results='hold'}
-varTest(m1,m0_noRE,pval.comp="both")
+```{r}
+varTest(m1,m0,pval.comp = "both")
 ```
-

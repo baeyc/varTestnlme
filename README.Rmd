@@ -23,7 +23,9 @@ devtools::load_all()
   
 It is possible to compare two models with different random effects, provided that the random structures of the two models are **nested**.
 
-The package works on models that were fitted using [nlme](https://cran.r-project.org/web/packages/nlme/), [lme4](https://cran.r-project.org/web/packages/lme4/), or [saemix](https://cran.r-project.org/web/packages/saemix/) packages.
+The package works on models that were fitted using [nlme](https://CRAN.R-project.org/package=nlme),
+[lme4](https://CRAN.R-project.org/package=lme4), or
+[saemix](https://CRAN.R-project.org/package=saemix) packages.
 
 ## Reference
 Baey C, Cournède P-H, Kuhn E, 2019. Asymptotic distribution of likelihood ratio test statistics for variance components in nonlinear mixed effects models. \emph{Computational Statistics and Data Analysis} 135:107--122 (2019), [https://doi.org/10.1016/j.csda.2019.01.014](https://doi.org/10.1016/j.csda.2019.01.014)
