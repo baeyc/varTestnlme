@@ -17,6 +17,7 @@ Description: An implementation of the Likelihood ratio Test (LRT) for testing th
     that can be tested: for example, it is possible to test that all the variances
     are equal to zero. Note that the implemented test is asymptotic.
     This package should be used on model fits from packages 'nlme', 'lmer', and 'saemix'.
+    Charlotte Baey, Paul-Henry Cournède and Estelle Kuhn (2019) <doi:10.1016/j.csda.2019.01.014>.
 License: GPL (>= 2)
 Encoding: UTF-8
 LazyData: true

@@ -67,7 +67,7 @@ weightsChiBarSquare <- function(cbs,control){
       w[1] <- 0.5 - w[3]
       sdw <- rep(0,4)
     }else{
-      print("Simulating chi-bar-square weights ...")
+      message("Simulating chi-bar-square weights ...")
       Z <- mvtnorm::rmvnorm(control$M,mean=rep(0,nrow(W)),sigma=W)
       projZ <- t(sapply(1:control$M,FUN = function(i){
         quadprog::solve.QP(invW, Z[i,]%*%invW, diag(ncol(Z)), rep(0,ncol(Z)), meq=0, factorized=FALSE)$solution}))

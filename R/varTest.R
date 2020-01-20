@@ -70,7 +70,7 @@ varTest <- function(m1,m0,control = list(M=5000),
     if (!"nbcores" %in% optionNames) control$nbcores=1
   }
   
-  cat("Variance components testing in mixed-effects models\n")
+  message("Variance components testing in mixed-effects models\n")
   
   # Identify the packages from which m0 and m1 come from
   cl0 <- class(m0)
@@ -106,7 +106,7 @@ varTest <- function(m1,m0,control = list(M=5000),
   if (pkg=="lme4") msdata <- modelStructlme4(m1,m0,linmodel,randm0)
   if (pkg=="saemix") msdata <- modelStructsaemix(m1,m0,randm0)
   
-  cat("(models fitted using the",pkg,"package)\n\n")
+  message("(models fitted using the",pkg,"package)\n\n")
   
   # LRT and Fisher Information Matrix
   # LRT
@@ -184,21 +184,21 @@ varTest <- function(m1,m0,control = list(M=5000),
   cbs@invV <- chol2inv(chol(invfim))
   
   if (length(msdata$nameVarTested)==1){
-    cat(paste("Testing that the variance of",msdata$nameVarTested,"is null\n"))
+    message(paste("Testing that the variance of",msdata$nameVarTested,"is null\n"))
   }else{
-    cat(paste("Testing that the variances of",paste(msdata$nameVarTested,sep="",collapse = " and "),"are null\n"))
+    message(paste("Testing that the variances of",paste(msdata$nameVarTested,sep="",collapse = " and "),"are null\n"))
   }
   
   
   ## TO COMPLETE
   if (pkg=="lme4"){
-    cat(paste("model under H1:",deparse(formula(m1),width.cutoff=500),"\n"))
-    cat(paste("model under H0:",deparse(formula(m0),width.cutoff=500),"\n"))
+    message(paste("model under H1:",deparse(formula(m1),width.cutoff=500),"\n"))
+    message(paste("model under H0:",deparse(formula(m0),width.cutoff=500),"\n"))
   }
   if (pkg=="nlme"){
-    cat(paste("model under H1:",deparse(m1$call$fixed,width.cutoff=500),"(fixed effects)",",",deparse(m1$call$random,width.cutoff=500),"(random effects)\n"))
-    if (randm0) cat(paste("model under H0:",deparse(m0$call$fixed,width.cutoff=500),"(fixed effects)",",",deparse(m0$call$random,width.cutoff=500),"(random effects)\n"))
-    if (!randm0) cat(paste("model under H0:",deparse(formula(m0),width.cutoff=500),"(fixed effects)\n"))
+    message(paste("model under H1:",deparse(m1$call$fixed,width.cutoff=500),"(fixed effects)",",",deparse(m1$call$random,width.cutoff=500),"(random effects)\n"))
+    if (randm0) message(paste("model under H0:",deparse(m0$call$fixed,width.cutoff=500),"(fixed effects)",",",deparse(m0$call$random,width.cutoff=500),"(random effects)\n"))
+    if (!randm0) message(paste("model under H0:",deparse(formula(m0),width.cutoff=500),"(fixed effects)\n"))
   }
   
   # Identify the components of the mixture
@@ -211,7 +211,7 @@ varTest <- function(m1,m0,control = list(M=5000),
   # Compute FIM only if necessary (i.e. when weights of the chi-bar-square need to be computed)
   if (pval.comp != "bounds" & length(cbs@df) > 2){
     if (fim == "extract"){
-      cat("\nExtracting Fisher Information matrix...")
+      message("\nExtracting Fisher Information matrix...")
       if (pkg=="nlme"){
         if (msdata$structGamma$diag) struct <- "diag"
         if (msdata$structGamma$full) struct <- "full"
@@ -229,7 +229,7 @@ varTest <- function(m1,m0,control = list(M=5000),
       }
       if (pkg=="saemix") invfim <- chol2inv(chol(m1@results@fim))
     }else if (fim == "compute"){
-      cat("Computation of the FIM is not yet implemented")
+      message("Computation of the FIM is not yet implemented")
     }else{
       stop("Unknown option for fim. Please use fim='extract' or fim='compute'")
     }  
@@ -250,19 +250,19 @@ varTest <- function(m1,m0,control = list(M=5000),
   }
   
   # print results
-  cat(paste("\nLikelihood ratio test statistics: \n LRT = ",format(lrt,digits=5),
+  message(paste("\nLikelihood ratio test statistics: \n LRT = ",format(lrt,digits=5),
             "\n\nLimiting distribution: \n"))
   if (length(cbs@df)>1){
-    cat(paste("mixture of",length(cbs@df),"chi-bar-square distributions with degrees of freedom",paste(cbs@df,sep="",collapse = ", "),"\n"))
+    message(paste("mixture of",length(cbs@df),"chi-bar-square distributions with degrees of freedom",paste(cbs@df,sep="",collapse = ", "),"\n"))
     if (pval.comp %in% c("approx","both")){
-      cat(paste(" associated weights and sd: ",paste(paste(round(wcbs$w,3)," (",round(wcbs$sdWeights,3),")",sep=""),sep="",collapse = ", "),
+      message(paste(" associated weights and sd: ",paste(paste(round(wcbs$w,3)," (",round(wcbs$sdWeights,3),")",sep=""),sep="",collapse = ", "),
                 "\n\np-value (from estimated weights):",format(pvalue1,digits = 5)))
-      if (length(wcbs$randomCBS)>0) cat(paste("\np-value (from simulated chi-bar-square distribution):",format(pvalue2,digits=5),"\n"))
+      if (length(wcbs$randomCBS)>0) message(paste("\np-value (from simulated chi-bar-square distribution):",format(pvalue2,digits=5),"\n"))
     }
-    if (pval.comp %in% c("bounds","both")) cat(paste("\nlower-bound for p-value:",format(lowboundpval,digits=5)," upper bound for p-value:",format(uppboundpval,digits=5)))
+    if (pval.comp %in% c("bounds","both")) message(paste("\nlower-bound for p-value:",format(lowboundpval,digits=5)," upper bound for p-value:",format(uppboundpval,digits=5)))
   }else{
-    cat(paste0("  chi-bar-square distributions with ",cbs@df," degree of freedom\n"))
-    cat(paste0("  p-value: ",format(pvalue1,digits=5)))
+    message(paste0("  chi-bar-square distributions with ",cbs@df," degree of freedom\n"))
+    message(paste0("  p-value: ",format(pvalue1,digits=5)))
   }
   
   

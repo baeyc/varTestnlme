@@ -13,6 +13,9 @@ knitr::opts_chunk$set(
 )
 devtools::load_all()
 ```
+
+[![](https://www.r-pkg.org/badges/version/varTestnlme)](https://CRAN.R-project.org/package=varTestnlme)
+
 # varTestnlme
 
 [varTestnlme](https://baeyc.github.io/varTestnlme/index.html) implements the likelihood ratio test (LRT) for testing the presence of random effects in linear, generalized linear and nonlinear mixed-effects model. The test can be used to answer questions of the type:
@@ -31,6 +34,11 @@ The package works on models that were fitted using [nlme](https://CRAN.R-project
 Baey C, Cournède P-H, Kuhn E, 2019. Asymptotic distribution of likelihood ratio test statistics for variance components in nonlinear mixed effects models. \emph{Computational Statistics and Data Analysis} 135:107--122 (2019), [https://doi.org/10.1016/j.csda.2019.01.014](https://doi.org/10.1016/j.csda.2019.01.014)
 
 ## Installation
+
+Install from CRAN:
+```{r, eval=FALSE}
+install.packages("varTestnlme")
+```
 
 Install the development version from Github:
 
