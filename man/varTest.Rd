@@ -10,7 +10,7 @@
 varTest(
   m1,
   m0,
-  control = list(M = 5000),
+  control = list(M = 5000, parallel = T, nbcores = 1, B = 1000),
   pval.comp = "bounds",
   fim = "extract"
 )

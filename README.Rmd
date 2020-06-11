@@ -44,22 +44,67 @@ Install the development version from Github:
 
 ```{r, eval=FALSE}
 # install.packages("devtools")
-devtools::install_github("baeyc/varTestnlme")
+#devtools::install_github("baeyc/varTestnlme")
+
+devtools::load_all()
 ```
 
 
 ## Example
 
+### With default options
+
+The first example is based on the `nlme` package. 
+
 ```{r}
 # First, fit models from your preferred mixed-effects models package
 library(nlme)
-fm1Indom.lis <- nlsList(conc ~ SSbiexp(time, A1, lrc1, A2, lrc2),data = Indometh)
-m1 <- nlme(fm1Indom.lis,random = pdDiag(A1 + lrc1 + A2 + lrc2 ~ 1))
-m0 <- nlme(fm1Indom.lis,random = pdDiag(A1 + lrc1 ~ 1))
+fm1.lis <- nlsList(rate ~ SSasympOff(pressure, Asym, lrc, c0), data=Dialyzer)
+nm1e <- nlme(fm1.lis, random = pdSymm(Asym + lrc ~ 1))
+nm0e <- nlme(fm1.lis, random = pdDiag(lrc ~ 1))
 
 # Then, simply use the varTest function to compare the two models
 # It will automatically detect the covariance structures
-varTest(m1,m0)
+vte <- varTest(nm1e, nm0e, fim = "compute", pval.comp = "both", control=list(B=10))
+```
+
+It works similarly with lme4 package or saemix.
+
+### Estimation of Fisher Information Matrix
+
+The imiting distribution of the test statistic is a chi-bar-square distribution whose weights depend on the Fisher Information Matrix (FIM) of the model. Depending on the package used to fit the model and on your preferences, it is possible to specify different options with the argument `fim`:
+ * `fim="extract"`: (the default option) to extract the FIM computed by the package used to fit the models. Please note that it might not be available in some cases. For example, for nonlinear models fitted with `lme4`. 
+ * `fim="compute"`: to estimate the FIM using parametric bootstrap. Note that it can take some time to run. In this case, one must provide the bootstrap sample size with the `control` argument
+ * `fim=I`: with `I` a symmetric positive definite matrix, to provide your own FIM
+
+```{r}
+# Bootstrap estimation of the FIM
+varTest(nm1e, nm0e, fim="compute", pval.comp="both", control=list(B=100))
 ```
 
 
+Another example using the `lme4` package and the Orange trees data.
+
+```{r}
+library(lme4)
+dial.start <- unlist(nm1e$call$start)
+names(dial.start) <- c("Asym","lrc","c0")
+dial.start  <- c(Asym = 50, lrc = 0.5, c0 = 0.2)
+nm1  <- nlmer(rate ~ SSasympOff(pressure, Asym, lrc, c0) ~ (0 + Asym + lrc || Subject), Dialyzer, start = dial.start)
+nm0  <- nlmer(rate ~ SSasympOff(pressure, Asym, lrc, c0) ~ (0 + Asym | Subject), Dialyzer, start = dial.start)
+vt <- varTest(nm1,nm0,fim="compute",pval.comp = "both",control=list(M=10,B=20))
+
+
+library(nlme)
+nm1e <- nlme(rate ~ SSasympOff(pressure, Asym, lrc, c0),
+             random = pdDiag(Asym + lrc + c0 ~ 1),
+             fixed = Asym + lrc + c0 ~ 1,
+             data = Dialyzer,
+             start = dial.start)
+nm0e <- nlme(rate ~ SSasympOff(pressure, Asym, lrc, c0),
+             random = pdDiag(Asym + c0 ~ 1),
+             fixed = Asym + lrc + c0 ~ 1,
+             data = Dialyzer,
+             start = dial.start)
+varTest(nm1e,nm0e)
+```

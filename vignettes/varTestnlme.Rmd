@@ -35,43 +35,151 @@ library(saemix)
 ## Linear models
 Here we focus on models run using **lme4** and **nlme**, but **saemix** can also be used.
   
-### Testing the variance of one random effect
+### Case 1 : testing the variance of one random effect
 We illustrate the results on the **Orthodont** dataset, which is part of the **nlme** package. We are interested in modelling the distance between the pituitary annd the pterygomaxillary fissure (in mm) as a function of age, in 27 children. We will fit a random slope and random intercept model, and test whether the slope is random or not.
   
   
 We first need to fit the two nested models: the full model corresponding to $H_1$ and the null model corresponding to $H_0$, where there is no random effect associated to `age`.
 
 ```{r results='hide'}
-
 data("Orthodont")
 
-# using nlme, ith correlated slope and intercept
-m1 <- lme(distance ~ 1 + Sex + age + age*Sex, random = ~ 1 + age | Subject, data = Orthodont, method = "ML")
-m0 <- lme(distance ~ 1 + Sex + age + age*Sex, random = ~ 1 | Subject, data = Orthodont, method = "ML")
+# using nlme, with correlated slope and intercept
+m1.nlme <- lme(distance ~ 1 + Sex + age + age*Sex, random = pdSymm(Subject ~ 1 + age), data = Orthodont, method = "ML")
+m0.nlme <- lme(distance ~ 1 + Sex + age + age*Sex, random = ~ 1 | Subject, data = Orthodont, method = "ML")
+
+# using lme4, with correlated slope and intercept
+m1.lme4 <- lmer(distance ~ 1 + Sex + age + age*Sex + (1 + age | Subject), data = Orthodont, REML = FALSE)
+m0.lme4 <- lmer(distance ~ 1 + Sex + age + age*Sex + (1 | Subject), data = Orthodont, REML = FALSE)
+
 ```
 
 Now we can run the likelihood ratio test using the **varTestnlme** package.
 
-For correlated slope and intercept using nlme
 ```{r}
-vt1.nlme <- varTest(m1,m0)
+vt1.nlme <- varTest(m1.nlme,m0.nlme,pval.comp = "both")
+vt1.lme4 <- varTest(m1.lme4,m0.lme4)
+```
+
+### Case 2 : testing the variance of one effect with uncorrelated random effects
+
+```{r results='hide'}
+# using nlme, with uncorrelated slope and intercept
+m1diag.nlme <- lme(distance ~ 1 + Sex + age + age*Sex, random = pdDiag(Subject ~ 1 + age), data = Orthodont, method = "ML")
+
+# using lme4, with uncorrelated slope and intercept
+m1diag.lme4 <- lmer(distance ~ 1 + Sex + age + age*Sex + (1 + age || Subject), data = Orthodont, REML = FALSE)
+
+vt1diag.nlme <- varTest(m1diag.nlme,m0.nlme)
+vt1diag.lme4 <- varTest(m1diag.lme4,m0.lme4)
+
 ```
 
 
-### Testing the variances of all random effects 
+### Case 3 : testing all the variances
 In the previous section, the weights of the chi-bar-square distribution where available explicitly. However, it is not always the case. 
 By default, since the computation of these weights can be time consuming, the function is computing bounds on the p-value. In many cases this can be enough to decide whether to reject or not the null hypothesis. If more precision is wanted or needed, it is possible to specify it via the option `pval.comp`, which then needs to be set to either `pval.comp="approx"` or to `pval.comp="both"`. In both cases, the `control` argument can be used to control the computation process. It is a list which contains three slots: `M` (default to 5000), the size of the Monte Carlo computation, `parallel` (default to `FALSE`) to specify whether computation should be parallelized, and `nbcores` (default to `1`) to set the number of cores to be used in case of parallel computing.
 
 
 ```{r}
-m1 <- lme(distance ~ 1 + Sex + age + age*Sex, random = list(Subject = pdDiag(~1+age)), data = Orthodont, method = "ML")
-m0 <- lm(distance ~ 1 + Sex + age + age*Sex, data = Orthodont)
+m0noRE <- lm(distance ~ 1 + Sex + age + age*Sex, data = Orthodont)
 
-varTest(m1,m0)
+vt <- varTest(m1diag.nlme,m0noRE,pval.comp = "both")
+summary(vt)
+vt2 <- varTest(m1diag.lme4,m0noRE)
+summary(vt2)
 ```
 
+By default, the FIM is extracted from the packages, but it is also possible to compute it via parametric bootstrap. In this case, simply use the option `fim="compute"`. The default bootstrap sampling size is `B=1000` but it can be changed.
 To get the exact p-value one can use
 
 ```{r}
-varTest(m1,m0,pval.comp = "both")
+vt <- varTest(m1diag.nlme,m0noRE,fim="compute",pval.comp = "both")
+summary(vt)
+vt2 <- varTest(m1diag.lme4,m0noRE,fim="compute",pval.comp = "both")
+summary(vt2)
+
 ```
+
+
+## Generalized linear model
+```{r}
+m1 <- glmer(cbind(incidence, size - incidence) ~ period + (1 | herd),
+             family = binomial, data = cbpp)
+m0 <- glm(cbind(incidence, size - incidence) ~ period,
+             family = binomial, data = cbpp)
+varTest(m1,m0)
+```
+
+
+
+## Nonlinear model
+
+```{r}
+# with nlme
+fm1Theo.nlme <- nlme(conc ~ SSfol(Dose, Time, lKe, lKa, lCl),
+                     Theoph, 
+                     fixed = lKe + lKa + lCl ~ 1,
+                     start=c( -2.4, 0.45, -3.2),
+                     random = pdSymm(lKa + lCl ~ 1))
+fm2Theo.nlme <- nlme(conc ~ SSfol(Dose, Time, lKe, lKa, lCl),
+                     Theoph, 
+                     fixed = lKe + lKa + lCl ~ 1,
+                     start=c( -2.4, 0.45, -3.2),
+                     random = pdDiag(lCl ~ 1))
+varTest(fm1Theo.nlme,fm2Theo.nlme, pval.comp = "both")
+
+# with lme4
+Th.start  <- c(lKe = -2.4, lKa = 0.45, lCl = -3.2)
+nm1  <- nlmer(conc ~ SSfol(Dose , Time ,lKe , lKa , lCl) ~ 
+                0+lKe+lKa+lCl +(lKe+lKa+lCl|Subject), 
+              nAGQ=0, 
+              Theoph,
+              start = Th.start)
+nm0  <- nlmer(conc ~ SSfol(Dose , Time ,lKe , lKa , lCl) ~ 
+                0+lKe+lKa+lCl +(lKa+lCl|Subject), 
+              nAGQ=0, 
+              Theoph,
+              start = Th.start)
+varTest(nm1,nm0)
+```
+
+
+Testing for the presence of randomness in the model.
+```{r}
+fm1 <- nlme(conc ~ SSfol(Dose, Time, lKe, lKa, lCl),
+                     Theoph, 
+                     fixed = lKe + lKa + lCl ~ 1,
+                     start=c( -2.4, 0.45, -3.2),
+                     random = pdDiag(lKe + lKa + lCl ~ 1))
+fm0 <- nls(conc ~ SSfol(Dose, Time, lKe, lKa, lCl),
+                     Theoph, 
+                     start=list(lKe=-2.4,lKa=0.45,lCl=-3.2))
+varTest(fm1,fm0)
+```
+
+
+Another example using a dataset on white-browed coucals. 
+```{r}
+d <- read.csv("../data/growth_rates.csv")
+bc <- d[,c("nestling_ID2_cat","age","weight")]
+bc <- na.omit(bc)
+bc <- groupedData(weight ~ age | nestling_ID2_cat, data=bc)
+#plot(bc)
+
+m1couc <- nlme(weight ~ SSlogis(age, Asym, xmid, scal),
+               random = pdBlocked(list(Asym + scal ~ 1,xmid ~ 1)),
+               #random = pdBlocked(list(pdIdent(~ Asym + xmid),pdIdent(~ scal))),
+               groups = ~ nestling_ID2_cat,
+               fixed = Asym + xmid + scal ~ 1,
+               start = c(Asym = 90, xmid = 8, scal = 5),
+               data=bc)
+
+m0couc <- nlme(weight ~ SSlogis(age, Asym, xmid, scal),
+               random = Asym + xmid ~ 1,
+               fixed = Asym + xmid + scal ~ 1,
+               start = c(Asym = 90, xmid = 8, scal = 5),
+               data=bc)
+varTest(m1couc,m0couc)
+```
+
