@@ -49,14 +49,14 @@ modelStructnlme <- function(m1,m0,randm0){
 
   # names of fixed and random effects
   if (randm0){
-    namesRE0 <- attr(vc0,"Dimnames")[[1]]
+    namesRE0 <- colnames(m0$coefficients$random[[1]])
     namesFE0 <- names(m0$coefficients$fixed)
   }else{
     namesRE0 <- NULL
     if (pkgm0 == "lm") namesFE0 <- names(stats::coefficients(m0))
     if (pkgm0 == "nls") namesFE0 <- names(m0$m$getPars())
   }
-  namesRE1 <- attr(vc1,"Dimnames")[[1]]
+  namesRE1 <- colnames(m1$coefficients$random[[1]])
   nameVarTested <- namesRE1[!(namesRE1%in%namesRE0)]
 
   namesFE1 <- names(m1$coefficients$fixed)
@@ -76,14 +76,34 @@ modelStructnlme <- function(m1,m0,randm0){
 
   # retrieve names of parameters to identify their order in the FIM and in the cone
   #nbTotParam <- ncol(invfim)
-  int1 <- nlme::intervals(m1)
-  if (randm0){
-    int0 <- nlme::intervals(m0)
-    nameParams0 <- c(rownames(int0$fixed),eval(parse(text=paste("rownames(int0$reStruc$",nameRE,")",sep=""))))
-  }else{
-    nameParams0 <- names(stats::coefficients(m0))
+  # get the covariance parameters
+  Gamma1 <- getVarCovnlme(m1)
+  covNames1 <- NULL
+  covNames0 <- NULL
+  if (length(Gamma1)>1 & !Matrix::isDiagonal(Gamma1)){
+    lowDiag <- Gamma1
+    lowDiag[lower.tri(lowDiag,diag = T)] <- NA
+    posNonZeros <- which(lowDiag!=0,arr.ind = TRUE)
+    rowNonZeros <- posNonZeros[,"row"]
+    colNonZeros <- posNonZeros[,"col"]
+    covNames1 <- sapply(1:nrow(posNonZeros),FUN=function(i){paste0("cor(",namesRE1[rowNonZeros[i]],",",namesRE1[colNonZeros[i]],")")})
   }
-  nameParams1 <- c(rownames(int1$fixed),eval(parse(text=paste("rownames(int1$reStruc$",nameRE,")",sep=""))))
+  if (randm0) {
+    Gamma0 <- getVarCovnlme(m0)
+    if (length(Gamma0)>1 & !Matrix::isDiagonal(Gamma0)){
+      lowDiag <- Gamma0
+      lowDiag[lower.tri(lowDiag,diag = T)] <- NA
+      posNonZeros <- which(lowDiag!=0,arr.ind = TRUE)
+      rowNonZeros <- posNonZeros[,"row"]
+      colNonZeros <- posNonZeros[,"col"]
+      covNames0 <- sapply(1:nrow(posNonZeros),FUN=function(i){paste0("cor(",namesRE0[rowNonZeros[i]],",",namesRE0[colNonZeros[i]],")")})
+    }
+  }
+  
+  if (!prod(covNames0%in%covNames1)) stop("Error: the models should be nested but there are some covariances in m0 which are not in m1")
+  
+  nameParams0 <- c(namesFE0,paste0("sd(",namesRE0,")"),covNames0)
+  nameParams1 <- c(namesFE1,paste0("sd(",namesRE1,")"),covNames1)
   paramTested <- !(nameParams1 %in% nameParams0)
   dd <- data.frame(names=nameParams1,tested=paramTested)
   dd$type <- c(rep("beta",nbFixEff1),substr(dd$names[(nbFixEff1+1):nrow(dd)],1,2))
@@ -183,7 +203,7 @@ modelStructlme4 <- function(m1,m0,linmodel,randm0){
   nbRanEff1 <- length(namesRE1)
   nbRanEffTest <- nbRanEff1-nbRanEff0
 
-  if (nbRanEff0==nbRanEff1) stop("Error: there are the same number of random effects in models m0 and m1. Please check the models' formulation.")
+  #if (nbRanEff0==nbRanEff1) stop("Error: there are the same number of random effects in models m0 and m1. Please check the models' formulation.")
 
   # Structure of the covariance matrix (diagonal, blocked or full)
   nbCompVar1 <- lme4::getME(m1,"devcomp")$dims["nth"]
@@ -198,6 +218,8 @@ modelStructlme4 <- function(m1,m0,linmodel,randm0){
   nbCov1 <- nbCompVar1 - nbRanEff1
   nbCov0 <- nbCompVar0 - nbRanEff0
 
+  if (nbCov1 < nbCov0) stop("Error: the models should be nested but there are some covariances in m0 which are not in m1")
+  
   # CHECK IF ML WAS USED AND NOT REML
   if (lme4::isREML(m1)) stop("Error: the models should be fitted using Maximum Likelihood (ML) instead of Restricted ML (REML)")
   if (randm0) if (lme4::isREML(m0)) stop("Error: the models should be fitted using Maximum Likelihood (ML) instead of Restricted ML (REML)")
@@ -388,3 +410,4 @@ pckName <- function(m1){
   }
   return(pkg)
 }
+

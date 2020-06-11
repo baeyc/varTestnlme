@@ -23,6 +23,7 @@ extractFIMnlme <- function(m,struct){
   namesRE <- attr(vc,"Dimnames")[[1]]
   
   apVarNu <- m$apVar # covariance matrix of TRANSFORMED variance components
+  if (is.character(apVarNu)) stop(paste0("Error in nlme package for apVar in m1: ",apVarNu,"\n Try to re-run with fim='compute'"))
   # variances are log-transformed in nu and covariances are logit-transformed (see Pinheiro and Bates)
   meanNu <- attr(apVarNu,"Pars")
   nre <- length(namesRE)

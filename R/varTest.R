@@ -58,7 +58,7 @@
 #' Silvapulle  MJ, Sen PK, 2011. Constrained statistical inference: order, inequality and shape constraints.
 #' @export varTest
 #' @importFrom stats formula pchisq
-varTest <- function(m1,m0,control = list(M=5000),
+varTest <- function(m1,m0,control = list(M=5000,parallel=T,nbcores=1,B=1000),
                     pval.comp = "bounds",
                     fim = "extract"){
   
@@ -66,18 +66,18 @@ varTest <- function(m1,m0,control = list(M=5000),
   if (!is.null(control)) {
     optionNames <- names(control)
     if (!"M" %in% optionNames) control$M=5000
-    if (!"parallel" %in% optionNames) control$parallel=F
+    if (!"parallel" %in% optionNames) control$parallel=T
     if (!"nbcores" %in% optionNames) control$nbcores=1
+    if (!"B" %in% optionNames) control$B = 1000
   }
   
-  message("Variance components testing in mixed-effects models\n")
+  message("Variance components testing in mixed-effects models")
   
   # Identify the packages from which m0 and m1 come from
   cl0 <- class(m0)
   cl1 <- class(m1)
   
-  linmodel <- ("lme" %in% cl1 || cl1 %in% "lmerMod")
-  if (cl1[1] %in% "nlmerMod") stop("Error: the Fisher information matrix is not available for nonlinear mixed effect models fitted with nlmer() of package lme4. Please use nlme or saemix packages.")
+  linmodel <- !(("nlme" %in% cl1) || ("nlmerMod" %in% cl1) || ("glmerMod" %in% cl1))
   pkg <- pckName(m1)  
   
   # Identify whether there is any random effects under m0
@@ -106,7 +106,35 @@ varTest <- function(m1,m0,control = list(M=5000),
   if (pkg=="lme4") msdata <- modelStructlme4(m1,m0,linmodel,randm0)
   if (pkg=="saemix") msdata <- modelStructsaemix(m1,m0,randm0)
   
-  message("(models fitted using the",pkg,"package)\n\n")
+  message("(models fitted using the ",pkg," package)\n")
+  if (length(msdata$nameVarTested)==1){
+    message(paste("Testing that the variance of",msdata$nameVarTested,"is null\n"))
+  }else if (length(msdata$nameVarTested) > 1){
+    message(paste("Testing that the variances of",paste(msdata$nameVarTested,sep="",collapse = " and "),"are null\n"))
+  }else{
+    message(paste("Testing that covariances ",paste0(msdata$detailStruct$names[msdata$detailStruct$tested],collapse=", "),"are null"))
+  }
+  
+  
+  ## TO COMPLETE
+  if (pkg=="lme4"){
+    message(paste("model under H1:",deparse(formula(m1),width.cutoff=500)))
+    message(paste("model under H0:",deparse(formula(m0),width.cutoff=500)))
+  }else if (pkg=="nlme"){
+    if (linmodel){
+      message(paste("model under H1:",deparse(m1$call$fixed)," (fixed effects), ",deparse(m1$call$random)," (random effects)"))
+      if (randm0) message(paste("model under H0:",deparse(m0$call$fixed)," (fixed effects), ",deparse(m0$call$random)," (random effects)"))
+      if (!randm0) message(paste("model under H0:",deparse(formula(m0),width.cutoff=500),"(no random effects)\n"))
+    }else{
+      message(paste("model under H1:",deparse(formula(m1))," (non linear model), ",deparse(m1$call$random)," (random effects)"))
+      if (randm0){
+        message(paste("model under H1:",deparse(formula(m0))," (non linear model), ",deparse(m0$call$random)," (random effects)"))
+      }else{
+        message(paste("model under H0:",deparse(formula(m0))," (no random effects)"))
+      }
+    }
+  }
+  
   
   # LRT and Fisher Information Matrix
   # LRT
@@ -121,35 +149,18 @@ varTest <- function(m1,m0,control = list(M=5000),
     if (pkg=="saemix") lrt <- -2*(ll0 - m1@results@ll.is)
   }
   
-  # FIM
-  if (pkg=="nlme") invfim <- as.matrix(Matrix::bdiag(m1$varFix,m1$apVar)) # error message in case apVar is non positive definite
-  if (pkg=="lme4"){
-    if (linmodel){
-      invfim <- as.matrix(merDeriv::vcov.lmerMod(m1,full=T))
-    }else{
-      invfim <- as.matrix(merDeriv::vcov.glmerMod(m1,full=T))
-    }
-  }
-  if (pkg=="saemix") invfim <- chol2inv(chol(m1@results@fim))
-  
-  
   # Constructing chi-bar-square object
   cbs <- methods::new("chiBarSquareObject")
   cbs@orthan <- msdata$structGamma$diag
   
-  if (msdata$structGamma$diag || msdata$structGamma$full){
-    # reorder FIM so that the tested variances are at the end, before the residual covariance structure
-    neworder <- as.numeric(rownames(msdata$detailStruct[order(msdata$detailStruct$tested,msdata$detailStruct$names),]))
-    invfim <- invfim[c(neworder,nrow(invfim)-msdata$dims$dimSigma+1),c(neworder,nrow(invfim)-msdata$dims$dimSigma+1)]
-    
-    if (msdata$structGamma$diag){
+  if (msdata$structGamma$diag){
       cbs@dims <- list(dimBeta=list(dim0=msdata$dims$nbFE0,
                                     dimR=msdata$dims$nbFE1-msdata$dims$nbFE0),
                        dimGamma=list(dim0=msdata$dims$nbRE0,
                                      dimR=0,
                                      dimSplus=msdata$dims$nbRE1-msdata$dims$nbRE0),
                        dimSigma=msdata$dims$dimSigma)
-    }else{
+   }else if (msdata$structGamma$full){
       nbCovTestedAlone <- (msdata$dims$nbRE0==msdata$dims$nbRE1)*(msdata$dims$nbCov1-msdata$dims$nbCov0) # nb of covariances tested without the corresponding variances being tested
       cbs@dims <- list(dimBeta=list(dim0=msdata$dims$nbFE0,
                                     dimR=msdata$dims$nbFE1-msdata$dims$nbFE0),
@@ -157,15 +168,7 @@ varTest <- function(m1,m0,control = list(M=5000),
                                      dimR=(msdata$dims$nbRE0)*(msdata$dims$nbRE1-msdata$dims$nbRE0)+nbCovTestedAlone,
                                      dimSplus=msdata$dims$nbRE1-msdata$dims$nbRE0),
                        dimSigma=msdata$dims$dimSigma)
-    }
-    
   }else if (msdata$structGamma$blockDiag){
-    # get indices for the re-ordered parameters : first the fixed effects, then the variances and covariances which are NOT tested,
-    # then the covariances tested that are not part of a tested block of sub-matrix, and then the blocks of subsets of variances tested
-    dd <- msdata$detailStruct[order(msdata$detailStruct$tested,msdata$detailStruct$block,msdata$detailStruct$covInBlock),]
-    neworder <- as.numeric(rownames(dd))
-    invfim <- invfim[c(neworder,nrow(invfim)-msdata$dims$dimSigma+1),c(neworder,nrow(invfim)-msdata$dims$dimSigma+1)]
-    
     dim0 <- nrow(dd[!dd$tested,])-msdata$dims$nbFE1
     #dimRplus <- length(dd$names[dd$tested & dd$diagBlock])
     dimR <- length(dd$names[dd$covInBlock!=1 & dd$type=="co" & dd$tested])
@@ -180,26 +183,6 @@ varTest <- function(m1,m0,control = list(M=5000),
                                    dimSplus=dimSplus),
                      dimSigma=msdata$dims$dimSigma)
   }
-  cbs@V <- invfim
-  cbs@invV <- chol2inv(chol(invfim))
-  
-  if (length(msdata$nameVarTested)==1){
-    message(paste("Testing that the variance of",msdata$nameVarTested,"is null\n"))
-  }else{
-    message(paste("Testing that the variances of",paste(msdata$nameVarTested,sep="",collapse = " and "),"are null\n"))
-  }
-  
-  
-  ## TO COMPLETE
-  if (pkg=="lme4"){
-    message(paste("model under H1:",deparse(formula(m1),width.cutoff=500),"\n"))
-    message(paste("model under H0:",deparse(formula(m0),width.cutoff=500),"\n"))
-  }
-  if (pkg=="nlme"){
-    message(paste("model under H1:",deparse(m1$call$fixed,width.cutoff=500),"(fixed effects)",",",deparse(m1$call$random,width.cutoff=500),"(random effects)\n"))
-    if (randm0) message(paste("model under H0:",deparse(m0$call$fixed,width.cutoff=500),"(fixed effects)",",",deparse(m0$call$random,width.cutoff=500),"(random effects)\n"))
-    if (!randm0) message(paste("model under H0:",deparse(formula(m0),width.cutoff=500),"(fixed effects)\n"))
-  }
   
   # Identify the components of the mixture
   # -> some weights are null, depending on whether the cone includes, or is contained in a linear space
@@ -208,10 +191,11 @@ varTest <- function(m1,m0,control = list(M=5000),
   uppboundpval <- (1/2)*sum(stats::pchisq(lrt,cbs@df[(length(cbs@df)-1):length(cbs@df)],lower.tail = F))
   lowboundpval <- (1/2)*sum(stats::pchisq(lrt,cbs@df[1:2],lower.tail = F))
   
-  # Compute FIM only if necessary (i.e. when weights of the chi-bar-square need to be computed)
-  if (pval.comp != "bounds" & length(cbs@df) > 2){
+
+  # FIM
+  if (pval.comp != "bounds" & (length(cbs@df) > 2)){
     if (fim == "extract"){
-      message("\nExtracting Fisher Information matrix...")
+      message("Extracting Fisher Information matrix...")
       if (pkg=="nlme"){
         if (msdata$structGamma$diag) struct <- "diag"
         if (msdata$structGamma$full) struct <- "full"
@@ -221,6 +205,7 @@ varTest <- function(m1,m0,control = list(M=5000),
         colnames(invfim) <- rownames(invfim) <- c(names(m1$coefficients$fixed),colnames(apVarTheta))
       }
       if (pkg=="lme4"){
+        if (cl1[1] %in% "nlmerMod") stop("Fisher information matrix is not available for nonlinear mixed effect models fitted with nlmer() of package lme4. Please use nlme or saemix packages, or option fim='compute'.\n")
         if (linmodel){
           invfim <- as.matrix(merDeriv::vcov.lmerMod(m1,full=T))
         }else{
@@ -229,10 +214,36 @@ varTest <- function(m1,m0,control = list(M=5000),
       }
       if (pkg=="saemix") invfim <- chol2inv(chol(m1@results@fim))
     }else if (fim == "compute"){
-      message("Computation of the FIM is not yet implemented")
+      message("Computing Fisher Information Matrix by bootstrap...\n")
+      invfim <- bootinvFIM(m1, control$B)
+    }else if (is.matrix(fim)){
+      invfim <- chol2inv(fim)
     }else{
       stop("Unknown option for fim. Please use fim='extract' or fim='compute'")
-    }  
+    }
+    
+    # re-order FIM
+    if (msdata$structGamma$diag || msdata$structGamma$full){
+      # reorder FIM so that the tested variances are at the end, before the residual covariance structure
+      # neworder is a vector with ordered indices from 1 to total nb of parameters - 1 (residual not accounted for)
+      neworder <- as.numeric(rownames(msdata$detailStruct[order(msdata$detailStruct$tested,msdata$detailStruct$names),]))
+      invfim <- invfim[c(neworder,nrow(invfim)-msdata$dims$dimSigma+1),c(neworder,nrow(invfim)-msdata$dims$dimSigma+1)]
+    }else if (msdata$structGamma$blockDiag){
+      # get indices for the re-ordered parameters : first the fixed effects, then the variances and covariances which are NOT tested,
+      # then the covariances tested that are not part of a tested block of sub-matrix, and then the blocks of subsets of variances tested
+      dd <- msdata$detailStruct[order(msdata$detailStruct$tested,msdata$detailStruct$block,msdata$detailStruct$covInBlock),]
+      neworder <- as.numeric(rownames(dd))
+      invfim <- invfim[c(neworder,nrow(invfim)-msdata$dims$dimSigma+1),c(neworder,nrow(invfim)-msdata$dims$dimSigma+1)]
+    }
+    
+  }else{
+    invfim <- matrix(NA,nrow=msdata$dims$nbFE1+msdata$dims$nbRE1+msdata$dims$dimSigma,ncol=msdata$dims$nbFE1+msdata$dims$nbRE1+msdata$dims$dimSigma)
+  }
+  cbs@V <- invfim
+  cbs@invV <- chol2inv(chol(invfim))
+  if (is.matrix(fim)){
+    cbs@V <- chol2inv(fim)
+    cbs@invV <- fim
   }
   
   # Compute chi-bar-square weights
@@ -251,7 +262,7 @@ varTest <- function(m1,m0,control = list(M=5000),
   
   # print results
   message(paste("\nLikelihood ratio test statistics: \n LRT = ",format(lrt,digits=5),
-            "\n\nLimiting distribution: \n"))
+            "\n\nLimiting distribution:"))
   if (length(cbs@df)>1){
     message(paste("mixture of",length(cbs@df),"chi-bar-square distributions with degrees of freedom",paste(cbs@df,sep="",collapse = ", "),"\n"))
     if (pval.comp %in% c("approx","both")){
@@ -259,7 +270,7 @@ varTest <- function(m1,m0,control = list(M=5000),
                 "\n\np-value (from estimated weights):",format(pvalue1,digits = 5)))
       if (length(wcbs$randomCBS)>0) message(paste("\np-value (from simulated chi-bar-square distribution):",format(pvalue2,digits=5),"\n"))
     }
-    if (pval.comp %in% c("bounds","both")) message(paste("\nlower-bound for p-value:",format(lowboundpval,digits=5)," upper bound for p-value:",format(uppboundpval,digits=5)))
+    if (pval.comp %in% c("bounds","both")) message(paste("lower-bound for p-value:",format(lowboundpval,digits=5)," upper bound for p-value:",format(uppboundpval,digits=5)))
   }else{
     message(paste0("  chi-bar-square distributions with ",cbs@df," degree of freedom\n"))
     message(paste0("  p-value: ",format(pvalue1,digits=5)))

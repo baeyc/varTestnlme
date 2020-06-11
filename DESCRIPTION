@@ -37,8 +37,9 @@ Imports:
     foreach,
     methods,
     doParallel,
-    parallel
-RoxygenNote: 7.0.2
+    parallel,
+    lmeresampler
+RoxygenNote: 7.1.0
 Suggests: 
     knitr,
     rmarkdown,
