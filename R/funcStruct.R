@@ -24,7 +24,6 @@
 #' \item{\code{structGamma}}{the structure of the covariance matrix of the random effects as a list of three logical elements: \code{diag},
 #' \code{full} and \code{blockDiag}, equal to \code{TRUE} if the matrix is diagonal, full or block-diagonal respectively.}
 #' 
-#' @noRd
 NULL
 
 #' @rdname funcStruct

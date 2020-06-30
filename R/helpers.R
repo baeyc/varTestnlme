@@ -5,10 +5,6 @@
 #'
 #' @description Functions extracting features from nlme or lme4 objects.
 #'
-#' @rdname helpers
-
-
-#' @rdname getVarCovnlme
 #' @param m a fit from nlme package (either linear or nonlinear)
 getVarCovnlme <- function(m){
   

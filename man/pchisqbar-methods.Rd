@@ -3,7 +3,8 @@
 \name{pchisqbar}
 \alias{pchisqbar}
 \alias{pchisqbar,numeric,chiBarSquareObject,logical-method}
-\title{pchisqbar}
+\title{pchisqbar
+Cumulative distribution function of the chi-bar-square distribution}
 \usage{
 \S4method{pchisqbar}{numeric,chiBarSquareObject,logical}(q, object, lower.tail = T)
 }
@@ -16,4 +17,5 @@
 }
 \description{
 pchisqbar
+Cumulative distribution function of the chi-bar-square distribution
 }

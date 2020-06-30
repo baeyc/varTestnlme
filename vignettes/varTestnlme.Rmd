@@ -158,28 +158,3 @@ fm0 <- nls(conc ~ SSfol(Dose, Time, lKe, lKa, lCl),
 varTest(fm1,fm0)
 ```
 
-
-Another example using a dataset on white-browed coucals. 
-```{r}
-d <- read.csv("../data/growth_rates.csv")
-bc <- d[,c("nestling_ID2_cat","age","weight")]
-bc <- na.omit(bc)
-bc <- groupedData(weight ~ age | nestling_ID2_cat, data=bc)
-#plot(bc)
-
-m1couc <- nlme(weight ~ SSlogis(age, Asym, xmid, scal),
-               random = pdBlocked(list(Asym + scal ~ 1,xmid ~ 1)),
-               #random = pdBlocked(list(pdIdent(~ Asym + xmid),pdIdent(~ scal))),
-               groups = ~ nestling_ID2_cat,
-               fixed = Asym + xmid + scal ~ 1,
-               start = c(Asym = 90, xmid = 8, scal = 5),
-               data=bc)
-
-m0couc <- nlme(weight ~ SSlogis(age, Asym, xmid, scal),
-               random = Asym + xmid ~ 1,
-               fixed = Asym + xmid + scal ~ 1,
-               start = c(Asym = 90, xmid = 8, scal = 5),
-               data=bc)
-varTest(m1couc,m0couc)
-```
-

@@ -45,7 +45,7 @@ setGeneric("pchisqbar", function(q,object,lower.tail){standardGeneric("pchisqbar
 #' @name dfchisqbar
 #' @aliases dfchisqbar,chiBarSquareObject-method
 #' @title dfchisqbar
-#' @definition Computes the degrees of freedom of the chi-square involved in the mixture
+#' Computes the degrees of freedom of the chi-square involved in the mixture
 #' @param object a chiBarSquareObject
 #' @rdname dfchisqbar-methods
 #' @exportMethod dfchisqbar
@@ -68,7 +68,7 @@ setMethod("dfchisqbar",
 #' @name pchisqbar
 #' @aliases pchisqbar,numeric,chiBarSquareObject,logical-method
 #' @title pchisqbar
-#' @definition Cumulative distribution function of the chi-bar-square distribution
+#' Cumulative distribution function of the chi-bar-square distribution
 #' @param q the quantile
 #' @param object a chiBarSquareObject
 #' @param lower.tail logical, default to TRUE

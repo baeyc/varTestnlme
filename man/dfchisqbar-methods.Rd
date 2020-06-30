@@ -3,7 +3,8 @@
 \name{dfchisqbar}
 \alias{dfchisqbar}
 \alias{dfchisqbar,chiBarSquareObject-method}
-\title{dfchisqbar}
+\title{dfchisqbar
+Computes the degrees of freedom of the chi-square involved in the mixture}
 \usage{
 \S4method{dfchisqbar}{chiBarSquareObject}(object)
 }
@@ -12,4 +13,5 @@
 }
 \description{
 dfchisqbar
+Computes the degrees of freedom of the chi-square involved in the mixture
 }

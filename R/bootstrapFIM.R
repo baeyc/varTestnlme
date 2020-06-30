@@ -6,7 +6,7 @@
 #' of the covariancole matrix of the model's parameters obtained via parametric bootstrap.
 #'
 #' @name bootinvFIM
-#' @aliases FIM bootstrap
+#' @aliases invFIM bootstrap
 #'
 #' @param m a fitted model that will be used as the basis of the parametric bootstrap (providing the initial maximum
 #' likelihood estimate of the parameters and the modelling framework)
@@ -20,10 +20,10 @@ bootinvFIM <- function(m, B=1000){
 
   mySummlme4 <- function(m,diagSigma=F) {
     beta <- lme4::fixef(m)
-    resStd <- sigma(m)
+    resStd <- stats::sigma(m)
     grpFactor <- names(lme4::getME(m,"cnms"))
     vc <- lme4::VarCorr(m)
-    Sigma <- as.matrix(bdiag(as.matrix(vc)))
+    Sigma <- as.matrix(Matrix::bdiag(as.matrix(vc)))
     if(diagSigma){
       theta <- c(beta,diag(Sigma),resStd)
     }else{
@@ -33,7 +33,7 @@ bootinvFIM <- function(m, B=1000){
   }
   mySummnlme <- function(m,diagSigma=F) {
     beta <- nlme::fixef(m)
-    resStd <- sigma(m)
+    resStd <- stats::sigma(m)
     Sigma <- getVarCovnlme(m)
     if(diagSigma){
       theta <- c(beta,diag(Sigma),resStd)
@@ -92,7 +92,7 @@ bootinvFIM <- function(m, B=1000){
   }else{
     if (pkg == "lme4"){
       beta <- lme4::fixef(m) # fixed effects
-      resStd <- sigma(m)
+      resStd <- stats::sigma(m)
       grpFactor <- unique(names(lme4::getME(m,"cnms")))
       vc <- lme4::VarCorr(m)
       Sigma <- getVarCovlme4(m)
@@ -116,12 +116,12 @@ bootinvFIM <- function(m, B=1000){
       #                                  .packages='varTestnlme', 
       #                                  .combine=rbind) %dopar% {      
       b <- 1
-      tbar <- txtProgressBar(min=1,max=B,char = ".", style = 3)
+      tbar <- utils::txtProgressBar(min=1,max=B,char = ".", style = 3)
       grpVar <- m@frame[,grpFactor]
       nmeInd <- unique(grpVar)
       while (b <= B){  
-        setTxtProgressBar(tbar,b)      
-        phi <- t(t(chol(Sigma))%*%matrix(rnorm(nrandEfft*nind,0,1),ncol=nind))
+        utils::setTxtProgressBar(tbar,b)      
+        phi <- t(t(chol(Sigma))%*%matrix(stats::rnorm(nrandEfft*nind,0,1),ncol=nind))
         betaAll <- as.data.frame(matrix(rep(beta,nind),nrow=nind,byrow = TRUE))
         betaAll <- cbind(betaAll,grp=grpVar)
         names(betaAll) <- c(names(beta),grpFactor)
@@ -152,10 +152,10 @@ bootinvFIM <- function(m, B=1000){
         simuResp <- eval(parse(text=paste0(nlmod,"(",modAndCov,",",modAndParam,")"))) 
         
         d <- m@frame
-        d[,responseVar] <- simuResp + rnorm(nrow(betaAll),0,resStd)
+        d[,responseVar] <- simuResp + stats::rnorm(nrow(betaAll),0,resStd)
 
         fitInd <- suppressWarnings(try({setTimeLimit(2)
-                                        update(m, data=d)},silent=TRUE))
+                                        stats::update(m, data=d)},silent=TRUE))
         #fitInd <- update(m, data=d)
         
         if (!inherits(fitInd,"try-error")){
@@ -172,7 +172,7 @@ bootinvFIM <- function(m, B=1000){
 
     if (pkg == "nlme"){
       beta <- nlme::fixef(m) # fixed effects
-      resStd <- sigma(m)
+      resStd <- stats::sigma(m)
       Sigma <- getVarCovnlme(m)
 
       nind <- nrow(m$coefficients$random[[1]]) # only one level of random effects
@@ -191,11 +191,11 @@ bootinvFIM <- function(m, B=1000){
       thetaBoot <- numeric()
         
       b <- 1
-      tbar <- txtProgressBar(min=1,max=B,char = ".", style = 3)
+      tbar <- utils::txtProgressBar(min=1,max=B,char = ".", style = 3)
       grpVar <- m$groups[,1]
       while (b <= B){  
-        setTxtProgressBar(tbar,b)
-        phi <- t(chol(Sigma)%*%matrix(rnorm(nrow(Sigma)*nind,0,1),ncol=nind))
+        utils::setTxtProgressBar(tbar,b)
+        phi <- t(chol(Sigma)%*%matrix(stats::rnorm(nrow(Sigma)*nind,0,1),ncol=nind))
         betaAll <- as.data.frame(matrix(rep(beta,nind),nrow=nind,byrow = T))
         betaAll <- cbind(betaAll,grp=grpVar)
         names(betaAll) <- c(names(beta),grpFactor)
@@ -213,11 +213,11 @@ bootinvFIM <- function(m, B=1000){
         }
 
         # get name of response variable
-        responseVar <- unlist(strsplit(as.character(getResponseFormula(m)),"~"))[[2]]
+        responseVar <- unlist(strsplit(as.character(nlme::getResponseFormula(m)),"~"))[[2]]
         # get name of internal nonlinear function
-        nlmod <- unlist(strsplit(as.character(getCovariateFormula(m))[2],"[(]"))[1]
+        nlmod <- unlist(strsplit(as.character(nlme::getCovariateFormula(m))[2],"[(]"))[1]
         # get names of all variables, and identify the covariables as the complement of response variable and grouping factor
-        data.m <- getData(m)
+        data.m <- nlme::getData(m)
         namesAllVar <- names(data.m)
         namesCov <- namesAllVar[! (namesAllVar %in% c(responseVar,grpFactor))]
 
@@ -232,11 +232,11 @@ bootinvFIM <- function(m, B=1000){
         simuResp <- with(data.m,
                          eval(parse(text=as.character(getCovariateFormula(m))[2])))
 
-        data.m[,responseVar] <- simuResp  + rnorm(nrow(betaAll),0,resStd)
+        data.m[,responseVar] <- simuResp  + stats::rnorm(nrow(betaAll),0,resStd)
 
         #############################
         fitInd <- suppressWarnings(try({setTimeLimit(2)
-                                        update(m, data=data.m)},silent=TRUE))
+                                        stats::update(m, data=data.m)},silent=TRUE))
                         
         if (!inherits(fitInd,"try-error")){
           thetaHatBoot <- mySummnlme(fitInd,diagSigma)
@@ -250,29 +250,29 @@ bootinvFIM <- function(m, B=1000){
     }
 
     if (pkg == "saemix"){
-      newdata <- saemix::simul.saemix(m, nsim=B, predictions = T, res.var = T)
-
-      no_cores <- max(1,parallel::detectCores() - 1)
-      # Initiate cluster
-      doParallel::registerDoParallel(no_cores)
-      
-      thetaBoot <- foreach::foreach(i=1:B, 
-                                    .packages='varTestnlme', 
-                                    .combine=rbind) %dopar% {   
-        dataB <- cbind(m@data@data,newdata@sim.data@datasim[newdata@sim.data@datasim$irep==i,])
-        saemixDataB <- saemixData(dataB, header = T, name.group = m@data@name.group, name.predictors = m@data@name.predictors, name.response = "ysim")
-        newoptions <- m1@options
-        newoptions$displayProgress <- F
-        newoptions$fim <- F
-        newoptions$ll.is <- F
-        newoptions$print <- F
-        newoptions$nbdisplay <- 1e+06
-        saemix::saemix(model = m@model, data = saemixDataB, control = newoptions)
-        mb <- update(m,data=newdata)
-        tmp <- as.data.frame(VarCorr(mb))
-        c(mb@beta,tmp$vcov)
-        # TO FINISH
-      }
+      # newdata <- saemix::simul.saemix(m, nsim=B, predictions = T, res.var = T)
+      # 
+      # no_cores <- max(1,parallel::detectCores() - 1)
+      # # Initiate cluster
+      # doParallel::registerDoParallel(no_cores)
+      # 
+      # thetaBoot <- foreach::foreach(i=1:B, 
+      #                               .packages='varTestnlme', 
+      #                               .combine=rbind) %dopar% {   
+      #   dataB <- cbind(m@data@data,newdata@sim.data@datasim[newdata@sim.data@datasim$irep==i,])
+      #   saemixDataB <- saemixData(dataB, header = T, name.group = m@data@name.group, name.predictors = m@data@name.predictors, name.response = "ysim")
+      #   newoptions <- m1@options
+      #   newoptions$displayProgress <- F
+      #   newoptions$fim <- F
+      #   newoptions$ll.is <- F
+      #   newoptions$print <- F
+      #   newoptions$nbdisplay <- 1e+06
+      #   saemix::saemix(model = m@model, data = saemixDataB, control = newoptions)
+      #   mb <- update(m,data=newdata)
+      #   tmp <- as.data.frame(VarCorr(mb))
+      #   c(mb@beta,tmp$vcov)
+      #   # TO FINISH
+      #}
     }
 
     invfim <- cov(thetaBoot) # empirical covariance matrix of the bootstrap samples as an estimator of the inverse of the FIM

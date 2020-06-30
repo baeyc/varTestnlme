@@ -15,6 +15,9 @@ reference:
     contents:
       - varTest
       - extractFIMnlme
+      - bootinvFIM
+      - getVarCovnlme
+      - getVarCovlme4
       - weightsChiBarSquare
   - title: Classes
     desc: S4 class objects

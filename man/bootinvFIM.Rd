@@ -2,7 +2,7 @@
 % Please edit documentation in R/bootstrapFIM.R
 \name{bootinvFIM}
 \alias{bootinvFIM}
-\alias{FIM}
+\alias{invFIM}
 \alias{bootstrap}
 \title{Approximation of the (inverse of the) Fisher Information Matrix}
 \usage{
