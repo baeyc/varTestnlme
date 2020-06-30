@@ -1,9 +1,9 @@
-#' @name helpers
-#' @rdname helpers
+#' @name getVarCovnlme
+#' @rdname getVarCovnlme
 #'
-#' @title Helpers for packages nlme and lme4
+#' @title Extract covariance matrix 
 #'
-#' @description Functions extracting features from nlme or lme4 objects.
+#' @description Extract covariance matrix of the random effects for a model fitted with nlme.
 #'
 #' @param m a fit from nlme package (either linear or nonlinear)
 getVarCovnlme <- function(m){
