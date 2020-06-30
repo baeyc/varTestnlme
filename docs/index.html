@@ -37,7 +37,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">varTestnlme</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -55,6 +55,9 @@
      
     Get started
   </a>
+</li>
+<li>
+  <a href="articles/index.html">Articles</a>
 </li>
 <li>
   <a href="reference/index.html">
@@ -123,113 +126,28 @@
 <div id="example" class="section level2">
 <h2 class="hasAnchor">
 <a href="#example" class="anchor"></a>Example</h2>
-<div id="with-default-options" class="section level3">
-<h3 class="hasAnchor">
-<a href="#with-default-options" class="anchor"></a>With default options</h3>
-<p>The first example is based on the <code>nlme</code> package.</p>
-<div class="sourceCode" id="cb3"><pre class="r"><span class="co"># First, fit models from your preferred mixed-effects models package</span>
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">nlme</span>)
-<span class="no">fm1.lis</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/nlsList.html">nlsList</a></span>(<span class="no">rate</span> ~ <span class="fu"><a href="https://rdrr.io/r/stats/SSasympOff.html">SSasympOff</a></span>(<span class="no">pressure</span>, <span class="no">Asym</span>, <span class="no">lrc</span>, <span class="no">c0</span>), <span class="kw">data</span><span class="kw">=</span><span class="no">Dialyzer</span>)
-<span class="no">nm1e</span> <span class="kw">&lt;-</span> <span class="fu"><a href="reference/extractFIMnlme.html">nlme</a></span>(<span class="no">fm1.lis</span>, <span class="kw">random</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/pdSymm.html">pdSymm</a></span>(<span class="no">Asym</span> + <span class="no">lrc</span> ~ <span class="fl">1</span>))
-<span class="no">nm0e</span> <span class="kw">&lt;-</span> <span class="fu"><a href="reference/extractFIMnlme.html">nlme</a></span>(<span class="no">fm1.lis</span>, <span class="kw">random</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/pdDiag.html">pdDiag</a></span>(<span class="no">lrc</span> ~ <span class="fl">1</span>))
+<p>An example using the <code>nlme</code> package.</p>
+<div class="sourceCode" id="cb3"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">nlme</span>)
+<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span>(<span class="st">"Orthodont"</span>)
 
-<span class="co"># Then, simply use the varTest function to compare the two models</span>
-<span class="co"># It will automatically detect the covariance structures</span>
-<span class="no">vte</span> <span class="kw">&lt;-</span> <span class="fu"><a href="reference/varTest.html">varTest</a></span>(<span class="no">nm1e</span>, <span class="no">nm0e</span>, <span class="kw">fim</span> <span class="kw">=</span> <span class="st">"compute"</span>, <span class="kw">pval.comp</span> <span class="kw">=</span> <span class="st">"both"</span>, <span class="kw">control</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">B</span><span class="kw">=</span><span class="fl">10</span>))
+<span class="co"># using nlme, with correlated slope and intercept</span>
+<span class="no">m1</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/lme.html">lme</a></span>(<span class="no">distance</span> ~ <span class="fl">1</span> + <span class="no">Sex</span> + <span class="no">age</span> + <span class="no">age</span>*<span class="no">Sex</span>, <span class="kw">random</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/pdSymm.html">pdSymm</a></span>(<span class="no">Subject</span> ~ <span class="fl">1</span> + <span class="no">age</span>), <span class="kw">data</span> <span class="kw">=</span> <span class="no">Orthodont</span>, <span class="kw">method</span> <span class="kw">=</span> <span class="st">"ML"</span>)
+<span class="no">m0</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/lme.html">lme</a></span>(<span class="no">distance</span> ~ <span class="fl">1</span> + <span class="no">Sex</span> + <span class="no">age</span> + <span class="no">age</span>*<span class="no">Sex</span>, <span class="kw">random</span> <span class="kw">=</span> ~ <span class="fl">1</span> <span class="kw">|</span> <span class="no">Subject</span>, <span class="kw">data</span> <span class="kw">=</span> <span class="no">Orthodont</span>, <span class="kw">method</span> <span class="kw">=</span> <span class="st">"ML"</span>)
+
+<span class="no">vt</span> <span class="kw">&lt;-</span> <span class="fu"><a href="reference/varTest.html">varTest</a></span>(<span class="no">m1</span>,<span class="no">m0</span>)
 <span class="co">#&gt; Variance components testing in mixed-effects models</span>
 <span class="co">#&gt; (models fitted using the nlme package)</span>
-<span class="co">#&gt; Testing that the variance of Asym is null</span>
-<span class="co">#&gt; model under H1: rate ~ SSasympOff(pressure, Asym, lrc, c0)  (non linear model),  structure(list(Subject = structure(c(2.04719313529589, 0, -1.19146681079193  (random effects)model under H1: rate ~ SSasympOff(pressure, Asym, lrc, c0)  (non linear model),  ), formula = structure(list(Asym ~ 1, lrc ~ 1), class = "listForm"), Dimnames = list(  (random effects)model under H1: rate ~ SSasympOff(pressure, Asym, lrc, c0)  (non linear model),      c("Asym", "lrc"), c("Asym", "lrc")), class = c("pdSymm",   (random effects)model under H1: rate ~ SSasympOff(pressure, Asym, lrc, c0)  (non linear model),  "pdMat"))), settings = c(0, 1, 0, 0), class = "reStruct")  (random effects)</span>
-<span class="co">#&gt; model under H1: rate ~ SSasympOff(pressure, Asym, lrc, c0)  (non linear model),  structure(list(Subject = structure(-1.19146681079193, formula = structure(list(  (random effects)model under H1: rate ~ SSasympOff(pressure, Asym, lrc, c0)  (non linear model),      lrc ~ 1), class = "listForm"), Dimnames = list("lrc", "lrc"), class = c("pdDiag",   (random effects)model under H1: rate ~ SSasympOff(pressure, Asym, lrc, c0)  (non linear model),  "pdMat"))), settings = c(0, 1, 0, 1), class = "reStruct")  (random effects)</span>
+<span class="co">#&gt; Testing that the variance of age is null</span>
+<span class="co">#&gt; model under H1: distance ~ 1 + Sex + age + age * Sex  (fixed effects),  pdSymm(Subject ~ 1 + age)  (random effects)</span>
+<span class="co">#&gt; model under H0: distance ~ 1 + Sex + age + age * Sex  (fixed effects),  ~1 | Subject  (random effects)</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Likelihood ratio test statistics: </span>
-<span class="co">#&gt;  LRT =  151.85 </span>
+<span class="co">#&gt;  LRT =  0.83311 </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Limiting distribution:</span>
 <span class="co">#&gt; mixture of 2 chi-bar-square distributions with degrees of freedom 1, 2</span>
-<span class="co">#&gt;  associated weights and sd:  0.5 (0), 0.5 (0) </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; p-value (from estimated weights): 5.6523e-34</span>
-<span class="co">#&gt; lower-bound for p-value: 5.6523e-34  upper bound for p-value: 5.6523e-34</span></pre></div>
+<span class="co">#&gt; lower-bound for p-value: 0.51035  upper bound for p-value: 0.51035</span></pre></div>
 <p>It works similarly with lme4 package or saemix.</p>
-</div>
-<div id="estimation-of-fisher-information-matrix" class="section level3">
-<h3 class="hasAnchor">
-<a href="#estimation-of-fisher-information-matrix" class="anchor"></a>Estimation of Fisher Information Matrix</h3>
-<p>The imiting distribution of the test statistic is a chi-bar-square distribution whose weights depend on the Fisher Information Matrix (FIM) of the model. Depending on the package used to fit the model and on your preferences, it is possible to specify different options with the argument <code>fim</code>: * <code>fim="extract"</code>: (the default option) to extract the FIM computed by the package used to fit the models. Please note that it might not be available in some cases. For example, for nonlinear models fitted with <code>lme4</code>. * <code>fim="compute"</code>: to estimate the FIM using parametric bootstrap. Note that it can take some time to run. In this case, one must provide the bootstrap sample size with the <code>control</code> argument * <code>fim=I</code>: with <code>I</code> a symmetric positive definite matrix, to provide your own FIM</p>
-<div class="sourceCode" id="cb4"><pre class="r"><span class="co"># Bootstrap estimation of the FIM</span>
-<span class="fu"><a href="reference/varTest.html">varTest</a></span>(<span class="no">nm1e</span>, <span class="no">nm0e</span>, <span class="kw">fim</span><span class="kw">=</span><span class="st">"compute"</span>, <span class="kw">pval.comp</span><span class="kw">=</span><span class="st">"both"</span>, <span class="kw">control</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">B</span><span class="kw">=</span><span class="fl">100</span>))
-<span class="co">#&gt; Variance components testing in mixed-effects models</span>
-<span class="co">#&gt; (models fitted using the nlme package)</span>
-<span class="co">#&gt; Testing that the variance of Asym is null</span>
-<span class="co">#&gt; model under H1: rate ~ SSasympOff(pressure, Asym, lrc, c0)  (non linear model),  structure(list(Subject = structure(c(2.04719313529589, 0, -1.19146681079193  (random effects)model under H1: rate ~ SSasympOff(pressure, Asym, lrc, c0)  (non linear model),  ), formula = structure(list(Asym ~ 1, lrc ~ 1), class = "listForm"), Dimnames = list(  (random effects)model under H1: rate ~ SSasympOff(pressure, Asym, lrc, c0)  (non linear model),      c("Asym", "lrc"), c("Asym", "lrc")), class = c("pdSymm",   (random effects)model under H1: rate ~ SSasympOff(pressure, Asym, lrc, c0)  (non linear model),  "pdMat"))), settings = c(0, 1, 0, 0), class = "reStruct")  (random effects)</span>
-<span class="co">#&gt; model under H1: rate ~ SSasympOff(pressure, Asym, lrc, c0)  (non linear model),  structure(list(Subject = structure(-1.19146681079193, formula = structure(list(  (random effects)model under H1: rate ~ SSasympOff(pressure, Asym, lrc, c0)  (non linear model),      lrc ~ 1), class = "listForm"), Dimnames = list("lrc", "lrc"), class = c("pdDiag",   (random effects)model under H1: rate ~ SSasympOff(pressure, Asym, lrc, c0)  (non linear model),  "pdMat"))), settings = c(0, 1, 0, 1), class = "reStruct")  (random effects)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Likelihood ratio test statistics: </span>
-<span class="co">#&gt;  LRT =  151.85 </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Limiting distribution:</span>
-<span class="co">#&gt; mixture of 2 chi-bar-square distributions with degrees of freedom 1, 2</span>
-<span class="co">#&gt;  associated weights and sd:  0.5 (0), 0.5 (0) </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; p-value (from estimated weights): 5.6523e-34</span>
-<span class="co">#&gt; lower-bound for p-value: 5.6523e-34  upper bound for p-value: 5.6523e-34</span></pre></div>
-<p>Another example using the <code>lme4</code> package and the Orange trees data.</p>
-<div class="sourceCode" id="cb5"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">lme4</span>)
-<span class="co">#&gt; Le chargement a nécessité le package : Matrix</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Attachement du package : 'lme4'</span>
-<span class="co">#&gt; The following object is masked from 'package:nlme':</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;     lmList</span>
-<span class="no">dial.start</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unlist.html">unlist</a></span>(<span class="no">nm1e</span>$<span class="no">call</span>$<span class="no">start</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span>(<span class="no">dial.start</span>) <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Asym"</span>,<span class="st">"lrc"</span>,<span class="st">"c0"</span>)
-<span class="no">dial.start</span>  <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="kw">Asym</span> <span class="kw">=</span> <span class="fl">50</span>, <span class="kw">lrc</span> <span class="kw">=</span> <span class="fl">0.5</span>, <span class="kw">c0</span> <span class="kw">=</span> <span class="fl">0.2</span>)
-<span class="no">nm1</span>  <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/lme4/man/nlmer.html">nlmer</a></span>(<span class="no">rate</span> ~ <span class="fu"><a href="https://rdrr.io/r/stats/SSasympOff.html">SSasympOff</a></span>(<span class="no">pressure</span>, <span class="no">Asym</span>, <span class="no">lrc</span>, <span class="no">c0</span>) ~ (<span class="fl">0</span> + <span class="no">Asym</span> + <span class="no">lrc</span> <span class="kw">||</span> <span class="no">Subject</span>), <span class="no">Dialyzer</span>, <span class="kw">start</span> <span class="kw">=</span> <span class="no">dial.start</span>)
-<span class="no">nm0</span>  <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/lme4/man/nlmer.html">nlmer</a></span>(<span class="no">rate</span> ~ <span class="fu"><a href="https://rdrr.io/r/stats/SSasympOff.html">SSasympOff</a></span>(<span class="no">pressure</span>, <span class="no">Asym</span>, <span class="no">lrc</span>, <span class="no">c0</span>) ~ (<span class="fl">0</span> + <span class="no">Asym</span> <span class="kw">|</span> <span class="no">Subject</span>), <span class="no">Dialyzer</span>, <span class="kw">start</span> <span class="kw">=</span> <span class="no">dial.start</span>)
-<span class="no">vt</span> <span class="kw">&lt;-</span> <span class="fu"><a href="reference/varTest.html">varTest</a></span>(<span class="no">nm1</span>,<span class="no">nm0</span>,<span class="kw">fim</span><span class="kw">=</span><span class="st">"compute"</span>,<span class="kw">pval.comp</span> <span class="kw">=</span> <span class="st">"both"</span>,<span class="kw">control</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">M</span><span class="kw">=</span><span class="fl">10</span>,<span class="kw">B</span><span class="kw">=</span><span class="fl">20</span>))
-<span class="co">#&gt; Variance components testing in mixed-effects models</span>
-<span class="co">#&gt; (models fitted using the lme4 package)</span>
-<span class="co">#&gt; Testing that the variance of lrc is null</span>
-<span class="co">#&gt; model under H1: rate ~ SSasympOff(pressure, Asym, lrc, c0) ~ (0 + Asym + lrc || Subject)</span>
-<span class="co">#&gt; model under H0: rate ~ SSasympOff(pressure, Asym, lrc, c0) ~ (0 + Asym | Subject)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Likelihood ratio test statistics: </span>
-<span class="co">#&gt;  LRT =  28.962 </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Limiting distribution:</span>
-<span class="co">#&gt; mixture of 2 chi-bar-square distributions with degrees of freedom 0, 1</span>
-<span class="co">#&gt;  associated weights and sd:  0.5 (0), 0.5 (0) </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; p-value (from estimated weights): 3.6907e-08</span>
-<span class="co">#&gt; lower-bound for p-value: 3.6907e-08  upper bound for p-value: 3.6907e-08</span>
-
-
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">nlme</span>)
-<span class="no">nm1e</span> <span class="kw">&lt;-</span> <span class="fu"><a href="reference/extractFIMnlme.html">nlme</a></span>(<span class="no">rate</span> ~ <span class="fu"><a href="https://rdrr.io/r/stats/SSasympOff.html">SSasympOff</a></span>(<span class="no">pressure</span>, <span class="no">Asym</span>, <span class="no">lrc</span>, <span class="no">c0</span>),
-             <span class="kw">random</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/pdDiag.html">pdDiag</a></span>(<span class="no">Asym</span> + <span class="no">lrc</span> + <span class="no">c0</span> ~ <span class="fl">1</span>),
-             <span class="kw">fixed</span> <span class="kw">=</span> <span class="no">Asym</span> + <span class="no">lrc</span> + <span class="no">c0</span> ~ <span class="fl">1</span>,
-             <span class="kw">data</span> <span class="kw">=</span> <span class="no">Dialyzer</span>,
-             <span class="kw">start</span> <span class="kw">=</span> <span class="no">dial.start</span>)
-<span class="no">nm0e</span> <span class="kw">&lt;-</span> <span class="fu"><a href="reference/extractFIMnlme.html">nlme</a></span>(<span class="no">rate</span> ~ <span class="fu"><a href="https://rdrr.io/r/stats/SSasympOff.html">SSasympOff</a></span>(<span class="no">pressure</span>, <span class="no">Asym</span>, <span class="no">lrc</span>, <span class="no">c0</span>),
-             <span class="kw">random</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/pdDiag.html">pdDiag</a></span>(<span class="no">Asym</span> + <span class="no">c0</span> ~ <span class="fl">1</span>),
-             <span class="kw">fixed</span> <span class="kw">=</span> <span class="no">Asym</span> + <span class="no">lrc</span> + <span class="no">c0</span> ~ <span class="fl">1</span>,
-             <span class="kw">data</span> <span class="kw">=</span> <span class="no">Dialyzer</span>,
-             <span class="kw">start</span> <span class="kw">=</span> <span class="no">dial.start</span>)
-<span class="fu"><a href="reference/varTest.html">varTest</a></span>(<span class="no">nm1e</span>,<span class="no">nm0e</span>)
-<span class="co">#&gt; Variance components testing in mixed-effects models</span>
-<span class="co">#&gt; (models fitted using the nlme package)</span>
-<span class="co">#&gt; Testing that the variance of lrc is null</span>
-<span class="co">#&gt; model under H1: rate ~ SSasympOff(pressure, Asym, lrc, c0)  (non linear model),  pdDiag(Asym + lrc + c0 ~ 1)  (random effects)</span>
-<span class="co">#&gt; model under H1: rate ~ SSasympOff(pressure, Asym, lrc, c0)  (non linear model),  pdDiag(Asym + c0 ~ 1)  (random effects)</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Likelihood ratio test statistics: </span>
-<span class="co">#&gt;  LRT =  28.604 </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Limiting distribution:</span>
-<span class="co">#&gt; mixture of 2 chi-bar-square distributions with degrees of freedom 0, 1</span>
-<span class="co">#&gt; lower-bound for p-value: 4.4405e-08  upper bound for p-value: 4.4405e-08</span></pre></div>
-</div>
 </div>
 </div>
 

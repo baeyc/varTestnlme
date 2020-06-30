@@ -74,7 +74,7 @@ assumed to be nested within the model under H1." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">varTestnlme</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -92,6 +92,9 @@ assumed to be nested within the model under H1." />
      
     Get started
   </a>
+</li>
+<li>
+  <a href="../articles/index.html">Articles</a>
 </li>
 <li>
   <a href="../reference/index.html">
@@ -193,6 +196,8 @@ Therefore, the p-value of the test is not exact but approximated. This computati
 the default behaviour of the function is to provide bounds on the exact p-value, which can be enough in practice
 to decide whether to reject or not the null hypothesis. This is triggered by the option <code>pval.comp="bounds"</code>.
 To compute an approximation of the exact p-value, one should use the option <code>pval.comp="approx"</code> or <code>pval.comp="both"</code>.</p>
+<p>When <code>pval.comp="approx"</code> or <code>pval.comp="both"</code>, the weights of th chi-bar-square distribution are computed and thus</p>
+
 <p>The <code>control</code> argument controls the options for chi-bar-square weights computation. It is a list with the
 following elements: <code>M</code> the size of the Monte Carlo simulation, <code>parallel</code> a boolean for parallel computing
 and <code>nbcores</code> the number of cores to be used in case of parallel computing. Default is <code>M=5000</code>, <code>parallel=FALSE</code>

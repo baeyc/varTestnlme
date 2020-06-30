@@ -51,6 +51,9 @@ the default behaviour of the function is to provide bounds on the exact p-value,
 to decide whether to reject or not the null hypothesis. This is triggered by the option \code{pval.comp="bounds"}.
 To compute an approximation of the exact p-value, one should use the option \code{pval.comp="approx"} or \code{pval.comp="both"}.
 
+When \code{pval.comp="approx"} or \code{pval.comp="both"}, the weights of th chi-bar-square distribution are computed and thus
+
+
 The \code{control} argument controls the options for chi-bar-square weights computation. It is a list with the
 following elements: \code{M} the size of the Monte Carlo simulation, \code{parallel} a boolean for parallel computing
 and \code{nbcores} the number of cores to be used in case of parallel computing. Default is \code{M=5000}, \code{parallel=FALSE}

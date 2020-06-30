@@ -15,7 +15,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup, results='hide'}
+```{r setup}
 library(varTestnlme)
 ```
 
@@ -63,7 +63,7 @@ vt1.lme4 <- varTest(m1.lme4,m0.lme4)
 
 ### Case 2 : testing the variance of one effect with uncorrelated random effects
 
-```{r results='hide'}
+```{r}
 # using nlme, with uncorrelated slope and intercept
 m1diag.nlme <- lme(distance ~ 1 + Sex + age + age*Sex, random = pdDiag(Subject ~ 1 + age), data = Orthodont, method = "ML")
 

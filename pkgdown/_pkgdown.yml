@@ -9,6 +9,12 @@ template:
    params:
      bootswatch: flatly
 
+articles:
+  - title: Compute FIM
+    navbar: ~
+    contents:
+      - web_only/fim
+
 reference:
   - title: Main functions
     desc: Main user functions
@@ -39,6 +45,8 @@ navbar:
     - icon: fa-play-circle
       text: "Get started"
       href: articles/varTestnlme.html
+    - text: "Articles"
+      href: articles/index.html
     - icon: fa-file-code-o
       text: "Functions"
       href: reference/index.html
