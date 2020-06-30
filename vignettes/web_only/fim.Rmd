@@ -10,8 +10,7 @@ vignette: >
 ```{r, include = FALSE}
 LOCAL <- identical(Sys.getenv("LOCAL"), "true")
 knitr::opts_chunk$set(
-  collapse = FALSE,
-  message = FALSE,
+  collapse = TRUE,
   comment = "#>",
   purl = LOCAL)
 ```
@@ -21,18 +20,19 @@ library(varTestnlme)
 ```
 
 
-# Estimation of Fisher Information Matrix
-
 When testing that the variance of at least one random effect is equal to 0, the limiting distribution of the test statistic is a chi-bar-square distribution whose weights depend on the Fisher Information Matrix (FIM) of the model. 
 
 `varTestnlme` provides different ways to handle the FIM. Depending on the package used to fit the model and on your preferences, it is possible to specify different options with the argument `fim`:
+
   * `fim="extract"`: (the default option) extract the FIM computed by the package used to fit the models. Please note that it might not be available in some cases. For example, for nonlinear models fitted with `lme4`. It might also rely on some linearization of the model.
-* `fim="compute"`: to estimate the FIM using parametric bootstrap. Note that it can take some time to run. In this case, one must provide the bootstrap sample size with the `control` argument
-* `fim=I`: with `I` a symmetric positive definite matrix, to provide your own FIM
+
+  * `fim="compute"`: to estimate the FIM using parametric bootstrap. Note that it can take some time to run. In this case, one must provide the bootstrap sample size with the `control` argument
+
+  * `fim=I`: with `I` a symmetric positive definite matrix, to provide your own FIM
 
 We provide some examples below.
 
-## Fitting the models
+# Fitting the models
 
 We use a dataset on high-flux hemodialyzers, available in the `nlme` package, in which ultrafiltration rates of 20 dialyzers were measured at 7 different dates. A nonlinear model is considered, with two random effects on the asymptote and on the rate.
 
@@ -60,7 +60,8 @@ m0 <- nlme(fm1.lis, random = pdDiag(Asym ~ 1))
 ```
 
 
-## Run the test
+# Run the test
+
 To run the test with the default settings, simply use:
 ```{r}
 varTest(m1,m0)
@@ -75,7 +76,6 @@ varTest(m1,m0,pval.comp = "both",fim="extract")
 In this case we get an error message from `nlme` package stating that the FIM is non-positive definite. We will then use the \code{fim="compute"} option to approximate the FIM using parametric bootstrap, and we set the bootstrap sample size to 100 with the \code{control} argument.
 
 ```{r}
-varTest(m1,m0,pval.comp="both",fim="compute",control=list(B=100))
+vt <- varTest(m1,m0,pval.comp="both",fim="compute",control=list(B=100))
 ```
-
 The weights of the chi-bar-square distribution are provided, along with their standard deviations associated to the Monte Carlo approximation of the weights. Note that exact formulas exist for the weights when the number of chi-bar-square components is less than or equal to 3, in which cases no Monte Carlo approximation is needed and standard deviations are thus null.
