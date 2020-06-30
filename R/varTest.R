@@ -14,6 +14,9 @@
 #' to decide whether to reject or not the null hypothesis. This is triggered by the option \code{pval.comp="bounds"}.
 #' To compute an approximation of the exact p-value, one should use the option \code{pval.comp="approx"} or \code{pval.comp="both"}.
 #' 
+#' When \code{pval.comp="approx"} or \code{pval.comp="both"}, the weights of th chi-bar-square distribution are computed and thus
+#' 
+#' 
 #' The \code{control} argument controls the options for chi-bar-square weights computation. It is a list with the
 #' following elements: \code{M} the size of the Monte Carlo simulation, \code{parallel} a boolean for parallel computing
 #' and \code{nbcores} the number of cores to be used in case of parallel computing. Default is \code{M=5000}, \code{parallel=FALSE}
@@ -58,9 +61,7 @@
 #' Silvapulle  MJ, Sen PK, 2011. Constrained statistical inference: order, inequality and shape constraints.
 #' @export varTest
 #' @importFrom stats formula pchisq
-varTest <- function(m1,m0,control = list(M=5000,parallel=T,nbcores=1,B=1000),
-                    pval.comp = "bounds",
-                    fim = "extract"){
+varTest <- function(m1,m0,control = list(M=5000,parallel=T,nbcores=1,B=1000),pval.comp = "bounds",fim = "extract"){
   
   # Specify default arguments in control
   if (!is.null(control)) {
@@ -126,9 +127,9 @@ varTest <- function(m1,m0,control = list(M=5000,parallel=T,nbcores=1,B=1000),
       if (randm0) message(paste("model under H0:",deparse(m0$call$fixed)," (fixed effects), ",deparse(m0$call$random)," (random effects)"))
       if (!randm0) message(paste("model under H0:",deparse(formula(m0),width.cutoff=500),"(no random effects)\n"))
     }else{
-      message(paste("model under H1:",deparse(formula(m1))," (non linear model), ",deparse(m1$call$random)," (random effects)"))
+      message(paste("model under H1:",deparse(formula(m1))," (non linear model) "))
       if (randm0){
-        message(paste("model under H1:",deparse(formula(m0))," (non linear model), ",deparse(m0$call$random)," (random effects)"))
+        message(paste("model under H1:",deparse(formula(m0))," (non linear model), "))
       }else{
         message(paste("model under H0:",deparse(formula(m0))," (no random effects)"))
       }
