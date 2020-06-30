@@ -4,10 +4,28 @@
     <loc>https://baeyc.github.io/varTestnlme//index.html</loc>
   </url>
   <url>
+    <loc>https://baeyc.github.io/varTestnlme//reference/approxWeights.html</loc>
+  </url>
+  <url>
+    <loc>https://baeyc.github.io/varTestnlme//reference/bootinvFIM.html</loc>
+  </url>
+  <url>
     <loc>https://baeyc.github.io/varTestnlme//reference/chiBarSquareObject-class.html</loc>
   </url>
   <url>
+    <loc>https://baeyc.github.io/varTestnlme//reference/dfchisqbar-methods.html</loc>
+  </url>
+  <url>
     <loc>https://baeyc.github.io/varTestnlme//reference/extractFIMnlme.html</loc>
+  </url>
+  <url>
+    <loc>https://baeyc.github.io/varTestnlme//reference/funcStruct.html</loc>
+  </url>
+  <url>
+    <loc>https://baeyc.github.io/varTestnlme//reference/getVarCovlme4.html</loc>
+  </url>
+  <url>
+    <loc>https://baeyc.github.io/varTestnlme//reference/getVarCovnlme.html</loc>
   </url>
   <url>
     <loc>https://baeyc.github.io/varTestnlme//reference/pchisqbar-methods.html</loc>
@@ -26,6 +44,9 @@
   </url>
   <url>
     <loc>https://baeyc.github.io/varTestnlme//reference/varTestObject-class.html</loc>
+  </url>
+  <url>
+    <loc>https://baeyc.github.io/varTestnlme//reference/varTestnlme-internal.html</loc>
   </url>
   <url>
     <loc>https://baeyc.github.io/varTestnlme//reference/weightsChiBarSquare.html</loc>
