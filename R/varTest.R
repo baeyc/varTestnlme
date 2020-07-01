@@ -52,8 +52,7 @@
 #' data = Orthodont, method = "ML")
 #' 
 #' # compare them (order is important: m1 comes first)
-#' varTest(lm1.h1.nlme,lm1.h0.nlme)
-#'
+#' # varTest(lm1.h1.nlme,lm1.h0.nlme)
 #' @references Baey C, Cournède P-H, Kuhn E, 2019. Asymptotic distribution of likelihood ratio test
 #' statistics for variance components in nonlinear mixed effects models. \emph{Computational
 #' Statistics and Data Analysis} 135:107-122.
@@ -108,6 +107,8 @@ varTest <- function(m1,m0,control = list(M=5000,parallel=T,nbcores=1,B=1000),pva
   if (pkg=="saemix") msdata <- modelStructsaemix(m1,m0,randm0)
   
   message("(models fitted using the ",pkg," package)\n")
+  msdata$nameVarTested <- gsub("[(]","",msdata$nameVarTested)
+  msdata$nameVarTested <- gsub("[)]","",msdata$nameVarTested)
   if (length(msdata$nameVarTested)==1){
     message(paste("Testing that the variance of",msdata$nameVarTested,"is null\n"))
   }else if (length(msdata$nameVarTested) > 1){

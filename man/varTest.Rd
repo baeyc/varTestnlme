@@ -71,8 +71,7 @@ lm1.h0.nlme <- lme(distance ~ 1 + Sex + age + age*Sex, random = ~ 1 | Subject,
 data = Orthodont, method = "ML")
 
 # compare them (order is important: m1 comes first)
-varTest(lm1.h1.nlme,lm1.h0.nlme)
-
+# varTest(lm1.h1.nlme,lm1.h0.nlme) #'
 }
 \references{
 Baey C, Cournède P-H, Kuhn E, 2019. Asymptotic distribution of likelihood ratio test
