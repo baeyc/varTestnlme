@@ -42,17 +42,16 @@
 #'
 #' @examples 
 #' # load nlme package and example dataset
-#' library(nlme)
-#' data(Orthodont)
+#' library(lme4)
+#' data(Orthodont, package = "nlme")
 #' 
 #' # fit the two models under H1 and H0
-#' lm1.h1.nlme <- lme(distance ~ 1 + Sex + age + age*Sex, random = ~ 1 + age | Subject, 
-#' data = Orthodont, method = "ML")
-#' lm1.h0.nlme <- lme(distance ~ 1 + Sex + age + age*Sex, random = ~ 1 | Subject, 
-#' data = Orthodont, method = "ML")
+#' lm1.h1.lme4 <- lmer(distance ~ 1 + Sex + age + age*Sex + (1 + age | Subject), data = Orthodont, REML = FALSE)
+#' lm1.h0.lme4 <- lmer(distance ~ 1 + Sex + age + age*Sex + (1 | Subject), data = Orthodont, REML = FALSE)
 #' 
 #' # compare them (order is important: m1 comes first)
-#' # varTest(lm1.h1.nlme,lm1.h0.nlme)
+#' # varTest(lm1.h1.lme4,lm1.h0.lme4)
+#' 
 #' @references Baey C, Cournède P-H, Kuhn E, 2019. Asymptotic distribution of likelihood ratio test
 #' statistics for variance components in nonlinear mixed effects models. \emph{Computational
 #' Statistics and Data Analysis} 135:107-122.
@@ -71,7 +70,7 @@ varTest <- function(m1,m0,control = list(M=5000,parallel=T,nbcores=1,B=1000),pva
     if (!"B" %in% optionNames) control$B = 1000
   }
   
-  message("Variance components testing in mixed-effects models")
+  message("Variance components testing in mixed effects models")
   
   # Identify the packages from which m0 and m1 come from
   cl0 <- class(m0)
@@ -128,9 +127,9 @@ varTest <- function(m1,m0,control = list(M=5000,parallel=T,nbcores=1,B=1000),pva
       if (randm0) message(paste("model under H0:",deparse(m0$call$fixed)," (fixed effects), ",deparse(m0$call$random)," (random effects)"))
       if (!randm0) message(paste("model under H0:",deparse(formula(m0),width.cutoff=500),"(no random effects)\n"))
     }else{
-      message(paste("model under H1:",deparse(formula(m1))," (non linear model) "))
+      message(paste("model under H1:",deparse(formula(m1))," (nonlinear model) "))
       if (randm0){
-        message(paste("model under H1:",deparse(formula(m0))," (non linear model), "))
+        message(paste("model under H1:",deparse(formula(m0))," (nonlinear model), "))
       }else{
         message(paste("model under H0:",deparse(formula(m0))," (no random effects)"))
       }
@@ -263,7 +262,7 @@ varTest <- function(m1,m0,control = list(M=5000,parallel=T,nbcores=1,B=1000),pva
   }
   
   # print results
-  message(paste("\nLikelihood ratio test statistics: \n LRT = ",format(lrt,digits=5),
+  message(paste("\nLikelihood ratio test statistic: \n LRT = ",format(lrt,digits=5),
             "\n\nLimiting distribution:"))
   if (length(cbs@df)>1){
     message(paste("mixture of",length(cbs@df),"chi-bar-square distributions with degrees of freedom",paste(cbs@df,sep="",collapse = ", "),"\n"))

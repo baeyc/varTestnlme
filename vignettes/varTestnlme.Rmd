@@ -45,7 +45,7 @@ We first need to fit the two nested models: the full model corresponding to $H_1
 data("Orthodont")
 
 # using nlme, with correlated slope and intercept
-m1.nlme <- lme(distance ~ 1 + Sex + age + age*Sex, random = pdSymm(Subject ~ 1 + age), data = Orthodont, method = "ML")
+m1.nlme <- lme(distance ~ 1 + Sex + age + age*Sex, random = pdDiag(Subject ~ 1 + age), data = Orthodont, method = "ML")
 m0.nlme <- lme(distance ~ 1 + Sex + age + age*Sex, random = ~ 1 | Subject, data = Orthodont, method = "ML")
 
 # using lme4, with correlated slope and intercept

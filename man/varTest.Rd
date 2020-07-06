@@ -61,17 +61,16 @@ and \code{nbcores=1}.
 }
 \examples{
 # load nlme package and example dataset
-library(nlme)
-data(Orthodont)
+library(lme4)
+data(Orthodont, package = "nlme")
 
 # fit the two models under H1 and H0
-lm1.h1.nlme <- lme(distance ~ 1 + Sex + age + age*Sex, random = ~ 1 + age | Subject, 
-data = Orthodont, method = "ML")
-lm1.h0.nlme <- lme(distance ~ 1 + Sex + age + age*Sex, random = ~ 1 | Subject, 
-data = Orthodont, method = "ML")
+lm1.h1.lme4 <- lmer(distance ~ 1 + Sex + age + age*Sex + (1 + age | Subject), data = Orthodont, REML = FALSE)
+lm1.h0.lme4 <- lmer(distance ~ 1 + Sex + age + age*Sex + (1 | Subject), data = Orthodont, REML = FALSE)
 
 # compare them (order is important: m1 comes first)
-# varTest(lm1.h1.nlme,lm1.h0.nlme) #'
+# varTest(lm1.h1.lme4,lm1.h0.lme4)
+
 }
 \references{
 Baey C, Cournède P-H, Kuhn E, 2019. Asymptotic distribution of likelihood ratio test
