@@ -46,11 +46,12 @@
 #' data(Orthodont, package = "nlme")
 #' 
 #' # fit the two models under H1 and H0
-#' lm1.h1.lme4 <- lmer(distance ~ 1 + Sex + age + age*Sex + (1 + age | Subject), data = Orthodont, REML = FALSE)
-#' lm1.h0.lme4 <- lmer(distance ~ 1 + Sex + age + age*Sex + (1 | Subject), data = Orthodont, REML = FALSE)
+#' lm1.h1.lme4 <- lmer(distance ~ 1 + Sex + age + age*Sex + 
+#' (0 + age | Subject), data = Orthodont, REML = FALSE)
+#' lm1.h0.lme4 <- lm(distance ~ 1 + Sex + age + age*Sex, data = Orthodont)
 #' 
 #' # compare them (order is important: m1 comes first)
-#' # varTest(lm1.h1.lme4,lm1.h0.lme4)
+#' varTest(lm1.h1.lme4,lm1.h0.lme4,pval.comp="bounds")
 #' 
 #' @references Baey C, Cournède P-H, Kuhn E, 2019. Asymptotic distribution of likelihood ratio test
 #' statistics for variance components in nonlinear mixed effects models. \emph{Computational
@@ -237,11 +238,12 @@ varTest <- function(m1,m0,control = list(M=5000,parallel=T,nbcores=1,B=1000),pva
       invfim <- invfim[c(neworder,nrow(invfim)-msdata$dims$dimSigma+1),c(neworder,nrow(invfim)-msdata$dims$dimSigma+1)]
     }
     
+    fim <- chol2inv(chol(invfim))
   }else{
-    invfim <- matrix(NA,nrow=msdata$dims$nbFE1+msdata$dims$nbRE1+msdata$dims$dimSigma,ncol=msdata$dims$nbFE1+msdata$dims$nbRE1+msdata$dims$dimSigma)
+    invfim <- fim <- matrix(NA,nrow=msdata$dims$nbFE1+msdata$dims$nbRE1+msdata$dims$dimSigma,ncol=msdata$dims$nbFE1+msdata$dims$nbRE1+msdata$dims$dimSigma)
   }
   cbs@V <- invfim
-  cbs@invV <- chol2inv(chol(invfim))
+  cbs@invV <- fim
   if (is.matrix(fim)){
     cbs@V <- chol2inv(fim)
     cbs@invV <- fim

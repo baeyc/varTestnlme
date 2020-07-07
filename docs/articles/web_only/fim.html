@@ -135,13 +135,13 @@
 <a href="#run-the-test" class="anchor"></a>Run the test</h1>
 <p>To run the test with the default settings, simply use:</p>
 <div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="fu"><a href="../../reference/varTest.html">varTest</a></span>(<span class="no">m1</span>,<span class="no">m0</span>)
-<span class="co">#&gt; Variance components testing in mixed-effects models</span>
+<span class="co">#&gt; Variance components testing in mixed effects models</span>
 <span class="co">#&gt; (models fitted using the nlme package)</span>
 <span class="co">#&gt; Testing that the variances of lrc and c0 are null</span>
-<span class="co">#&gt; model under H1: rate ~ SSasympOff(pressure, Asym, lrc, c0)  (non linear model)</span>
-<span class="co">#&gt; model under H1: rate ~ SSasympOff(pressure, Asym, lrc, c0)  (non linear model),</span>
+<span class="co">#&gt; model under H1: rate ~ SSasympOff(pressure, Asym, lrc, c0)  (nonlinear model)</span>
+<span class="co">#&gt; model under H1: rate ~ SSasympOff(pressure, Asym, lrc, c0)  (nonlinear model),</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; Likelihood ratio test statistics: </span>
+<span class="co">#&gt; Likelihood ratio test statistic: </span>
 <span class="co">#&gt;  LRT =  28.982 </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Limiting distribution:</span>
@@ -149,34 +149,235 @@
 <span class="co">#&gt; lower-bound for p-value: 3.6522e-08  upper bound for p-value: 2.9094e-07</span></pre></body></html></div>
 <p>With the default settings, only bounds on the p-value are computed. In this case it is largely enough to reject the null hypothesis that the asymptote is the only random effect. However, if more precision is needed, one should specify it using  or . By default, the  option is set to , which means that  will extract the FIM computed by the package used to fit the model (i.e. <code>nlme</code>, <code>lme4</code> or <code>saemix</code>).</p>
 <div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="fu"><a href="../../reference/varTest.html">varTest</a></span>(<span class="no">m1</span>,<span class="no">m0</span>,<span class="kw">pval.comp</span> <span class="kw">=</span> <span class="st">"both"</span>,<span class="kw">fim</span><span class="kw">=</span><span class="st">"extract"</span>)
-<span class="co">#&gt; Variance components testing in mixed-effects models</span>
+<span class="co">#&gt; Variance components testing in mixed effects models</span>
 <span class="co">#&gt; (models fitted using the nlme package)</span>
 <span class="co">#&gt; Testing that the variances of lrc and c0 are null</span>
-<span class="co">#&gt; model under H1: rate ~ SSasympOff(pressure, Asym, lrc, c0)  (non linear model)</span>
-<span class="co">#&gt; model under H1: rate ~ SSasympOff(pressure, Asym, lrc, c0)  (non linear model),</span>
+<span class="co">#&gt; model under H1: rate ~ SSasympOff(pressure, Asym, lrc, c0)  (nonlinear model)</span>
+<span class="co">#&gt; model under H1: rate ~ SSasympOff(pressure, Asym, lrc, c0)  (nonlinear model),</span>
 <span class="co">#&gt; Extracting Fisher Information matrix...</span>
 <span class="co">#&gt; Error in extractFIMnlme(m1, struct): Error in nlme package for apVar in m1: Non-positive definite approximate variance-covariance</span>
 <span class="co">#&gt;  Try to re-run with fim='compute'</span></pre></body></html></div>
 <p>In this case we get an error message from <code>nlme</code> package stating that the FIM is non-positive definite. We will then use the  option to approximate the FIM using parametric bootstrap, and we set the bootstrap sample size to 100 with the  argument.</p>
-<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="no">vt</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../../reference/varTest.html">varTest</a></span>(<span class="no">m1</span>,<span class="no">m0</span>,<span class="kw">pval.comp</span><span class="kw">=</span><span class="st">"both"</span>,<span class="kw">fim</span><span class="kw">=</span><span class="st">"compute"</span>,<span class="kw">control</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">B</span><span class="kw">=</span><span class="fl">100</span>))
-<span class="co">#&gt; Variance components testing in mixed-effects models</span>
-<span class="co">#&gt; (models fitted using the nlme package)</span>
-<span class="co">#&gt; Testing that the variances of lrc and c0 are null</span>
-<span class="co">#&gt; model under H1: rate ~ SSasympOff(pressure, Asym, lrc, c0)  (non linear model)</span>
-<span class="co">#&gt; model under H1: rate ~ SSasympOff(pressure, Asym, lrc, c0)  (non linear model),</span>
-<span class="co">#&gt; Computing Fisher Information Matrix by bootstrap...</span>
-<span class="co">#&gt;   ...generating the B=100 bootstrap samples ...</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Likelihood ratio test statistics: </span>
-<span class="co">#&gt;  LRT =  28.982 </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Limiting distribution:</span>
-<span class="co">#&gt; mixture of 3 chi-bar-square distributions with degrees of freedom 0, 1, 2</span>
-<span class="co">#&gt;  associated weights and sd:  0.267 (0), 0.5 (0), 0.233 (0) </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; p-value (from estimated weights): 1.5497e-07</span>
-<span class="co">#&gt; lower-bound for p-value: 3.6522e-08  upper bound for p-value: 2.9094e-07</span></pre></body></html></div>
+<div class="sourceCode" id="cb5"><html><body><pre class="r">vt &lt;- varTest(m1,m0,pval.comp="both",fim="compute",control=list(B=100))
+#&gt; Variance components testing in mixed effects models
+#&gt; (models fitted using the nlme package)
+#&gt; Testing that the variances of lrc and c0 are null
+#&gt; model under H1: rate ~ SSasympOff(pressure, Asym, lrc, c0)  (nonlinear model)
+#&gt; model under H1: rate ~ SSasympOff(pressure, Asym, lrc, c0)  (nonlinear model),
+#&gt; Computing Fisher Information Matrix by bootstrap...
+#&gt;   ...generating the B=100 bootstrap samples ...
+#&gt; 
+  |                                                                            
+  |                                                                      |   0%
+  |                                                                            
+  |.                                                                     |   1%
+  |                                                                            
+  |.                                                                     |   2%
+  |                                                                            
+  |..                                                                    |   3%
+  |                                                                            
+  |...                                                                   |   4%
+  |                                                                            
+  |....                                                                  |   5%
+  |                                                                            
+  |....                                                                  |   6%
+  |                                                                            
+  |.....                                                                 |   7%
+  |                                                                            
+  |......                                                                |   8%
+  |                                                                            
+  |......                                                                |   9%
+  |                                                                            
+  |.......                                                               |  10%
+  |                                                                            
+  |........                                                              |  11%
+  |                                                                            
+  |........                                                              |  12%
+  |                                                                            
+  |.........                                                             |  13%
+  |                                                                            
+  |..........                                                            |  14%
+  |                                                                            
+  |...........                                                           |  15%
+  |                                                                            
+  |...........                                                           |  16%
+  |                                                                            
+  |............                                                          |  17%
+  |                                                                            
+  |.............                                                         |  18%
+  |                                                                            
+  |.............                                                         |  19%
+  |                                                                            
+  |..............                                                        |  20%
+  |                                                                            
+  |...............                                                       |  21%
+  |                                                                            
+  |................                                                      |  22%
+  |                                                                            
+  |................                                                      |  23%
+  |                                                                            
+  |.................                                                     |  24%
+  |                                                                            
+  |..................                                                    |  25%
+  |                                                                            
+  |..................                                                    |  26%
+  |                                                                            
+  |...................                                                   |  27%
+  |                                                                            
+  |....................                                                  |  28%
+  |                                                                            
+  |.....................                                                 |  29%
+  |                                                                            
+  |.....................                                                 |  30%
+  |                                                                            
+  |......................                                                |  31%
+  |                                                                            
+  |.......................                                               |  32%
+  |                                                                            
+  |.......................                                               |  33%
+  |                                                                            
+  |........................                                              |  34%
+  |                                                                            
+  |.........................                                             |  35%
+  |                                                                            
+  |.........................                                             |  36%
+  |                                                                            
+  |..........................                                            |  37%
+  |                                                                            
+  |...........................                                           |  38%
+  |                                                                            
+  |............................                                          |  39%
+  |                                                                            
+  |............................                                          |  40%
+  |                                                                            
+  |.............................                                         |  41%
+  |                                                                            
+  |..............................                                        |  42%
+  |                                                                            
+  |..............................                                        |  43%
+  |                                                                            
+  |...............................                                       |  44%
+  |                                                                            
+  |................................                                      |  45%
+  |                                                                            
+  |.................................                                     |  46%
+  |                                                                            
+  |.................................                                     |  47%
+  |                                                                            
+  |..................................                                    |  48%
+  |                                                                            
+  |...................................                                   |  49%
+  |                                                                            
+  |...................................                                   |  51%
+  |                                                                            
+  |....................................                                  |  52%
+  |                                                                            
+  |.....................................                                 |  53%
+  |                                                                            
+  |.....................................                                 |  54%
+  |                                                                            
+  |......................................                                |  55%
+  |                                                                            
+  |.......................................                               |  56%
+  |                                                                            
+  |........................................                              |  57%
+  |                                                                            
+  |........................................                              |  58%
+  |                                                                            
+  |.........................................                             |  59%
+  |                                                                            
+  |..........................................                            |  60%
+  |                                                                            
+  |..........................................                            |  61%
+  |                                                                            
+  |...........................................                           |  62%
+  |                                                                            
+  |............................................                          |  63%
+  |                                                                            
+  |.............................................                         |  64%
+  |                                                                            
+  |.............................................                         |  65%
+  |                                                                            
+  |..............................................                        |  66%
+  |                                                                            
+  |...............................................                       |  67%
+  |                                                                            
+  |...............................................                       |  68%
+  |                                                                            
+  |................................................                      |  69%
+  |                                                                            
+  |.................................................                     |  70%
+  |                                                                            
+  |.................................................                     |  71%
+  |                                                                            
+  |..................................................                    |  72%
+  |                                                                            
+  |...................................................                   |  73%
+  |                                                                            
+  |....................................................                  |  74%
+  |                                                                            
+  |....................................................                  |  75%
+  |                                                                            
+  |.....................................................                 |  76%
+  |                                                                            
+  |......................................................                |  77%
+  |                                                                            
+  |......................................................                |  78%
+  |                                                                            
+  |.......................................................               |  79%
+  |                                                                            
+  |........................................................              |  80%
+  |                                                                            
+  |.........................................................             |  81%
+  |                                                                            
+  |.........................................................             |  82%
+  |                                                                            
+  |..........................................................            |  83%
+  |                                                                            
+  |...........................................................           |  84%
+  |                                                                            
+  |...........................................................           |  85%
+  |                                                                            
+  |............................................................          |  86%
+  |                                                                            
+  |.............................................................         |  87%
+  |                                                                            
+  |..............................................................        |  88%
+  |                                                                            
+  |..............................................................        |  89%
+  |                                                                            
+  |...............................................................       |  90%
+  |                                                                            
+  |................................................................      |  91%
+  |                                                                            
+  |................................................................      |  92%
+  |                                                                            
+  |.................................................................     |  93%
+  |                                                                            
+  |..................................................................    |  94%
+  |                                                                            
+  |..................................................................    |  95%
+  |                                                                            
+  |...................................................................   |  96%
+  |                                                                            
+  |....................................................................  |  97%
+  |                                                                            
+  |..................................................................... |  98%
+  |                                                                            
+  |..................................................................... |  99%
+  |                                                                            
+  |......................................................................| 100%
+#&gt; 
+#&gt; 
+#&gt; Likelihood ratio test statistic: 
+#&gt;  LRT =  28.982 
+#&gt; 
+#&gt; Limiting distribution:
+#&gt; mixture of 3 chi-bar-square distributions with degrees of freedom 0, 1, 2
+#&gt;  associated weights and sd:  0.016 (0), 0.5 (0), 0.484 (0) 
+#&gt; 
+#&gt; p-value (from estimated weights): 2.83e-07
+#&gt; lower-bound for p-value: 3.6522e-08  upper bound for p-value: 2.9094e-07</pre></body></html></div>
 <p>The weights of the chi-bar-square distribution are provided, along with their standard deviations associated to the Monte Carlo approximation of the weights. Note that exact formulas exist for the weights when the number of chi-bar-square components is less than or equal to 3, in which cases no Monte Carlo approximation is needed and standard deviations are thus null.</p>
 </div>
   </div>

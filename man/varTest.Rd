@@ -65,11 +65,12 @@ library(lme4)
 data(Orthodont, package = "nlme")
 
 # fit the two models under H1 and H0
-lm1.h1.lme4 <- lmer(distance ~ 1 + Sex + age + age*Sex + (1 + age | Subject), data = Orthodont, REML = FALSE)
-lm1.h0.lme4 <- lmer(distance ~ 1 + Sex + age + age*Sex + (1 | Subject), data = Orthodont, REML = FALSE)
+lm1.h1.lme4 <- lmer(distance ~ 1 + Sex + age + age*Sex + 
+(0 + age | Subject), data = Orthodont, REML = FALSE)
+lm1.h0.lme4 <- lm(distance ~ 1 + Sex + age + age*Sex, data = Orthodont)
 
 # compare them (order is important: m1 comes first)
-# varTest(lm1.h1.lme4,lm1.h0.lme4)
+varTest(lm1.h1.lme4,lm1.h0.lme4,pval.comp="bounds")
 
 }
 \references{

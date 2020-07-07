@@ -214,17 +214,20 @@ Statistics and Data Analysis</em> 135:107-122.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># load nlme package and example dataset</span>
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>nlme</span>)
-<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>Orthodont</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>lme4</span>)</div><div class='output co'>#&gt; <span class='message'>Le chargement a nécessité le package : Matrix</span></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span>(<span class='no'>Orthodont</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"nlme"</span>)
 
 <span class='co'># fit the two models under H1 and H0</span>
-<span class='no'>lm1.h1.nlme</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/nlme/man/lme.html'>lme</a></span>(<span class='no'>distance</span> ~ <span class='fl'>1</span> + <span class='no'>Sex</span> + <span class='no'>age</span> + <span class='no'>age</span>*<span class='no'>Sex</span>, <span class='kw'>random</span> <span class='kw'>=</span> ~ <span class='fl'>1</span> + <span class='no'>age</span> <span class='kw'>|</span> <span class='no'>Subject</span>,
-<span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>Orthodont</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"ML"</span>)
-<span class='no'>lm1.h0.nlme</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/nlme/man/lme.html'>lme</a></span>(<span class='no'>distance</span> ~ <span class='fl'>1</span> + <span class='no'>Sex</span> + <span class='no'>age</span> + <span class='no'>age</span>*<span class='no'>Sex</span>, <span class='kw'>random</span> <span class='kw'>=</span> ~ <span class='fl'>1</span> <span class='kw'>|</span> <span class='no'>Subject</span>,
-<span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>Orthodont</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"ML"</span>)
+<span class='no'>lm1.h1.lme4</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/lme4/man/lmer.html'>lmer</a></span>(<span class='no'>distance</span> ~ <span class='fl'>1</span> + <span class='no'>Sex</span> + <span class='no'>age</span> + <span class='no'>age</span>*<span class='no'>Sex</span> +
+(<span class='fl'>0</span> + <span class='no'>age</span> <span class='kw'>|</span> <span class='no'>Subject</span>), <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>Orthodont</span>, <span class='kw'>REML</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+<span class='no'>lm1.h0.lme4</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span>(<span class='no'>distance</span> ~ <span class='fl'>1</span> + <span class='no'>Sex</span> + <span class='no'>age</span> + <span class='no'>age</span>*<span class='no'>Sex</span>, <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>Orthodont</span>)
 
 <span class='co'># compare them (order is important: m1 comes first)</span>
-<span class='co'># varTest(lm1.h1.nlme,lm1.h0.nlme) #'</span></div></pre>
+<span class='fu'>varTest</span>(<span class='no'>lm1.h1.lme4</span>,<span class='no'>lm1.h0.lme4</span>,<span class='kw'>pval.comp</span><span class='kw'>=</span><span class='st'>"bounds"</span>)</div><div class='output co'>#&gt; <span class='message'>Variance components testing in mixed effects models</span></div><div class='output co'>#&gt; <span class='message'>(models fitted using the lme4 package)</span></div><div class='output co'>#&gt; <span class='message'>Testing that the variance of age is null</span></div><div class='output co'>#&gt; <span class='message'>model under H1: distance ~ 1 + Sex + age + age * Sex + (0 + age | Subject)</span></div><div class='output co'>#&gt; <span class='message'>model under H0: distance ~ 1 + Sex + age + age * Sex</span></div><div class='output co'>#&gt; <span class='message'></span>
+#&gt; <span class='message'>Likelihood ratio test statistic: </span>
+#&gt; <span class='message'> LRT =  46.588 </span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>Limiting distribution:</span></div><div class='output co'>#&gt; <span class='message'>mixture of 2 chi-bar-square distributions with degrees of freedom 0, 1 </span></div><div class='output co'>#&gt; <span class='message'>lower-bound for p-value: 4.3792e-12  upper bound for p-value: 4.3792e-12</span></div><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
