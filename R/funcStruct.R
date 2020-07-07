@@ -3,8 +3,8 @@
 #'
 #' @title Extracting models structures
 #'
-#' @description Functions extracting the structure of the models for each package \code{\link[nlme]{nlme}}, \code{\link[lme4]{lme4}}
-#' and \code{\link[saemix]{saemix}}
+#' @description Functions extracting the structure of the models for each package \code{nlme}, \code{lme4}
+#' and \code{saemix}.
 #'
 #'
 #' @param m1 the model under H1
