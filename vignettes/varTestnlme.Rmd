@@ -57,7 +57,7 @@ m0.lme4 <- lmer(distance ~ 1 + Sex + age + age*Sex + (1 | Subject), data = Ortho
 Now we can run the likelihood ratio test using the **varTestnlme** package.
 
 ```{r}
-vt1.nlme <- varTest(m1.nlme,m0.nlme,pval.comp = "both")
+vt1.nlme <- varTest(m1.nlme,m0.nlme)
 vt1.lme4 <- varTest(m1.lme4,m0.lme4)
 ```
 
