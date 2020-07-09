@@ -36,6 +36,6 @@ and \code{covInBlock} indicating whether a covariance is tested within a block o
 \code{full} and \code{blockDiag}, equal to \code{TRUE} if the matrix is diagonal, full or block-diagonal respectively.}
 }
 \description{
-Functions extracting the structure of the models for each package \code{\link[nlme]{nlme}}, \code{\link[lme4]{lme4}}
-and \code{\link[saemix]{saemix}}
+Functions extracting the structure of the models for each package \code{nlme}, \code{lme4}
+and \code{saemix}.
 }

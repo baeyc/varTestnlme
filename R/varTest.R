@@ -25,8 +25,8 @@
 #' @name varTest
 #' @aliases test lrt likelihood
 #'
-#' @param  m1 a fit of the model under H1, obtained from \code{\link[nlme]{nlme}}, \code{\link[lme4]{lme4}}
-#' or \code{\link[saemix]{saemix}}
+#' @param  m1 a fit of the model under H1, obtained from \code{nlme}, \code{lme4}
+#' or \code{saemix}
 #' @param m0 a fit of the model under H0, obtained from the same package as \code{m0}
 #' @param control (optional) a list of control options for the computation of the chi-bar-weights
 #' @param pval.comp (optional) the method to be used to compute the p-value, one of: \code{"bounds"} (the default),

@@ -16,8 +16,8 @@ varTest(
 )
 }
 \arguments{
-\item{m1}{a fit of the model under H1, obtained from \code{\link[nlme]{nlme}}, \code{\link[lme4]{lme4}}
-or \code{\link[saemix]{saemix}}}
+\item{m1}{a fit of the model under H1, obtained from \code{nlme}, \code{lme4}
+or \code{saemix}}
 
 \item{m0}{a fit of the model under H0, obtained from the same package as \code{m0}}
 
