@@ -22,7 +22,7 @@ library(varTestnlme)
 
 When testing that the variance of at least one random effect is equal to 0, the limiting distribution of the test statistic is a chi-bar-square distribution whose weights depend on the Fisher Information Matrix (FIM) of the model. 
 
-`varTestnlme` provides different ways to handle the FIM. Depending on the package used to fit the model and on your preferences, it is possible to specify different options with the argument `fim`:
+`varCompTestnlme` provides different ways to handle the FIM. Depending on the package used to fit the model and on your preferences, it is possible to specify different options with the argument `fim`:
 
   * `fim="extract"`: (the default option) extract the FIM computed by the package used to fit the models. Please note that it might not be available in some cases. For example, for nonlinear models fitted with `lme4`. It might also rely on some linearization of the model.
 
@@ -64,18 +64,18 @@ m0 <- nlme(fm1.lis, random = pdDiag(Asym ~ 1))
 
 To run the test with the default settings, simply use:
 ```{r}
-varTest(m1,m0)
+varCompTest(m1,m0)
 ```
 
-With the default settings, only bounds on the p-value are computed. In this case it is largely enough to reject the null hypothesis that the asymptote is the only random effect. However, if more precision is needed, one should specify it using \code{pval.comp = "both"} or \code{pval.comp="approx"}. By default, the \code{fim} option is set to \code{"extract"}, which means that \code{varTestnlme} will extract the FIM computed by the package used to fit the model (i.e. `nlme`, `lme4` or `saemix`). 
+With the default settings, only bounds on the p-value are computed. In this case it is largely enough to reject the null hypothesis that the asymptote is the only random effect. However, if more precision is needed, one should specify it using `pval.comp = "both"` or `pval.comp="approx"`. By default, the `fim` option is set to `"extract"`, which means that `varCompTestnlme` will extract the FIM computed by the package used to fit the model (i.e. `nlme`, `lme4` or `saemix`). 
 
 ```{r, error=TRUE}
-varTest(m1,m0,pval.comp = "both",fim="extract")
+varCompTest(m1,m0,pval.comp = "both",fim="extract")
 ```
 
-In this case we get an error message from `nlme` package stating that the FIM is non-positive definite. We will then use the \code{fim="compute"} option to approximate the FIM using parametric bootstrap, and we set the bootstrap sample size to 100 with the \code{control} argument.
+In this case we get an error message from `nlme` package stating that the FIM is non-positive definite. We will then use the `fim="compute"` option to approximate the FIM using parametric bootstrap, and we set the bootstrap sample size to 100 with the `control` argument.
 
 ```{r}
-vt <- varTest(m1,m0,pval.comp="both",fim="compute",control=list(B=100))
+vt <- varCompTest(m1,m0,pval.comp="both",fim="compute",control=list(B=100))
 ```
 The weights of the chi-bar-square distribution are provided, along with their standard deviations associated to the Monte Carlo approximation of the weights. Note that exact formulas exist for the weights when the number of chi-bar-square components is less than or equal to 3, in which cases no Monte Carlo approximation is needed and standard deviations are thus null.

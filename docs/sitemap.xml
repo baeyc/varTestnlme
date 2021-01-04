@@ -10,43 +10,46 @@
     <loc>https://baeyc.github.io/varTestnlme//reference/bootinvFIM.html</loc>
   </url>
   <url>
-    <loc>https://baeyc.github.io/varTestnlme//reference/chiBarSquareObject-class.html</loc>
+    <loc>https://baeyc.github.io/varTestnlme//reference/bootinvFIM.lme.html</loc>
   </url>
   <url>
-    <loc>https://baeyc.github.io/varTestnlme//reference/dfchisqbar-methods.html</loc>
+    <loc>https://baeyc.github.io/varTestnlme//reference/bootinvFIM.merMod.html</loc>
   </url>
   <url>
-    <loc>https://baeyc.github.io/varTestnlme//reference/extractFIMnlme.html</loc>
+    <loc>https://baeyc.github.io/varTestnlme//reference/bootinvFIM.saemix.html</loc>
   </url>
   <url>
-    <loc>https://baeyc.github.io/varTestnlme//reference/funcStruct.html</loc>
+    <loc>https://baeyc.github.io/varTestnlme//reference/dfChiBarSquare.html</loc>
   </url>
   <url>
-    <loc>https://baeyc.github.io/varTestnlme//reference/getVarCovlme4.html</loc>
+    <loc>https://baeyc.github.io/varTestnlme//reference/extractStruct.html</loc>
   </url>
   <url>
-    <loc>https://baeyc.github.io/varTestnlme//reference/getVarCovnlme.html</loc>
+    <loc>https://baeyc.github.io/varTestnlme//reference/extractStruct.lme.html</loc>
   </url>
   <url>
-    <loc>https://baeyc.github.io/varTestnlme//reference/pchisqbar-methods.html</loc>
+    <loc>https://baeyc.github.io/varTestnlme//reference/extractStruct.merMod.html</loc>
   </url>
   <url>
-    <loc>https://baeyc.github.io/varTestnlme//reference/plot.varTestObject.html</loc>
+    <loc>https://baeyc.github.io/varTestnlme//reference/extractStruct.saemix.html</loc>
   </url>
   <url>
-    <loc>https://baeyc.github.io/varTestnlme//reference/print.varTestObject.html</loc>
+    <loc>https://baeyc.github.io/varTestnlme//reference/extractVarCov.html</loc>
   </url>
   <url>
-    <loc>https://baeyc.github.io/varTestnlme//reference/summary.varTestObject.html</loc>
+    <loc>https://baeyc.github.io/varTestnlme//reference/extractVarCov.lme.html</loc>
   </url>
   <url>
-    <loc>https://baeyc.github.io/varTestnlme//reference/varTest.html</loc>
+    <loc>https://baeyc.github.io/varTestnlme//reference/extractVarCov.merMod.html</loc>
   </url>
   <url>
-    <loc>https://baeyc.github.io/varTestnlme//reference/varTestObject-class.html</loc>
+    <loc>https://baeyc.github.io/varTestnlme//reference/objFunction.html</loc>
   </url>
   <url>
-    <loc>https://baeyc.github.io/varTestnlme//reference/varTestnlme-internal.html</loc>
+    <loc>https://baeyc.github.io/varTestnlme//reference/pckName.html</loc>
+  </url>
+  <url>
+    <loc>https://baeyc.github.io/varTestnlme//reference/varCompTest.html</loc>
   </url>
   <url>
     <loc>https://baeyc.github.io/varTestnlme//reference/weightsChiBarSquare.html</loc>

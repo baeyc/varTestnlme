@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">varTestnlme</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
       </span>
     </div>
 
@@ -86,7 +86,8 @@
 
       
 
-      </header><div class="row">
+      </header><link href="varTestnlme_files/anchor-sections-1.0/anchor-sections.css" rel="stylesheet">
+<script src="varTestnlme_files/anchor-sections-1.0/anchor-sections.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Get started</h1>
@@ -99,13 +100,15 @@
 
     
     
-<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">varTestnlme</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb1"><pre class="downlit">
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://github.com/baeyc/varTestnlme/">varTestnlme</a></span><span class="op">)</span></pre></div>
 <p>The <strong>varTesnlme</strong> package is very easy to use. Below are small examples on how to run it for linear, generalized linear and nonlinear mixed-effect models.</p>
-<p>Mixed-effect models can be run using <a href="https://CRAN.R-project.org/package=nlme">nlme</a> or <a href="https://CRAN.R-project.org/package=lme4">lme4</a>, but also using <a href="https://CRAN.R-project.org/package=saemix">saemix</a>. <strong>varTestnlme</strong> can be used to compare two nested models using likelihood ratio tests, where the variance of at least one random effect is tested equal to 0. Fixed effects can also be tested simultaneously, as well as covariances.</p>
-<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="co"># Load the packages</span>
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">nlme</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">lme4</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">saemix</span>)</pre></body></html></div>
+<p>Mixed-effect models can be run using <a href="https://CRAN.R-project.org/package=nlme">nlme</a> or <a href="https://CRAN.R-project.org/package=lme4">lme4</a>, but also using <a href="https://CRAN.R-project.org/package=saemix">saemix</a>. <strong>varCompTestnlme</strong> can be used to compare two nested models using likelihood ratio tests, where the variance of at least one random effect is tested equal to 0. Fixed effects can also be tested simultaneously, as well as covariances.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit">
+<span class="co"># Load the packages</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://svn.r-project.org/R-packages/trunk/nlme/">nlme</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/lme4/lme4/">lme4</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">saemix</span><span class="op">)</span></pre></div>
 <div id="linear-models" class="section level2">
 <h2 class="hasAnchor">
 <a href="#linear-models" class="anchor"></a>Linear models</h2>
@@ -115,106 +118,120 @@
 <a href="#case-1-testing-the-variance-of-one-random-effect" class="anchor"></a>Case 1 : testing the variance of one random effect</h3>
 <p>We illustrate the results on the <strong>Orthodont</strong> dataset, which is part of the <strong>nlme</strong> package. We are interested in modelling the distance between the pituitary annd the pterygomaxillary fissure (in mm) as a function of age, in 27 children. We will fit a random slope and random intercept model, and test whether the slope is random or not.</p>
 <p>We first need to fit the two nested models: the full model corresponding to <span class="math inline">\(H_1\)</span> and the null model corresponding to <span class="math inline">\(H_0\)</span>, where there is no random effect associated to <code>age</code>.</p>
-<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span>(<span class="st">"Orthodont"</span>)
+<div class="sourceCode" id="cb3"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="st">"Orthodont"</span><span class="op">)</span>
 
 <span class="co"># using nlme, with correlated slope and intercept</span>
-<span class="no">m1.nlme</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/lme.html">lme</a></span>(<span class="no">distance</span> ~ <span class="fl">1</span> + <span class="no">Sex</span> + <span class="no">age</span> + <span class="no">age</span>*<span class="no">Sex</span>, <span class="kw">random</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/pdDiag.html">pdDiag</a></span>(<span class="no">Subject</span> ~ <span class="fl">1</span> + <span class="no">age</span>), <span class="kw">data</span> <span class="kw">=</span> <span class="no">Orthodont</span>, <span class="kw">method</span> <span class="kw">=</span> <span class="st">"ML"</span>)
-<span class="no">m0.nlme</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/lme.html">lme</a></span>(<span class="no">distance</span> ~ <span class="fl">1</span> + <span class="no">Sex</span> + <span class="no">age</span> + <span class="no">age</span>*<span class="no">Sex</span>, <span class="kw">random</span> <span class="kw">=</span> ~ <span class="fl">1</span> <span class="kw">|</span> <span class="no">Subject</span>, <span class="kw">data</span> <span class="kw">=</span> <span class="no">Orthodont</span>, <span class="kw">method</span> <span class="kw">=</span> <span class="st">"ML"</span>)
+<span class="va">m1.nlme</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/lme.html">lme</a></span><span class="op">(</span><span class="va">distance</span> <span class="op">~</span> <span class="fl">1</span> <span class="op">+</span> <span class="va">Sex</span> <span class="op">+</span> <span class="va">age</span> <span class="op">+</span> <span class="va">age</span><span class="op">*</span><span class="va">Sex</span>, random <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/pdSymm.html">pdSymm</a></span><span class="op">(</span><span class="va">Subject</span> <span class="op">~</span> <span class="fl">1</span> <span class="op">+</span> <span class="va">age</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">Orthodont</span>, method <span class="op">=</span> <span class="st">"ML"</span><span class="op">)</span>
+<span class="va">m0.nlme</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/lme.html">lme</a></span><span class="op">(</span><span class="va">distance</span> <span class="op">~</span> <span class="fl">1</span> <span class="op">+</span> <span class="va">Sex</span>, random <span class="op">=</span> <span class="op">~</span> <span class="fl">1</span> <span class="op">|</span> <span class="va">Subject</span>, data <span class="op">=</span> <span class="va">Orthodont</span>, method <span class="op">=</span> <span class="st">"ML"</span><span class="op">)</span>
 
 <span class="co"># using lme4, with correlated slope and intercept</span>
-<span class="no">m1.lme4</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/lme4/man/lmer.html">lmer</a></span>(<span class="no">distance</span> ~ <span class="fl">1</span> + <span class="no">Sex</span> + <span class="no">age</span> + <span class="no">age</span>*<span class="no">Sex</span> + (<span class="fl">1</span> + <span class="no">age</span> <span class="kw">|</span> <span class="no">Subject</span>), <span class="kw">data</span> <span class="kw">=</span> <span class="no">Orthodont</span>, <span class="kw">REML</span> <span class="kw">=</span> <span class="fl">FALSE</span>)</pre></body></html></div>
+<span class="va">m1.lme4</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/lme4/man/lmer.html">lmer</a></span><span class="op">(</span><span class="va">distance</span> <span class="op">~</span> <span class="fl">1</span> <span class="op">+</span> <span class="va">Sex</span> <span class="op">+</span> <span class="va">age</span> <span class="op">+</span> <span class="va">age</span><span class="op">*</span><span class="va">Sex</span> <span class="op">+</span> <span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="va">age</span> <span class="op">|</span> <span class="va">Subject</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">Orthodont</span>, REML <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></pre></div>
 <pre><code>#&gt; Warning in checkConv(attr(opt, "derivs"), opt$par, ctrl = control$checkConv, :
 #&gt; Model failed to converge with max|grad| = 0.0464695 (tol = 0.002, component 1)</code></pre>
-<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="no">m0.lme4</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/lme4/man/lmer.html">lmer</a></span>(<span class="no">distance</span> ~ <span class="fl">1</span> + <span class="no">Sex</span> + <span class="no">age</span> + <span class="no">age</span>*<span class="no">Sex</span> + (<span class="fl">1</span> <span class="kw">|</span> <span class="no">Subject</span>), <span class="kw">data</span> <span class="kw">=</span> <span class="no">Orthodont</span>, <span class="kw">REML</span> <span class="kw">=</span> <span class="fl">FALSE</span>)</pre></body></html></div>
-<p>Now we can run the likelihood ratio test using the <strong>varTestnlme</strong> package.</p>
-<div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="no">vt1.nlme</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/varTest.html">varTest</a></span>(<span class="no">m1.nlme</span>,<span class="no">m0.nlme</span>,<span class="kw">pval.comp</span> <span class="kw">=</span> <span class="st">"both"</span>)
-<span class="no">vt1.lme4</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/varTest.html">varTest</a></span>(<span class="no">m1.lme4</span>,<span class="no">m0.lme4</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb5"><pre class="downlit">
+<span class="va">m0.lme4</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/lme4/man/lmer.html">lmer</a></span><span class="op">(</span><span class="va">distance</span> <span class="op">~</span> <span class="fl">1</span> <span class="op">+</span> <span class="va">Sex</span> <span class="op">+</span> <span class="op">(</span><span class="fl">1</span> <span class="op">|</span> <span class="va">Subject</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">Orthodont</span>, REML <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></pre></div>
+<p>Now we can run the likelihood ratio test using the <strong>varCompTestnlme</strong> package.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit">
+<span class="co">#vt1.nlme &lt;- varCompTest(m1.nlme,m0.nlme)</span>
+<span class="va">vt1.lme4</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/varCompTest.html">varCompTest</a></span><span class="op">(</span><span class="va">m1.lme4</span>,<span class="va">m0.lme4</span><span class="op">)</span></pre></div>
 </div>
 <div id="case-2-testing-the-variance-of-one-effect-with-uncorrelated-random-effects" class="section level3">
 <h3 class="hasAnchor">
 <a href="#case-2-testing-the-variance-of-one-effect-with-uncorrelated-random-effects" class="anchor"></a>Case 2 : testing the variance of one effect with uncorrelated random effects</h3>
-<div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="co"># using nlme, with uncorrelated slope and intercept</span>
-<span class="no">m1diag.nlme</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/lme.html">lme</a></span>(<span class="no">distance</span> ~ <span class="fl">1</span> + <span class="no">Sex</span> + <span class="no">age</span> + <span class="no">age</span>*<span class="no">Sex</span>, <span class="kw">random</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/pdDiag.html">pdDiag</a></span>(<span class="no">Subject</span> ~ <span class="fl">1</span> + <span class="no">age</span>), <span class="kw">data</span> <span class="kw">=</span> <span class="no">Orthodont</span>, <span class="kw">method</span> <span class="kw">=</span> <span class="st">"ML"</span>)
+<div class="sourceCode" id="cb7"><pre class="downlit">
+<span class="co"># using nlme, with uncorrelated slope and intercept</span>
+<span class="va">m1diag.nlme</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/lme.html">lme</a></span><span class="op">(</span><span class="va">distance</span> <span class="op">~</span> <span class="fl">1</span> <span class="op">+</span> <span class="va">Sex</span> <span class="op">+</span> <span class="va">age</span> <span class="op">+</span> <span class="va">age</span><span class="op">*</span><span class="va">Sex</span>, random <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/pdDiag.html">pdDiag</a></span><span class="op">(</span><span class="va">Subject</span> <span class="op">~</span> <span class="fl">1</span> <span class="op">+</span> <span class="va">age</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">Orthodont</span>, method <span class="op">=</span> <span class="st">"ML"</span><span class="op">)</span>
 
 <span class="co"># using lme4, with uncorrelated slope and intercept</span>
-<span class="no">m1diag.lme4</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/lme4/man/lmer.html">lmer</a></span>(<span class="no">distance</span> ~ <span class="fl">1</span> + <span class="no">Sex</span> + <span class="no">age</span> + <span class="no">age</span>*<span class="no">Sex</span> + (<span class="fl">1</span> + <span class="no">age</span> <span class="kw">||</span> <span class="no">Subject</span>), <span class="kw">data</span> <span class="kw">=</span> <span class="no">Orthodont</span>, <span class="kw">REML</span> <span class="kw">=</span> <span class="fl">FALSE</span>)
+<span class="va">m1diag.lme4</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/lme4/man/lmer.html">lmer</a></span><span class="op">(</span><span class="va">distance</span> <span class="op">~</span> <span class="fl">1</span> <span class="op">+</span> <span class="va">Sex</span> <span class="op">+</span> <span class="va">age</span> <span class="op">+</span> <span class="va">age</span><span class="op">*</span><span class="va">Sex</span> <span class="op">+</span> <span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="va">age</span> <span class="op">||</span> <span class="va">Subject</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">Orthodont</span>, REML <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 
-<span class="no">vt1diag.nlme</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/varTest.html">varTest</a></span>(<span class="no">m1diag.nlme</span>,<span class="no">m0.nlme</span>)
-<span class="no">vt1diag.lme4</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/varTest.html">varTest</a></span>(<span class="no">m1diag.lme4</span>,<span class="no">m0.lme4</span>)</pre></body></html></div>
+<span class="va">vt1diag.nlme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/varCompTest.html">varCompTest</a></span><span class="op">(</span><span class="va">m1diag.nlme</span>,<span class="va">m0.nlme</span><span class="op">)</span>
+<span class="va">vt1diag.lme4</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/varCompTest.html">varCompTest</a></span><span class="op">(</span><span class="va">m1diag.lme4</span>,<span class="va">m0.lme4</span><span class="op">)</span></pre></div>
 </div>
 <div id="case-3-testing-all-the-variances" class="section level3">
 <h3 class="hasAnchor">
 <a href="#case-3-testing-all-the-variances" class="anchor"></a>Case 3 : testing all the variances</h3>
 <p>In the previous section, the weights of the chi-bar-square distribution where available explicitly. However, it is not always the case. By default, since the computation of these weights can be time consuming, the function is computing bounds on the p-value. In many cases this can be enough to decide whether to reject or not the null hypothesis. If more precision is wanted or needed, it is possible to specify it via the option <code>pval.comp</code>, which then needs to be set to either <code>pval.comp="approx"</code> or to <code>pval.comp="both"</code>. In both cases, the <code>control</code> argument can be used to control the computation process. It is a list which contains three slots: <code>M</code> (default to 5000), the size of the Monte Carlo computation, <code>parallel</code> (default to <code>FALSE</code>) to specify whether computation should be parallelized, and <code>nbcores</code> (default to <code>1</code>) to set the number of cores to be used in case of parallel computing.</p>
-<div class="sourceCode" id="cb8"><html><body><pre class="r"><span class="no">m0noRE</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span>(<span class="no">distance</span> ~ <span class="fl">1</span> + <span class="no">Sex</span> + <span class="no">age</span> + <span class="no">age</span>*<span class="no">Sex</span>, <span class="kw">data</span> <span class="kw">=</span> <span class="no">Orthodont</span>)
+<div class="sourceCode" id="cb8"><pre class="downlit">
+<span class="va">m0noRE</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">distance</span> <span class="op">~</span> <span class="fl">1</span> <span class="op">+</span> <span class="va">Sex</span> <span class="op">+</span> <span class="va">age</span> <span class="op">+</span> <span class="va">age</span><span class="op">*</span><span class="va">Sex</span>, data <span class="op">=</span> <span class="va">Orthodont</span><span class="op">)</span>
 
-<span class="no">vt</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/varTest.html">varTest</a></span>(<span class="no">m1diag.nlme</span>,<span class="no">m0noRE</span>,<span class="kw">pval.comp</span> <span class="kw">=</span> <span class="st">"both"</span>)
-<span class="fu"><a href="https://rdrr.io/pkg/saemix/man/summary-methods.html">summary</a></span>(<span class="no">vt</span>)</pre></body></html></div>
-<pre><code>#&gt;        Length         Class          Mode 
-#&gt;             1 varTestObject            S4</code></pre>
-<div class="sourceCode" id="cb10"><html><body><pre class="r"><span class="no">vt2</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/varTest.html">varTest</a></span>(<span class="no">m1diag.lme4</span>,<span class="no">m0noRE</span>)
-<span class="fu"><a href="https://rdrr.io/pkg/saemix/man/summary-methods.html">summary</a></span>(<span class="no">vt2</span>)</pre></body></html></div>
-<pre><code>#&gt;        Length         Class          Mode 
-#&gt;             1 varTestObject            S4</code></pre>
+<span class="va">vt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/varCompTest.html">varCompTest</a></span><span class="op">(</span><span class="va">m1diag.nlme</span>,<span class="va">m0noRE</span>,pval.comp <span class="op">=</span> <span class="st">"both"</span><span class="op">)</span>
+<span class="va">vt2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/varCompTest.html">varCompTest</a></span><span class="op">(</span><span class="va">m1diag.lme4</span>,<span class="va">m0noRE</span><span class="op">)</span></pre></div>
 <p>By default, the FIM is extracted from the packages, but it is also possible to compute it via parametric bootstrap. In this case, simply use the option <code>fim="compute"</code>. The default bootstrap sampling size is <code>B=1000</code> but it can be changed. To get the exact p-value one can use</p>
-<div class="sourceCode" id="cb12"><html><body><pre class="r"><span class="no">vt</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/varTest.html">varTest</a></span>(<span class="no">m1diag.nlme</span>,<span class="no">m0noRE</span>,<span class="kw">fim</span><span class="kw">=</span><span class="st">"compute"</span>,<span class="kw">pval.comp</span> <span class="kw">=</span> <span class="st">"both"</span>)
-<span class="fu"><a href="https://rdrr.io/pkg/saemix/man/summary-methods.html">summary</a></span>(<span class="no">vt</span>)</pre></body></html></div>
-<pre><code>#&gt;        Length         Class          Mode 
-#&gt;             1 varTestObject            S4</code></pre>
-<div class="sourceCode" id="cb14"><html><body><pre class="r"><span class="no">vt2</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/varTest.html">varTest</a></span>(<span class="no">m1diag.lme4</span>,<span class="no">m0noRE</span>,<span class="kw">fim</span><span class="kw">=</span><span class="st">"compute"</span>,<span class="kw">pval.comp</span> <span class="kw">=</span> <span class="st">"both"</span>)
-<span class="fu"><a href="https://rdrr.io/pkg/saemix/man/summary-methods.html">summary</a></span>(<span class="no">vt2</span>)</pre></body></html></div>
-<pre><code>#&gt;        Length         Class          Mode 
-#&gt;             1 varTestObject            S4</code></pre>
+<div class="sourceCode" id="cb9"><pre class="downlit">
+<span class="va">vt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/varCompTest.html">varCompTest</a></span><span class="op">(</span><span class="va">m1diag.nlme</span>,<span class="va">m0noRE</span>,fim<span class="op">=</span><span class="st">"compute"</span>,pval.comp <span class="op">=</span> <span class="st">"both"</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/pkg/saemix/man/summary-methods.html">summary</a></span><span class="op">(</span><span class="va">vt</span><span class="op">)</span></pre></div>
+<pre><code>#&gt;             Length Class  Mode     
+#&gt; statistic   1      -none- numeric  
+#&gt; null.value  2      -none- numeric  
+#&gt; alternative 2      -none- character
+#&gt; parameters  3      -none- list     
+#&gt; method      1      -none- character
+#&gt; p.value     4      -none- numeric</code></pre>
+<div class="sourceCode" id="cb11"><pre class="downlit">
+<span class="va">vt2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/varCompTest.html">varCompTest</a></span><span class="op">(</span><span class="va">m1diag.lme4</span>,<span class="va">m0noRE</span>,fim<span class="op">=</span><span class="st">"compute"</span>,pval.comp <span class="op">=</span> <span class="st">"both"</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/pkg/saemix/man/summary-methods.html">summary</a></span><span class="op">(</span><span class="va">vt2</span><span class="op">)</span></pre></div>
+<pre><code>#&gt;             Length Class  Mode     
+#&gt; statistic   1      -none- numeric  
+#&gt; null.value  2      -none- numeric  
+#&gt; alternative 2      -none- character
+#&gt; parameters  3      -none- list     
+#&gt; method      1      -none- character
+#&gt; p.value     4      -none- numeric</code></pre>
 </div>
 </div>
 <div id="generalized-linear-model" class="section level2">
 <h2 class="hasAnchor">
 <a href="#generalized-linear-model" class="anchor"></a>Generalized linear model</h2>
-<div class="sourceCode" id="cb16"><html><body><pre class="r"><span class="no">m1</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/lme4/man/glmer.html">glmer</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span>(<span class="no">incidence</span>, <span class="no">size</span> - <span class="no">incidence</span>) ~ <span class="no">period</span> + (<span class="fl">1</span> <span class="kw">|</span> <span class="no">herd</span>),
-             <span class="kw">family</span> <span class="kw">=</span> <span class="no">binomial</span>, <span class="kw">data</span> <span class="kw">=</span> <span class="no">cbpp</span>)
-<span class="no">m0</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/glm.html">glm</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span>(<span class="no">incidence</span>, <span class="no">size</span> - <span class="no">incidence</span>) ~ <span class="no">period</span>,
-             <span class="kw">family</span> <span class="kw">=</span> <span class="no">binomial</span>, <span class="kw">data</span> <span class="kw">=</span> <span class="no">cbpp</span>)
-<span class="fu"><a href="../reference/varTest.html">varTest</a></span>(<span class="no">m1</span>,<span class="no">m0</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb13"><pre class="downlit">
+<span class="va">m1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/lme4/man/glmer.html">glmer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="va">incidence</span>, <span class="va">size</span> <span class="op">-</span> <span class="va">incidence</span><span class="op">)</span> <span class="op">~</span> <span class="va">period</span> <span class="op">+</span> <span class="op">(</span><span class="fl">1</span> <span class="op">|</span> <span class="va">herd</span><span class="op">)</span>,
+             family <span class="op">=</span> <span class="va">binomial</span>, data <span class="op">=</span> <span class="va">cbpp</span><span class="op">)</span>
+<span class="va">m0</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/glm.html">glm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="va">incidence</span>, <span class="va">size</span> <span class="op">-</span> <span class="va">incidence</span><span class="op">)</span> <span class="op">~</span> <span class="va">period</span>,
+             family <span class="op">=</span> <span class="va">binomial</span>, data <span class="op">=</span> <span class="va">cbpp</span><span class="op">)</span>
+<span class="fu"><a href="../reference/varCompTest.html">varCompTest</a></span><span class="op">(</span><span class="va">m1</span>,<span class="va">m0</span><span class="op">)</span></pre></div>
 </div>
 <div id="nonlinear-model" class="section level2">
 <h2 class="hasAnchor">
 <a href="#nonlinear-model" class="anchor"></a>Nonlinear model</h2>
-<div class="sourceCode" id="cb17"><html><body><pre class="r"><span class="co"># with nlme</span>
-<span class="no">fm1Theo.nlme</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/extractFIMnlme.html">nlme</a></span>(<span class="no">conc</span> ~ <span class="fu"><a href="https://rdrr.io/r/stats/SSfol.html">SSfol</a></span>(<span class="no">Dose</span>, <span class="no">Time</span>, <span class="no">lKe</span>, <span class="no">lKa</span>, <span class="no">lCl</span>),
-                     <span class="no">Theoph</span>,
-                     <span class="kw">fixed</span> <span class="kw">=</span> <span class="no">lKe</span> + <span class="no">lKa</span> + <span class="no">lCl</span> ~ <span class="fl">1</span>,
-                     <span class="kw">start</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>( -<span class="fl">2.4</span>, <span class="fl">0.45</span>, -<span class="fl">3.2</span>),
-                     <span class="kw">random</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/pdSymm.html">pdSymm</a></span>(<span class="no">lKa</span> + <span class="no">lCl</span> ~ <span class="fl">1</span>))
-<span class="no">fm2Theo.nlme</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/extractFIMnlme.html">nlme</a></span>(<span class="no">conc</span> ~ <span class="fu"><a href="https://rdrr.io/r/stats/SSfol.html">SSfol</a></span>(<span class="no">Dose</span>, <span class="no">Time</span>, <span class="no">lKe</span>, <span class="no">lKa</span>, <span class="no">lCl</span>),
-                     <span class="no">Theoph</span>,
-                     <span class="kw">fixed</span> <span class="kw">=</span> <span class="no">lKe</span> + <span class="no">lKa</span> + <span class="no">lCl</span> ~ <span class="fl">1</span>,
-                     <span class="kw">start</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>( -<span class="fl">2.4</span>, <span class="fl">0.45</span>, -<span class="fl">3.2</span>),
-                     <span class="kw">random</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/pdDiag.html">pdDiag</a></span>(<span class="no">lCl</span> ~ <span class="fl">1</span>))
-<span class="fu"><a href="../reference/varTest.html">varTest</a></span>(<span class="no">fm1Theo.nlme</span>,<span class="no">fm2Theo.nlme</span>, <span class="kw">pval.comp</span> <span class="kw">=</span> <span class="st">"both"</span>)
+<div class="sourceCode" id="cb14"><pre class="downlit">
+<span class="co"># with nlme</span>
+<span class="va">fm1Theo.nlme</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/nlme.html">nlme</a></span><span class="op">(</span><span class="va">conc</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/stats/SSfol.html">SSfol</a></span><span class="op">(</span><span class="va">Dose</span>, <span class="va">Time</span>, <span class="va">lKe</span>, <span class="va">lKa</span>, <span class="va">lCl</span><span class="op">)</span>,
+                     <span class="va">Theoph</span>,
+                     fixed <span class="op">=</span> <span class="va">lKe</span> <span class="op">+</span> <span class="va">lKa</span> <span class="op">+</span> <span class="va">lCl</span> <span class="op">~</span> <span class="fl">1</span>,
+                     start<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span> <span class="op">-</span><span class="fl">2.4</span>, <span class="fl">0.45</span>, <span class="op">-</span><span class="fl">3.2</span><span class="op">)</span>,
+                     random <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/pdSymm.html">pdSymm</a></span><span class="op">(</span><span class="va">lKa</span> <span class="op">+</span> <span class="va">lCl</span> <span class="op">~</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span>
+<span class="va">fm2Theo.nlme</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/nlme.html">nlme</a></span><span class="op">(</span><span class="va">conc</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/stats/SSfol.html">SSfol</a></span><span class="op">(</span><span class="va">Dose</span>, <span class="va">Time</span>, <span class="va">lKe</span>, <span class="va">lKa</span>, <span class="va">lCl</span><span class="op">)</span>,
+                     <span class="va">Theoph</span>,
+                     fixed <span class="op">=</span> <span class="va">lKe</span> <span class="op">+</span> <span class="va">lKa</span> <span class="op">+</span> <span class="va">lCl</span> <span class="op">~</span> <span class="fl">1</span>,
+                     start<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span> <span class="op">-</span><span class="fl">2.4</span>, <span class="fl">0.45</span>, <span class="op">-</span><span class="fl">3.2</span><span class="op">)</span>,
+                     random <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/pdDiag.html">pdDiag</a></span><span class="op">(</span><span class="va">lCl</span> <span class="op">~</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span>
+<span class="fu"><a href="../reference/varCompTest.html">varCompTest</a></span><span class="op">(</span><span class="va">fm1Theo.nlme</span>,<span class="va">fm2Theo.nlme</span>, pval.comp <span class="op">=</span> <span class="st">"both"</span><span class="op">)</span>
 
 <span class="co"># with lme4</span>
-<span class="no">Th.start</span>  <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="kw">lKe</span> <span class="kw">=</span> -<span class="fl">2.4</span>, <span class="kw">lKa</span> <span class="kw">=</span> <span class="fl">0.45</span>, <span class="kw">lCl</span> <span class="kw">=</span> -<span class="fl">3.2</span>)
-<span class="no">nm1</span>  <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/lme4/man/nlmer.html">nlmer</a></span>(<span class="no">conc</span> ~ <span class="fu"><a href="https://rdrr.io/r/stats/SSfol.html">SSfol</a></span>(<span class="no">Dose</span> , <span class="no">Time</span> ,<span class="no">lKe</span> , <span class="no">lKa</span> , <span class="no">lCl</span>) ~
-                <span class="fl">0</span>+<span class="no">lKe</span>+<span class="no">lKa</span>+<span class="no">lCl</span> +(<span class="no">lKe</span>+<span class="no">lKa</span>+<span class="no">lCl</span><span class="kw">|</span><span class="no">Subject</span>),
-              <span class="kw">nAGQ</span><span class="kw">=</span><span class="fl">0</span>,
-              <span class="no">Theoph</span>,
-              <span class="kw">start</span> <span class="kw">=</span> <span class="no">Th.start</span>)
-<span class="no">nm0</span>  <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/lme4/man/nlmer.html">nlmer</a></span>(<span class="no">conc</span> ~ <span class="fu"><a href="https://rdrr.io/r/stats/SSfol.html">SSfol</a></span>(<span class="no">Dose</span> , <span class="no">Time</span> ,<span class="no">lKe</span> , <span class="no">lKa</span> , <span class="no">lCl</span>) ~
-                <span class="fl">0</span>+<span class="no">lKe</span>+<span class="no">lKa</span>+<span class="no">lCl</span> +(<span class="no">lKa</span>+<span class="no">lCl</span><span class="kw">|</span><span class="no">Subject</span>),
-              <span class="kw">nAGQ</span><span class="kw">=</span><span class="fl">0</span>,
-              <span class="no">Theoph</span>,
-              <span class="kw">start</span> <span class="kw">=</span> <span class="no">Th.start</span>)
-<span class="fu"><a href="../reference/varTest.html">varTest</a></span>(<span class="no">nm1</span>,<span class="no">nm0</span>)</pre></body></html></div>
+<span class="va">Th.start</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>lKe <span class="op">=</span> <span class="op">-</span><span class="fl">2.4</span>, lKa <span class="op">=</span> <span class="fl">0.45</span>, lCl <span class="op">=</span> <span class="op">-</span><span class="fl">3.2</span><span class="op">)</span>
+<span class="va">nm1</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/lme4/man/nlmer.html">nlmer</a></span><span class="op">(</span><span class="va">conc</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/stats/SSfol.html">SSfol</a></span><span class="op">(</span><span class="va">Dose</span> , <span class="va">Time</span> ,<span class="va">lKe</span> , <span class="va">lKa</span> , <span class="va">lCl</span><span class="op">)</span> <span class="op">~</span>
+                <span class="fl">0</span><span class="op">+</span><span class="va">lKe</span><span class="op">+</span><span class="va">lKa</span><span class="op">+</span><span class="va">lCl</span> <span class="op">+</span><span class="op">(</span><span class="va">lKe</span><span class="op">+</span><span class="va">lKa</span><span class="op">+</span><span class="va">lCl</span><span class="op">|</span><span class="va">Subject</span><span class="op">)</span>,
+              nAGQ<span class="op">=</span><span class="fl">0</span>,
+              <span class="va">Theoph</span>,
+              start <span class="op">=</span> <span class="va">Th.start</span><span class="op">)</span>
+<span class="va">nm0</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/lme4/man/nlmer.html">nlmer</a></span><span class="op">(</span><span class="va">conc</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/stats/SSfol.html">SSfol</a></span><span class="op">(</span><span class="va">Dose</span> , <span class="va">Time</span> ,<span class="va">lKe</span> , <span class="va">lKa</span> , <span class="va">lCl</span><span class="op">)</span> <span class="op">~</span>
+                <span class="fl">0</span><span class="op">+</span><span class="va">lKe</span><span class="op">+</span><span class="va">lKa</span><span class="op">+</span><span class="va">lCl</span> <span class="op">+</span><span class="op">(</span><span class="va">lKa</span><span class="op">+</span><span class="va">lCl</span><span class="op">|</span><span class="va">Subject</span><span class="op">)</span>,
+              nAGQ<span class="op">=</span><span class="fl">0</span>,
+              <span class="va">Theoph</span>,
+              start <span class="op">=</span> <span class="va">Th.start</span><span class="op">)</span>
+<span class="fu"><a href="../reference/varCompTest.html">varCompTest</a></span><span class="op">(</span><span class="va">nm1</span>,<span class="va">nm0</span><span class="op">)</span></pre></div>
 <p>Testing for the presence of randomness in the model.</p>
-<div class="sourceCode" id="cb18"><html><body><pre class="r"><span class="no">fm1</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/extractFIMnlme.html">nlme</a></span>(<span class="no">conc</span> ~ <span class="fu"><a href="https://rdrr.io/r/stats/SSfol.html">SSfol</a></span>(<span class="no">Dose</span>, <span class="no">Time</span>, <span class="no">lKe</span>, <span class="no">lKa</span>, <span class="no">lCl</span>),
-                     <span class="no">Theoph</span>,
-                     <span class="kw">fixed</span> <span class="kw">=</span> <span class="no">lKe</span> + <span class="no">lKa</span> + <span class="no">lCl</span> ~ <span class="fl">1</span>,
-                     <span class="kw">start</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>( -<span class="fl">2.4</span>, <span class="fl">0.45</span>, -<span class="fl">3.2</span>),
-                     <span class="kw">random</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/pdDiag.html">pdDiag</a></span>(<span class="no">lKe</span> + <span class="no">lKa</span> + <span class="no">lCl</span> ~ <span class="fl">1</span>))
-<span class="no">fm0</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/nls.html">nls</a></span>(<span class="no">conc</span> ~ <span class="fu"><a href="https://rdrr.io/r/stats/SSfol.html">SSfol</a></span>(<span class="no">Dose</span>, <span class="no">Time</span>, <span class="no">lKe</span>, <span class="no">lKa</span>, <span class="no">lCl</span>),
-                     <span class="no">Theoph</span>,
-                     <span class="kw">start</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">lKe</span><span class="kw">=</span>-<span class="fl">2.4</span>,<span class="kw">lKa</span><span class="kw">=</span><span class="fl">0.45</span>,<span class="kw">lCl</span><span class="kw">=</span>-<span class="fl">3.2</span>))
-<span class="fu"><a href="../reference/varTest.html">varTest</a></span>(<span class="no">fm1</span>,<span class="no">fm0</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb15"><pre class="downlit">
+<span class="va">fm1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/nlme.html">nlme</a></span><span class="op">(</span><span class="va">conc</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/stats/SSfol.html">SSfol</a></span><span class="op">(</span><span class="va">Dose</span>, <span class="va">Time</span>, <span class="va">lKe</span>, <span class="va">lKa</span>, <span class="va">lCl</span><span class="op">)</span>,
+                     <span class="va">Theoph</span>,
+                     fixed <span class="op">=</span> <span class="va">lKe</span> <span class="op">+</span> <span class="va">lKa</span> <span class="op">+</span> <span class="va">lCl</span> <span class="op">~</span> <span class="fl">1</span>,
+                     start<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span> <span class="op">-</span><span class="fl">2.4</span>, <span class="fl">0.45</span>, <span class="op">-</span><span class="fl">3.2</span><span class="op">)</span>,
+                     random <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/pdDiag.html">pdDiag</a></span><span class="op">(</span><span class="va">lKe</span> <span class="op">+</span> <span class="va">lKa</span> <span class="op">+</span> <span class="va">lCl</span> <span class="op">~</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span>
+<span class="va">fm0</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/nls.html">nls</a></span><span class="op">(</span><span class="va">conc</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/stats/SSfol.html">SSfol</a></span><span class="op">(</span><span class="va">Dose</span>, <span class="va">Time</span>, <span class="va">lKe</span>, <span class="va">lKa</span>, <span class="va">lCl</span><span class="op">)</span>,
+                     <span class="va">Theoph</span>,
+                     start<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>lKe<span class="op">=</span><span class="op">-</span><span class="fl">2.4</span>,lKa<span class="op">=</span><span class="fl">0.45</span>,lCl<span class="op">=</span><span class="op">-</span><span class="fl">3.2</span><span class="op">)</span><span class="op">)</span>
+<span class="fu"><a href="../reference/varCompTest.html">varCompTest</a></span><span class="op">(</span><span class="va">fm1</span>,<span class="va">fm0</span><span class="op">)</span></pre></div>
 </div>
   </div>
 
@@ -229,11 +246,11 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by <a href="https://math.univ-lille1.fr/~baey/">Charlotte Baey</a>, Estelle Kuhn.</p>
+  <p>Developed by <a href="https://baeyc.github.io/">Charlotte Baey</a>, Estelle Kuhn.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

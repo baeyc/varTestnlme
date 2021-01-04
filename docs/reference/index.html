@@ -71,7 +71,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">varTestnlme</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
       </span>
     </div>
 
@@ -144,7 +144,7 @@
       <tr>
         <th colspan="2">
           <h2 id="section-main-functions" class="hasAnchor"><a href="#section-main-functions" class="anchor"></a>Main functions</h2>
-          <p class="section-desc"><p>Main user functions</p></p>
+          <p class="section-desc"><p>Main functions</p></p>
         </th>
       </tr>
       
@@ -155,64 +155,33 @@
       <tr>
         
         <td>
-          <p><code><a href="varTest.html">varTest()</a></code> </p>
+          <p><code><a href="varCompTest.html">varCompTest()</a></code> <code><a href="varCompTest.html">varTest.lme()</a></code> <code><a href="varCompTest.html">varTest.merMod()</a></code> <code><a href="varCompTest.html">varTest.saemix()</a></code> </p>
         </td>
         <td><p>Variance component testing</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="extractFIMnlme.html">extractFIMnlme()</a></code> </p>
-        </td>
-        <td><p>Extraction of the Fisher Information Matrix for nlme package</p></td>
-      </tr><tr>
-        
-        <td>
           <p><code><a href="bootinvFIM.html">bootinvFIM()</a></code> </p>
         </td>
-        <td><p>Approximation of the (inverse of the) Fisher Information Matrix</p></td>
+        <td><p>Approximation of the inverse of the Fisher Information Matix via parametric bootstrap</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="getVarCovnlme.html">getVarCovnlme()</a></code> </p>
+          <p><code><a href="dfChiBarSquare.html">dfChiBarSquare()</a></code> </p>
         </td>
-        <td><p>Extract covariance matrix</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="getVarCovlme4.html">getVarCovlme4()</a></code> </p>
-        </td>
-        <td><p>Extract covariance matrix</p></td>
+        <td><p>Chi-bar-square degrees of freedom computation</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="weightsChiBarSquare.html">weightsChiBarSquare()</a></code> </p>
         </td>
         <td><p>Chi-bar-square weights computation</p></td>
-      </tr>
-    </tbody><tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-classes" class="hasAnchor"><a href="#section-classes" class="anchor"></a>Classes</h2>
-          <p class="section-desc"><p>S4 class objects</p></p>
-        </th>
-      </tr>
-      
-      
-    </tbody><tbody>
-      
-      
-      <tr>
-        
-        <td>
-          <p><code><a href="varTestObject-class.html">varTestObject-class</a></code> </p>
-        </td>
-        <td><p>Class "varTestObject"</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="chiBarSquareObject-class.html">chiBarSquareObject-class</a></code> </p>
+          <p><code><a href="approxWeights.html">approxWeights()</a></code> </p>
         </td>
-        <td><p>Class "chiBarSquareObject"</p></td>
+        <td><p>Monte Carlo approximation of chi-bar-square weights</p></td>
       </tr>
     </tbody><tbody>
       <tr>
@@ -229,28 +198,9 @@
       <tr>
         
         <td>
-          <p><code><a href="pchisqbar-methods.html">pchisqbar(<i>&lt;numeric&gt;</i>,<i>&lt;chiBarSquareObject&gt;</i>,<i>&lt;logical&gt;</i>)</a></code> </p>
+          <p><code><a href="extractStruct.html">extractStruct()</a></code> </p>
         </td>
-        <td><p>pchisqbar
-Cumulative distribution function of the chi-bar-square distribution</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="plot.varTestObject.html">plot.varTestObject</a></code> </p>
-        </td>
-        <td><p>Diagnostic plot for the approximation of the chi-bar-square distribution</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="print.varTestObject.html">print.varTestObject</a></code> </p>
-        </td>
-        <td><p>Print basic information about the variance components test</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="summary.varTestObject.html">summary.varTestObject</a></code> </p>
-        </td>
-        <td><p>Summary information for the variance components test</p></td>
+        <td><p>Extracting models' structures</p></td>
       </tr>
     </tbody>
     </table>
@@ -266,11 +216,11 @@ Cumulative distribution function of the chi-bar-square distribution</p></td>
 
       <footer>
       <div class="copyright">
-  <p>Developed by <a href='https://math.univ-lille1.fr/~baey/'>Charlotte Baey</a>, Estelle Kuhn.</p>
+  <p>Developed by <a href='https://baeyc.github.io/'>Charlotte Baey</a>, Estelle Kuhn.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

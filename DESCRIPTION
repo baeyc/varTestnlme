@@ -1,7 +1,7 @@
 Package: varTestnlme
 Type: Package
 Title: Variance Components Testing for Linear and Nonlinear Mixed Effects Models
-Version: 0.2.0
+Version: 1.0.0
 Authors@R: c(
     person("Charlotte","Baey", ,"charlotte.baey@univ-lille.fr", role = c("aut", "cre"),
        comment = c(ORCID= "0000-0002-1413-1058")
@@ -39,7 +39,7 @@ Imports:
     doParallel,
     parallel,
     lmeresampler
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1
 Suggests: 
     knitr,
     rmarkdown,

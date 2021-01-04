@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Approximation of the (inverse of the) Fisher Information Matrix — bootinvFIM • varTestnlme</title>
+<title>Approximation of the inverse of the Fisher Information Matix via parametric bootstrap — bootinvFIM • varTestnlme</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,9 @@
 
 
 
-<meta property="og:title" content="Approximation of the (inverse of the) Fisher Information Matrix — bootinvFIM" />
-<meta property="og:description" content="Approximation of the inverse of the Fisher Information Matix via parametric bootstrap" />
+<meta property="og:title" content="Approximation of the inverse of the Fisher Information Matix via parametric bootstrap — bootinvFIM" />
+<meta property="og:description" content="When the FIM is not available, this function provides an approximation of the FIM based on an estimate
+of the covariance matrix of the model's parameters obtained via parametric bootstrap." />
 
 
 
@@ -72,7 +73,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">varTestnlme</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
       </span>
     </div>
 
@@ -130,16 +131,17 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Approximation of the (inverse of the) Fisher Information Matrix</h1>
-    <small class="dont-index">Source: <a href='http://github.com/baeyc/varTestnlme/blob/master/R/bootstrapFIM.R'><code>R/bootstrapFIM.R</code></a></small>
+    <h1>Approximation of the inverse of the Fisher Information Matix via parametric bootstrap</h1>
+    <small class="dont-index">Source: <a href='http://github.com/baeyc/varTestnlme/blob/master/R/generics.R'><code>R/generics.R</code></a></small>
     <div class="hidden name"><code>bootinvFIM.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Approximation of the inverse of the Fisher Information Matix via parametric bootstrap</p>
+    <p>When the FIM is not available, this function provides an approximation of the FIM based on an estimate
+of the covariance matrix of the model's parameters obtained via parametric bootstrap.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>bootinvFIM</span>(<span class='no'>m</span>, <span class='kw'>B</span> <span class='kw'>=</span> <span class='fl'>1000</span>)</pre>
+    <pre class="usage"><span class='fu'>bootinvFIM</span><span class='op'>(</span><span class='va'>m</span>, B <span class='op'>=</span> <span class='fl'>1000</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -157,11 +159,7 @@ likelihood estimate of the parameters and the modelling framework)</p></td>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>the empirical covariancole matrix of the parameter estimates obtained on the bootstrap sample</p>
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    <p>When the FIM is not available, this function provides an approximation of the FIM based on an estimate
-of the covariancole matrix of the model's parameters obtained via parametric bootstrap.</p>
+    <p>the empirical covariance matrix of the parameter estimates obtained on the bootstrap sample</p>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
     <p>Charlotte Baey &lt;<a href='mailto:charlotte.baey@univ-lille.fr'>charlotte.baey@univ-lille.fr</a>&gt;</p>
@@ -177,11 +175,11 @@ of the covariancole matrix of the model's parameters obtained via parametric boo
 
       <footer>
       <div class="copyright">
-  <p>Developed by <a href='https://math.univ-lille1.fr/~baey/'>Charlotte Baey</a>, Estelle Kuhn.</p>
+  <p>Developed by <a href='https://baeyc.github.io/'>Charlotte Baey</a>, Estelle Kuhn.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

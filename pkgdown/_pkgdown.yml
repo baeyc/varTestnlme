@@ -3,7 +3,7 @@ url: https://baeyc.github.io/varTestnlme/
 
 authors:
    Charlotte Baey:
-     href: https://math.univ-lille1.fr/~baey/
+     href: https://baeyc.github.io/
 
 template:
    params:
@@ -17,26 +17,20 @@ articles:
 
 reference:
   - title: Main functions
-    desc: Main user functions
+    desc: Main functions
     contents:
-      - varTest
-      - extractFIMnlme
+      - varCompTest
       - bootinvFIM
-      - getVarCovnlme
-      - getVarCovlme4
+      - dfChiBarSquare
       - weightsChiBarSquare
-  - title: Classes
-    desc: S4 class objects
-    contents:
-      - varTestObject
-      - chiBarSquareObject
+      - approxWeights
   - title: Other
     desc: Other utility functions
     contents:
-      - pchisqbar
-      - plot.varTestObject
-      - print.varTestObject
-      - summary.varTestObject
+      - extractStruct
+      - extractFIM.lme
+      - getVarCov
+      - pkgName
 
 navbar:
   left:

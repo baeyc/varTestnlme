@@ -40,7 +40,8 @@
 
 
 <meta property="og:title" content="Chi-bar-square weights computation — weightsChiBarSquare" />
-<meta property="og:description" content="Computation of the chi-bar-square weigths." />
+<meta property="og:description" content="The function computes an approximation of the weights of the chi-bar-square distribution
+\(\bar{\chi}^2(V,C)\), with V a positive semi-definite matrix and C a convex cone." />
 
 
 
@@ -72,7 +73,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">varTestnlme</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
       </span>
     </div>
 
@@ -131,47 +132,50 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Chi-bar-square weights computation</h1>
-    <small class="dont-index">Source: <a href='http://github.com/baeyc/varTestnlme/blob/master/R/weightsChiBarSquare.R'><code>R/weightsChiBarSquare.R</code></a></small>
+    <small class="dont-index">Source: <a href='http://github.com/baeyc/varTestnlme/blob/master/R/chibarsquare.R'><code>R/chibarsquare.R</code></a></small>
     <div class="hidden name"><code>weightsChiBarSquare.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Computation of the chi-bar-square weigths.</p>
+    <p>The function computes an approximation of the weights of the chi-bar-square distribution
+\(\bar{\chi}^2(V,C)\), with V a positive semi-definite matrix and C a convex cone.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>weightsChiBarSquare</span>(<span class='no'>cbs</span>, <span class='no'>control</span>)</pre>
+    <pre class="usage"><span class='fu'>weightsChiBarSquare</span><span class='op'>(</span><span class='va'>df</span>, <span class='va'>V</span>, <span class='va'>dimsCone</span>, <span class='va'>orthan</span>, <span class='va'>control</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>cbs</th>
-      <td><p>an object of class <code><a href='chiBarSquareObject-class.html'>chiBarSquareObject</a></code>, containing the parameters of the chi-bar-square distribution</p></td>
+      <th>df</th>
+      <td><p>a vector with the degrees of freedom of the chi-square components of the chi-bar-square distribution</p></td>
+    </tr>
+    <tr>
+      <th>V</th>
+      <td><p>a positive semi-definite matrix</p></td>
+    </tr>
+    <tr>
+      <th>dimsCone</th>
+      <td><p>a list with the dimensions of the cone C, expressed on the parameter space scale</p></td>
+    </tr>
+    <tr>
+      <th>orthan</th>
+      <td><p>a boolean specifying whether the cone is an orthan</p></td>
     </tr>
     <tr>
       <th>control</th>
-      <td><p>(optional) a list of control options for the computation of the chi-bar-weights</p></td>
+      <td><p>(optional) a list of control options for the computation of the chi-bar-weights, containing 
+two elements: <code>parallel</code> a boolean indicating whether computation should be done in parallel (FALSE 
+by default), <code>nb_cores</code> the number of cores for parallel computing (if <code>parallel=TRUE</code> but no value is given
+for <code>nb_cores</code>, it is set to number of detected cores minus 1), and <code>M</code> the Monte Carlo sample
+size for the computation of the weigths.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A list containing the degrees of freedom of the chi-bar distributions involved in the chi-bar-square, along with
-the associated weights.</p>
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    <p>The function computes an approximation of the weights of the chi-bar-square distribution
-\(\bar{\chi}^2(I,C)\) arising as the limiting distribution of the likelihood ratio test
-statistics under the null hypothesis. More details can be found in the references listed below</p>
-    <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
-
-    <p>Baey C, Cournède P-H, Kuhn E, 2019. Asymptotic distribution of likelihood ratio test
-statistics for variance components in nonlinear mixed effects models. <em>Computational
-Statistics and Data Analysis</em> 135:107-122.</p>
-<p>Silvapulle  MJ, Sen PK, 2011. Constrained statistical inference: order, inequality and shape constraints.</p>
-    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
-
-    <p>Charlotte Baey &lt;<a href='mailto:charlotte.baey@univ-lille.fr'>charlotte.baey@univ-lille.fr</a>&gt;</p>
+    <p>A list containing the estimated weights, the standard deviations of the estimated weights and the
+random sample of <code>M</code> realizations from the chi-bar-square distribution</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -184,11 +188,11 @@ Statistics and Data Analysis</em> 135:107-122.</p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by <a href='https://math.univ-lille1.fr/~baey/'>Charlotte Baey</a>, Estelle Kuhn.</p>
+  <p>Developed by <a href='https://baeyc.github.io/'>Charlotte Baey</a>, Estelle Kuhn.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

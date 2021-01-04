@@ -40,7 +40,16 @@
 
 
 <meta property="og:title" content="Monte Carlo approximation of chi-bar-square weights — approxWeights" />
-<meta property="og:description" content="Approximation of the chi-bar-square weigths via Monte Carlo approximation." />
+<meta property="og:description" content="The chi-bar-square distribution \(\bar{\chi}^2(I,C)\) is a mixture of chi-square distributions. The function provides
+a method to approximate the weights of the mixture components, when the number of components is known as well as the
+degrees of freedom of each chi-square distribution in the mixture, and given a vector of simulated values from the target
+\(\bar{\chi}^2(I,C)\) distribution. Let us assume that there are \(p\) components in the mixture, with degrees of
+freedom between \(n_1\) and \(n_p\). By definition of a mixture distribution, we have :
+$$ P(\bar{\chi}^2(I,C) \leq c) = \sum_{i=n_1}^{n_p} w_i P(\chi^2_{i} \leq c)$$
+Choosing \(p-2\) values \(c_1, \dots, c_{p-2}\), the function will generate a system of \(p-2\) equations
+according to the above relationship, and add two additional relationships stating that the sum of all the weights is
+equal to 1, and that the sum of odd weights and of even weights is equal to 1/2, so that we end up with a system a \(p\)
+equations with \(p\) variables." />
 
 
 
@@ -72,7 +81,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">varTestnlme</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
       </span>
     </div>
 
@@ -131,15 +140,24 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Monte Carlo approximation of chi-bar-square weights</h1>
-    <small class="dont-index">Source: <a href='http://github.com/baeyc/varTestnlme/blob/master/R/approxWeights.R'><code>R/approxWeights.R</code></a></small>
+    <small class="dont-index">Source: <a href='http://github.com/baeyc/varTestnlme/blob/master/R/chibarsquare.R'><code>R/chibarsquare.R</code></a></small>
     <div class="hidden name"><code>approxWeights.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Approximation of the chi-bar-square weigths via Monte Carlo approximation.</p>
+    <p>The chi-bar-square distribution \(\bar{\chi}^2(I,C)\) is a mixture of chi-square distributions. The function provides
+a method to approximate the weights of the mixture components, when the number of components is known as well as the
+degrees of freedom of each chi-square distribution in the mixture, and given a vector of simulated values from the target
+\(\bar{\chi}^2(I,C)\) distribution. Let us assume that there are \(p\) components in the mixture, with degrees of
+freedom between \(n_1\) and \(n_p\). By definition of a mixture distribution, we have :
+$$ P(\bar{\chi}^2(I,C) \leq c) = \sum_{i=n_1}^{n_p} w_i P(\chi^2_{i} \leq c)$$
+Choosing \(p-2\) values \(c_1, \dots, c_{p-2}\), the function will generate a system of \(p-2\) equations
+according to the above relationship, and add two additional relationships stating that the sum of all the weights is
+equal to 1, and that the sum of odd weights and of even weights is equal to 1/2, so that we end up with a system a \(p\)
+equations with \(p\) variables.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>approxWeights</span>(<span class='no'>x</span>, <span class='no'>df</span>, <span class='no'>q</span>)</pre>
+    <pre class="usage"><span class='fu'>approxWeights</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>df</span>, <span class='va'>q</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -161,18 +179,6 @@
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>A vector containing the estimated weights, as well as their covariance matrix.</p>
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    <p>The chi-bar-square distribution \(\bar{\chi}^2(I,C)\) is a mixture of chi-square distributions. The function provides
-a method to approximate the weights of the mixture components, when the number of components is known as well as the
-degrees of freedom of each chi-square distribution in the mixture, and given a vector of simulated values from the target
-\(\bar{\chi}^2(I,C)\) distribution. Let us assume that there are \(p\) components in the mixture, with degrees of
-freedom between \(n_1\) and \(n_p\). By definition of a mixture distribution, we have :
-$$ P(\bar{\chi}^2(I,C) \leq c) = \sum_{i=n_1}^{n_p} w_i P(\chi^2_{i} \leq c)$$
-Choosing \(p-2\) values \(c_1, \dots, c_{p-2}\), the function will generate a system of \(p-2\) equations
-according to the above relationship, and add two additional relationships stating that the sum of all the weights is
-equal to 1, and that the sum of odd weights and of even weights is equal to 1/2, so that we end up with a system a \(p\)
-equations with \(p\) variables.</p>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
     <p>Charlotte Baey &lt;<a href='mailto:charlotte.baey@univ-lille.fr'>charlotte.baey@univ-lille.fr</a>&gt;</p>
@@ -188,11 +194,11 @@ equations with \(p\) variables.</p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by <a href='https://math.univ-lille1.fr/~baey/'>Charlotte Baey</a>, Estelle Kuhn.</p>
+  <p>Developed by <a href='https://baeyc.github.io/'>Charlotte Baey</a>, Estelle Kuhn.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>
