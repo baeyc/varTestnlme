@@ -342,10 +342,10 @@ bootinvFIM.lme <- function(m, B=1000){
     thetaBoot <- numeric()
     
     b <- 1
-    #tbar <- utils::txtProgressBar(min=1,max=B,char = ".", style = 3)
+    tbar <- utils::txtProgressBar(min=1,max=B,char = ".", style = 3)
     grpVar <- m$groups[,1]
     while (b <= B){  
-      #utils::setTxtProgressBar(tbar,b)
+      utils::setTxtProgressBar(tbar,b)
       phi <- t(chol(Sigma)%*%matrix(stats::rnorm(nrow(Sigma)*nind,0,1),ncol=nind))
       betaAll <- as.data.frame(matrix(rep(beta,nind),nrow=nind,byrow = T))
       betaAll <- cbind(betaAll,grp=unique(grpVar))
@@ -381,7 +381,7 @@ bootinvFIM.lme <- function(m, B=1000){
       namesFE <- names(m$coefficients$fixed)
       simuResp <- lapply(1:nrow(betaAll),FUN = function(i){
         eval(parse(text=paste0(namesFE,"=",betaAll[i,posParamInBeta],sep=";")))
-        with(data.m[data.m$subject==i,],
+        with(data.m[eval(parse(text=paste0("data.m$",grpFactor,"==i"))),],
              eval(parse(text=as.character(getCovariateFormula(m))[2])))
       })
       simuResp <- do.call("c",simuResp)
