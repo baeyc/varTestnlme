@@ -8,8 +8,8 @@ Authors@R: c(
        ), 
     person("Estelle","Kuhn", ,"estelle.kuhn@inra.fr", role = c("aut"))
   )
-URL: http://github.com/baeyc/varTestnlme/
-BugReports: http://github.com/baeyc/varTestnlme/issues  
+URL: https://github.com/baeyc/varTestnlme/
+BugReports: https://github.com/baeyc/varTestnlme/issues  
 Maintainer: Charlotte Baey <charlotte.baey@univ-lille.fr>
 Description: An implementation of the Likelihood ratio Test (LRT) for testing that,
     in a (non)linear mixed effects model, the variances of a subset of the random

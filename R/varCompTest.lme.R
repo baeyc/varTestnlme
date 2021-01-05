@@ -84,6 +84,11 @@ varCompTest.lme <- function(m1,m0,control = list(M=5000,parallel=T,nb_cores=1,B=
       pvalue2 <- NA
       cbs.weights.sample <- list(weights=NA,sdWeights=NA,randomCBS=NA)
     }
+    if (length(cbs.df.dims$df)==2){
+      cbs.weights.sample <- list(weights=c(0.5,0.5),sdWeights=c(0,0),randomCBS=NA)
+      pvalue1 <- sum(cbs.weights.sample$weights * stats::pchisq(lrt,df=cbs.df.dims$df,lower.tail = F))   # p-value from weights
+      pvalue2 <- NA
+    }
   }else{
     pvalue1 <- stats::pchisq(lrt,cbs.df.dims$df[1],lower.tail = F)
     pvalue2 <- NA
@@ -93,7 +98,6 @@ varCompTest.lme <- function(m1,m0,control = list(M=5000,parallel=T,nb_cores=1,B=
   # Bounds on p-value
   uppboundpval <- (1/2)*sum(stats::pchisq(lrt,cbs.df.dims$df[(length(cbs.df.dims$df)-1):length(cbs.df.dims$df)],lower.tail = F))
   lowboundpval <- (1/2)*sum(stats::pchisq(lrt,cbs.df.dims$df[1:2],lower.tail = F))
-  
   
   # Print results
   message(paste("Likelihood ratio test statistic: \n LRT = ",format(lrt,digits=5),
