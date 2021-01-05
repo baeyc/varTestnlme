@@ -86,14 +86,14 @@
 
       
 
-      </header><link href="varTestnlme_files/anchor-sections-1.0/anchor-sections.css" rel="stylesheet">
+      </header><script src="varTestnlme_files/header-attrs-2.5/header-attrs.js"></script><link href="varTestnlme_files/anchor-sections-1.0/anchor-sections.css" rel="stylesheet">
 <script src="varTestnlme_files/anchor-sections-1.0/anchor-sections.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Get started</h1>
             
       
-      <small class="dont-index">Source: <a href="http://github.com/baeyc/varTestnlme/blob/master/vignettes/varTestnlme.Rmd"><code>vignettes/varTestnlme.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/baeyc/varTestnlme/blob/master/vignettes/varTestnlme.Rmd"><code>vignettes/varTestnlme.Rmd</code></a></small>
       <div class="hidden name"><code>varTestnlme.Rmd</code></div>
 
     </div>
@@ -101,14 +101,15 @@
     
     
 <div class="sourceCode" id="cb1"><pre class="downlit">
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://github.com/baeyc/varTestnlme/">varTestnlme</a></span><span class="op">)</span></pre></div>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/baeyc/varTestnlme/">varTestnlme</a></span><span class="op">)</span></pre></div>
 <p>The <strong>varTesnlme</strong> package is very easy to use. Below are small examples on how to run it for linear, generalized linear and nonlinear mixed-effect models.</p>
-<p>Mixed-effect models can be run using <a href="https://CRAN.R-project.org/package=nlme">nlme</a> or <a href="https://CRAN.R-project.org/package=lme4">lme4</a>, but also using <a href="https://CRAN.R-project.org/package=saemix">saemix</a>. <strong>varCompTestnlme</strong> can be used to compare two nested models using likelihood ratio tests, where the variance of at least one random effect is tested equal to 0. Fixed effects can also be tested simultaneously, as well as covariances.</p>
+<p>Mixed-effect models can be run using <a href="https://CRAN.R-project.org/package=nlme">nlme</a> or <a href="https://CRAN.R-project.org/package=lme4">lme4</a>, but also using <a href="https://CRAN.R-project.org/package=saemix">saemix</a>. <strong>varTestnlme</strong> can be used to compare two nested models using likelihood ratio tests, where the variance of at least one random effect is tested equal to 0. Fixed effects can also be tested simultaneously, as well as covariances.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit">
 <span class="co"># Load the packages</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://svn.r-project.org/R-packages/trunk/nlme/">nlme</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/lme4/lme4/">lme4</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">saemix</span><span class="op">)</span></pre></div>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">saemix</span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/alexkowa/EnvStats">EnvStats</a></span><span class="op">)</span></pre></div>
 <div id="linear-models" class="section level2">
 <h2 class="hasAnchor">
 <a href="#linear-models" class="anchor"></a>Linear models</h2>
@@ -126,15 +127,70 @@
 <span class="va">m0.nlme</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/lme.html">lme</a></span><span class="op">(</span><span class="va">distance</span> <span class="op">~</span> <span class="fl">1</span> <span class="op">+</span> <span class="va">Sex</span>, random <span class="op">=</span> <span class="op">~</span> <span class="fl">1</span> <span class="op">|</span> <span class="va">Subject</span>, data <span class="op">=</span> <span class="va">Orthodont</span>, method <span class="op">=</span> <span class="st">"ML"</span><span class="op">)</span>
 
 <span class="co"># using lme4, with correlated slope and intercept</span>
-<span class="va">m1.lme4</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/lme4/man/lmer.html">lmer</a></span><span class="op">(</span><span class="va">distance</span> <span class="op">~</span> <span class="fl">1</span> <span class="op">+</span> <span class="va">Sex</span> <span class="op">+</span> <span class="va">age</span> <span class="op">+</span> <span class="va">age</span><span class="op">*</span><span class="va">Sex</span> <span class="op">+</span> <span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="va">age</span> <span class="op">|</span> <span class="va">Subject</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">Orthodont</span>, REML <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></pre></div>
-<pre><code>#&gt; Warning in checkConv(attr(opt, "derivs"), opt$par, ctrl = control$checkConv, :
-#&gt; Model failed to converge with max|grad| = 0.0464695 (tol = 0.002, component 1)</code></pre>
-<div class="sourceCode" id="cb5"><pre class="downlit">
+<span class="va">m1.lme4</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/lme4/man/lmer.html">lmer</a></span><span class="op">(</span><span class="va">distance</span> <span class="op">~</span> <span class="fl">1</span> <span class="op">+</span> <span class="va">Sex</span> <span class="op">+</span> <span class="va">age</span> <span class="op">+</span> <span class="va">age</span><span class="op">*</span><span class="va">Sex</span> <span class="op">+</span> <span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="va">age</span> <span class="op">|</span> <span class="va">Subject</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">Orthodont</span>, REML <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
+<span class="co">#&gt; Warning in checkConv(attr(opt, "derivs"), opt$par, ctrl = control$checkConv, :</span>
+<span class="co">#&gt; Model failed to converge with max|grad| = 0.0464695 (tol = 0.002, component 1)</span>
 <span class="va">m0.lme4</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/lme4/man/lmer.html">lmer</a></span><span class="op">(</span><span class="va">distance</span> <span class="op">~</span> <span class="fl">1</span> <span class="op">+</span> <span class="va">Sex</span> <span class="op">+</span> <span class="op">(</span><span class="fl">1</span> <span class="op">|</span> <span class="va">Subject</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">Orthodont</span>, REML <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></pre></div>
-<p>Now we can run the likelihood ratio test using the <strong>varCompTestnlme</strong> package.</p>
+<p>Now we can run the likelihood ratio test using the <strong>varTestnlme</strong> package. The function returns an object from S3 class <code>htest</code>.</p>
+<div class="sourceCode" id="cb4"><pre class="downlit">
+<span class="va">vt1.nlme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/varCompTest.html">varCompTest</a></span><span class="op">(</span><span class="va">m1.nlme</span>,<span class="va">m0.nlme</span><span class="op">)</span>
+<span class="co">#&gt; Variance components testing in mixed effects models</span>
+<span class="co">#&gt; Testing that the variance of age is null</span>
+<span class="co">#&gt; Likelihood ratio test statistic: </span>
+<span class="co">#&gt;  LRT =  79.152 </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Limiting distribution:</span>
+<span class="co">#&gt; mixture of 2 chi-bar-square distributions with degrees of freedom 3, 4</span>
+<span class="co">#&gt; lower-bound for p-value: 1.5502e-16  upper bound for p-value: 1.5502e-16</span>
+<span class="va">vt1.lme4</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/varCompTest.html">varCompTest</a></span><span class="op">(</span><span class="va">m1.lme4</span>,<span class="va">m0.lme4</span><span class="op">)</span>
+<span class="co">#&gt; Variance components testing in mixed effects models</span>
+<span class="co">#&gt; Testing that the variance of age is null</span>
+<span class="co">#&gt; Likelihood ratio test statistic: </span>
+<span class="co">#&gt;  LRT =  79.152 </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Limiting distribution:</span>
+<span class="co">#&gt; mixture of 2 chi-bar-square distributions with degrees of freedom 3, 4</span>
+<span class="co">#&gt; lower-bound for p-value: 1.5506e-16  upper bound for p-value: 1.5506e-16</span></pre></div>
+<p>Using the <code>EnvStats</code> package, nice printing options are available for objects of type <code>htest</code>:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/pkg/EnvStats/man/print.html">print</a></span><span class="op">(</span><span class="va">vt1.nlme</span><span class="op">)</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Results of Hypothesis Test</span>
+<span class="co">#&gt; --------------------------</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Null Hypothesis:                 All 3 values of variance of age = 0</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Alternative Hypothesis:          variance of age &gt; 0  mean of age  different from 0  mean of SexFemale:age  different from 0 </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Test Name:                       Likelihood ratio test for variance components in mixed effects models</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Data:                            </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Test Statistic:                  LRT = 79.15214</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Test Statistic Parameters:       df      = 3, 4</span>
+<span class="co">#&gt;                                  weights = 0.5, 0.5</span>
+<span class="co">#&gt;                                  FIM     = NA</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; P-values:                        pvalue.weights    = 1.550226e-16</span>
+<span class="co">#&gt;                                  pvalue.sample     =           NA</span>
+<span class="co">#&gt;                                  pvalue.lowerbound = 1.550226e-16</span>
+<span class="co">#&gt;                                  pvalue.upperbound = 1.550226e-16</span></pre></div>
+<p>It is also possible to access the components of the object using $ or [[:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit">
-<span class="co">#vt1.nlme &lt;- varCompTest(m1.nlme,m0.nlme)</span>
-<span class="va">vt1.lme4</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/varCompTest.html">varCompTest</a></span><span class="op">(</span><span class="va">m1.lme4</span>,<span class="va">m0.lme4</span><span class="op">)</span></pre></div>
+<span class="va">vt1.nlme</span><span class="op">$</span><span class="va">statistic</span>
+<span class="co">#&gt;      LRT </span>
+<span class="co">#&gt; 79.15214</span>
+<span class="va">vt1.nlme</span><span class="op">$</span><span class="va">p.value</span>
+<span class="co">#&gt;    pvalue.weights     pvalue.sample pvalue.lowerbound pvalue.upperbound </span>
+<span class="co">#&gt;      1.550226e-16                NA      1.550226e-16      1.550226e-16</span></pre></div>
+<p>For the p-value, four different values are provided:</p>
+<ol style="list-style-type: decimal">
+<li>the p-value computed using the chi-bar-square expression as a mixture of chi-square distributions. This requires that the weights of the chi-bar-square are available, either because their exact expression is known (only in some simple cases), or because the user ask for their approximation via the option <code>pval.comp = "both"</code> or <code>pval.comp = "approx"</code>.</li>
+<li>the p-value computed using a sample from the chi-bar-square distribution. This sample is used to approximate the chi-bar-square weights, and thus the corresponding p-value is only available when <code>pval.comp = "both"</code> or <code>pval.comp = "approx"</code>.</li>
+<li>the lower bound on the p-value: this is always available</li>
+<li>the upper bound on the p-value: this is always available</li>
+</ol>
 </div>
 <div id="case-2-testing-the-variance-of-one-effect-with-uncorrelated-random-effects" class="section level3">
 <h3 class="hasAnchor">
@@ -147,7 +203,23 @@
 <span class="va">m1diag.lme4</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/lme4/man/lmer.html">lmer</a></span><span class="op">(</span><span class="va">distance</span> <span class="op">~</span> <span class="fl">1</span> <span class="op">+</span> <span class="va">Sex</span> <span class="op">+</span> <span class="va">age</span> <span class="op">+</span> <span class="va">age</span><span class="op">*</span><span class="va">Sex</span> <span class="op">+</span> <span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="va">age</span> <span class="op">||</span> <span class="va">Subject</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">Orthodont</span>, REML <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 
 <span class="va">vt1diag.nlme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/varCompTest.html">varCompTest</a></span><span class="op">(</span><span class="va">m1diag.nlme</span>,<span class="va">m0.nlme</span><span class="op">)</span>
-<span class="va">vt1diag.lme4</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/varCompTest.html">varCompTest</a></span><span class="op">(</span><span class="va">m1diag.lme4</span>,<span class="va">m0.lme4</span><span class="op">)</span></pre></div>
+<span class="co">#&gt; Variance components testing in mixed effects models</span>
+<span class="co">#&gt; Testing that the variance of age is null</span>
+<span class="co">#&gt; Likelihood ratio test statistic: </span>
+<span class="co">#&gt;  LRT =  78.849 </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Limiting distribution:</span>
+<span class="co">#&gt; mixture of 2 chi-bar-square distributions with degrees of freedom 2, 3</span>
+<span class="co">#&gt; lower-bound for p-value: 3.0864e-17  upper bound for p-value: 3.0864e-17</span>
+<span class="va">vt1diag.lme4</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/varCompTest.html">varCompTest</a></span><span class="op">(</span><span class="va">m1diag.lme4</span>,<span class="va">m0.lme4</span><span class="op">)</span>
+<span class="co">#&gt; Variance components testing in mixed effects models</span>
+<span class="co">#&gt; Testing that the variance of age is null</span>
+<span class="co">#&gt; Likelihood ratio test statistic: </span>
+<span class="co">#&gt;  LRT =  78.849 </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Limiting distribution:</span>
+<span class="co">#&gt; mixture of 2 chi-bar-square distributions with degrees of freedom 2, 3</span>
+<span class="co">#&gt; lower-bound for p-value: 3.0864e-17  upper bound for p-value: 3.0864e-17</span></pre></div>
 </div>
 <div id="case-3-testing-all-the-variances" class="section level3">
 <h3 class="hasAnchor">
@@ -157,44 +229,78 @@
 <span class="va">m0noRE</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">distance</span> <span class="op">~</span> <span class="fl">1</span> <span class="op">+</span> <span class="va">Sex</span> <span class="op">+</span> <span class="va">age</span> <span class="op">+</span> <span class="va">age</span><span class="op">*</span><span class="va">Sex</span>, data <span class="op">=</span> <span class="va">Orthodont</span><span class="op">)</span>
 
 <span class="va">vt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/varCompTest.html">varCompTest</a></span><span class="op">(</span><span class="va">m1diag.nlme</span>,<span class="va">m0noRE</span>,pval.comp <span class="op">=</span> <span class="st">"both"</span><span class="op">)</span>
-<span class="va">vt2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/varCompTest.html">varCompTest</a></span><span class="op">(</span><span class="va">m1diag.lme4</span>,<span class="va">m0noRE</span><span class="op">)</span></pre></div>
+<span class="co">#&gt; Variance components testing in mixed effects models</span>
+<span class="co">#&gt; Testing that the variances of Intercept and age are null</span>
+<span class="co">#&gt; Likelihood ratio test statistic: </span>
+<span class="co">#&gt;  LRT =  50.133 </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Limiting distribution:</span>
+<span class="co">#&gt; mixture of 3 chi-bar-square distributions with degrees of freedom 0, 1, 2</span>
+<span class="co">#&gt;  associated weights and sd:  0.377 (0), 0.5 (0), 0.123 (0) </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; p-value (from estimated weights): 2.3226e-12</span>
+<span class="co">#&gt; lower-bound for p-value: 7.1831e-13  upper bound for p-value: 7.2152e-12</span>
+<span class="va">vt2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/varCompTest.html">varCompTest</a></span><span class="op">(</span><span class="va">m1diag.lme4</span>,<span class="va">m0noRE</span><span class="op">)</span>
+<span class="co">#&gt; Variance components testing in mixed effects models</span>
+<span class="co">#&gt; Testing that the variances of (Intercept) and age are null</span>
+<span class="co">#&gt; Likelihood ratio test statistic: </span>
+<span class="co">#&gt;  LRT =  50.133 </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Limiting distribution:</span>
+<span class="co">#&gt; mixture of 3 chi-bar-square distributions with degrees of freedom 0, 1, 2</span>
+<span class="co">#&gt; lower-bound for p-value: 7.1831e-13  upper bound for p-value: 7.2152e-12</span></pre></div>
 <p>By default, the FIM is extracted from the packages, but it is also possible to compute it via parametric bootstrap. In this case, simply use the option <code>fim="compute"</code>. The default bootstrap sampling size is <code>B=1000</code> but it can be changed. To get the exact p-value one can use</p>
 <div class="sourceCode" id="cb9"><pre class="downlit">
-<span class="va">vt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/varCompTest.html">varCompTest</a></span><span class="op">(</span><span class="va">m1diag.nlme</span>,<span class="va">m0noRE</span>,fim<span class="op">=</span><span class="st">"compute"</span>,pval.comp <span class="op">=</span> <span class="st">"both"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/pkg/saemix/man/summary-methods.html">summary</a></span><span class="op">(</span><span class="va">vt</span><span class="op">)</span></pre></div>
-<pre><code>#&gt;             Length Class  Mode     
-#&gt; statistic   1      -none- numeric  
-#&gt; null.value  2      -none- numeric  
-#&gt; alternative 2      -none- character
-#&gt; parameters  3      -none- list     
-#&gt; method      1      -none- character
-#&gt; p.value     4      -none- numeric</code></pre>
-<div class="sourceCode" id="cb11"><pre class="downlit">
-<span class="va">vt2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/varCompTest.html">varCompTest</a></span><span class="op">(</span><span class="va">m1diag.lme4</span>,<span class="va">m0noRE</span>,fim<span class="op">=</span><span class="st">"compute"</span>,pval.comp <span class="op">=</span> <span class="st">"both"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/pkg/saemix/man/summary-methods.html">summary</a></span><span class="op">(</span><span class="va">vt2</span><span class="op">)</span></pre></div>
-<pre><code>#&gt;             Length Class  Mode     
-#&gt; statistic   1      -none- numeric  
-#&gt; null.value  2      -none- numeric  
-#&gt; alternative 2      -none- character
-#&gt; parameters  3      -none- list     
-#&gt; method      1      -none- character
-#&gt; p.value     4      -none- numeric</code></pre>
+<span class="fu"><a href="../reference/varCompTest.html">varCompTest</a></span><span class="op">(</span><span class="va">m1diag.nlme</span>, <span class="va">m0noRE</span>, fim <span class="op">=</span> <span class="st">"compute"</span>, pval.comp <span class="op">=</span> <span class="st">"both"</span>, control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>B<span class="op">=</span><span class="fl">100</span><span class="op">)</span><span class="op">)</span>
+<span class="co">#&gt; Variance components testing in mixed effects models</span>
+<span class="co">#&gt; Testing that the variances of Intercept and age are null</span>
+<span class="co">#&gt; Computing Fisher Information Matrix by bootstrap...</span>
+<span class="co">#&gt; Likelihood ratio test statistic: </span>
+<span class="co">#&gt;  LRT =  50.133 </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Limiting distribution:</span>
+<span class="co">#&gt; mixture of 3 chi-bar-square distributions with degrees of freedom 0, 1, 2</span>
+<span class="co">#&gt;  associated weights and sd:  0.335 (0), 0.5 (0), 0.165 (0) </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; p-value (from estimated weights): 2.8604e-12</span>
+<span class="co">#&gt; lower-bound for p-value: 7.1831e-13  upper bound for p-value: 7.2152e-12</span>
+<span class="fu"><a href="../reference/varCompTest.html">varCompTest</a></span><span class="op">(</span><span class="va">m1diag.lme4</span>, <span class="va">m0noRE</span>, fim <span class="op">=</span> <span class="st">"compute"</span>, pval.comp <span class="op">=</span> <span class="st">"both"</span>, control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>B<span class="op">=</span><span class="fl">100</span><span class="op">)</span><span class="op">)</span>
+<span class="co">#&gt; Variance components testing in mixed effects models</span>
+<span class="co">#&gt; Testing that the variances of (Intercept) and age are null</span>
+<span class="co">#&gt; Computing Fisher Information Matrix by bootstrap...</span>
+<span class="co">#&gt; Likelihood ratio test statistic: </span>
+<span class="co">#&gt;  LRT =  50.133 </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Limiting distribution:</span>
+<span class="co">#&gt; mixture of 3 chi-bar-square distributions with degrees of freedom 0, 1, 2</span>
+<span class="co">#&gt;  associated weights and sd:  0.341 (0), 0.5 (0), 0.159 (0) </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; p-value (from estimated weights): 2.7893e-12</span>
+<span class="co">#&gt; lower-bound for p-value: 7.1831e-13  upper bound for p-value: 7.2152e-12</span></pre></div>
 </div>
 </div>
 <div id="generalized-linear-model" class="section level2">
 <h2 class="hasAnchor">
 <a href="#generalized-linear-model" class="anchor"></a>Generalized linear model</h2>
-<div class="sourceCode" id="cb13"><pre class="downlit">
+<div class="sourceCode" id="cb10"><pre class="downlit">
 <span class="va">m1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/lme4/man/glmer.html">glmer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="va">incidence</span>, <span class="va">size</span> <span class="op">-</span> <span class="va">incidence</span><span class="op">)</span> <span class="op">~</span> <span class="va">period</span> <span class="op">+</span> <span class="op">(</span><span class="fl">1</span> <span class="op">|</span> <span class="va">herd</span><span class="op">)</span>,
              family <span class="op">=</span> <span class="va">binomial</span>, data <span class="op">=</span> <span class="va">cbpp</span><span class="op">)</span>
 <span class="va">m0</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/glm.html">glm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="va">incidence</span>, <span class="va">size</span> <span class="op">-</span> <span class="va">incidence</span><span class="op">)</span> <span class="op">~</span> <span class="va">period</span>,
              family <span class="op">=</span> <span class="va">binomial</span>, data <span class="op">=</span> <span class="va">cbpp</span><span class="op">)</span>
-<span class="fu"><a href="../reference/varCompTest.html">varCompTest</a></span><span class="op">(</span><span class="va">m1</span>,<span class="va">m0</span><span class="op">)</span></pre></div>
+<span class="fu"><a href="../reference/varCompTest.html">varCompTest</a></span><span class="op">(</span><span class="va">m1</span>,<span class="va">m0</span><span class="op">)</span>
+<span class="co">#&gt; Variance components testing in mixed effects models</span>
+<span class="co">#&gt; Testing that the variance of (Intercept) is null</span>
+<span class="co">#&gt; Likelihood ratio test statistic: </span>
+<span class="co">#&gt;  LRT =  14.005 </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Limiting distribution:</span>
+<span class="co">#&gt; mixture of 2 chi-bar-square distributions with degrees of freedom 0, 1</span>
+<span class="co">#&gt; lower-bound for p-value: 9.115e-05  upper bound for p-value: 9.115e-05</span></pre></div>
 </div>
 <div id="nonlinear-model" class="section level2">
 <h2 class="hasAnchor">
 <a href="#nonlinear-model" class="anchor"></a>Nonlinear model</h2>
-<div class="sourceCode" id="cb14"><pre class="downlit">
+<div class="sourceCode" id="cb11"><pre class="downlit">
 <span class="co"># with nlme</span>
 <span class="va">fm1Theo.nlme</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/nlme.html">nlme</a></span><span class="op">(</span><span class="va">conc</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/stats/SSfol.html">SSfol</a></span><span class="op">(</span><span class="va">Dose</span>, <span class="va">Time</span>, <span class="va">lKe</span>, <span class="va">lKa</span>, <span class="va">lCl</span><span class="op">)</span>,
                      <span class="va">Theoph</span>,
@@ -206,7 +312,15 @@
                      fixed <span class="op">=</span> <span class="va">lKe</span> <span class="op">+</span> <span class="va">lKa</span> <span class="op">+</span> <span class="va">lCl</span> <span class="op">~</span> <span class="fl">1</span>,
                      start<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span> <span class="op">-</span><span class="fl">2.4</span>, <span class="fl">0.45</span>, <span class="op">-</span><span class="fl">3.2</span><span class="op">)</span>,
                      random <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/pdDiag.html">pdDiag</a></span><span class="op">(</span><span class="va">lCl</span> <span class="op">~</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="../reference/varCompTest.html">varCompTest</a></span><span class="op">(</span><span class="va">fm1Theo.nlme</span>,<span class="va">fm2Theo.nlme</span>, pval.comp <span class="op">=</span> <span class="st">"both"</span><span class="op">)</span>
+<span class="fu"><a href="../reference/varCompTest.html">varCompTest</a></span><span class="op">(</span><span class="va">fm1Theo.nlme</span>,<span class="va">fm2Theo.nlme</span><span class="op">)</span>
+<span class="co">#&gt; Variance components testing in mixed effects models</span>
+<span class="co">#&gt; Testing that the variance of lKa is null</span>
+<span class="co">#&gt; Likelihood ratio test statistic: </span>
+<span class="co">#&gt;  LRT =  79.021 </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Limiting distribution:</span>
+<span class="co">#&gt; mixture of 2 chi-bar-square distributions with degrees of freedom 1, 2</span>
+<span class="co">#&gt; lower-bound for p-value: 3.7732e-18  upper bound for p-value: 3.7732e-18</span>
 
 <span class="co"># with lme4</span>
 <span class="va">Th.start</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>lKe <span class="op">=</span> <span class="op">-</span><span class="fl">2.4</span>, lKa <span class="op">=</span> <span class="fl">0.45</span>, lCl <span class="op">=</span> <span class="op">-</span><span class="fl">3.2</span><span class="op">)</span>
@@ -220,9 +334,17 @@
               nAGQ<span class="op">=</span><span class="fl">0</span>,
               <span class="va">Theoph</span>,
               start <span class="op">=</span> <span class="va">Th.start</span><span class="op">)</span>
-<span class="fu"><a href="../reference/varCompTest.html">varCompTest</a></span><span class="op">(</span><span class="va">nm1</span>,<span class="va">nm0</span><span class="op">)</span></pre></div>
+<span class="fu"><a href="../reference/varCompTest.html">varCompTest</a></span><span class="op">(</span><span class="va">nm1</span>,<span class="va">nm0</span><span class="op">)</span>
+<span class="co">#&gt; Variance components testing in mixed effects models</span>
+<span class="co">#&gt; Testing that the variance of lKe is null</span>
+<span class="co">#&gt; Likelihood ratio test statistic: </span>
+<span class="co">#&gt;  LRT =  2.0439 </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Limiting distribution:</span>
+<span class="co">#&gt; mixture of 2 chi-bar-square distributions with degrees of freedom 2, 3</span>
+<span class="co">#&gt; lower-bound for p-value: 0.46161  upper bound for p-value: 0.46161</span></pre></div>
 <p>Testing for the presence of randomness in the model.</p>
-<div class="sourceCode" id="cb15"><pre class="downlit">
+<div class="sourceCode" id="cb12"><pre class="downlit">
 <span class="va">fm1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/nlme.html">nlme</a></span><span class="op">(</span><span class="va">conc</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/stats/SSfol.html">SSfol</a></span><span class="op">(</span><span class="va">Dose</span>, <span class="va">Time</span>, <span class="va">lKe</span>, <span class="va">lKa</span>, <span class="va">lCl</span><span class="op">)</span>,
                      <span class="va">Theoph</span>,
                      fixed <span class="op">=</span> <span class="va">lKe</span> <span class="op">+</span> <span class="va">lKa</span> <span class="op">+</span> <span class="va">lCl</span> <span class="op">~</span> <span class="fl">1</span>,
@@ -231,7 +353,16 @@
 <span class="va">fm0</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/nls.html">nls</a></span><span class="op">(</span><span class="va">conc</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/stats/SSfol.html">SSfol</a></span><span class="op">(</span><span class="va">Dose</span>, <span class="va">Time</span>, <span class="va">lKe</span>, <span class="va">lKa</span>, <span class="va">lCl</span><span class="op">)</span>,
                      <span class="va">Theoph</span>,
                      start<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>lKe<span class="op">=</span><span class="op">-</span><span class="fl">2.4</span>,lKa<span class="op">=</span><span class="fl">0.45</span>,lCl<span class="op">=</span><span class="op">-</span><span class="fl">3.2</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="../reference/varCompTest.html">varCompTest</a></span><span class="op">(</span><span class="va">fm1</span>,<span class="va">fm0</span><span class="op">)</span></pre></div>
+<span class="fu"><a href="../reference/varCompTest.html">varCompTest</a></span><span class="op">(</span><span class="va">fm1</span>,<span class="va">fm0</span><span class="op">)</span>
+<span class="co">#&gt; Variance components testing in mixed effects models</span>
+<span class="co">#&gt; Testing that the variances of lKe and lKa and lCl are null</span>
+<span class="co">#&gt; Likelihood ratio test statistic: </span>
+<span class="co">#&gt;  LRT =  117.17 </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Limiting distribution:</span>
+<span class="co">#&gt; mixture of 4 chi-bar-square distributions with degrees of freedom 0, 1, 2, 3</span>
+<span class="co">#&gt; lower-bound for p-value: 1.3161e-27  upper bound for p-value: 1.7483e-25</span></pre></div>
+<p>We can see that there is no need to approximate the weights of the chi-bar-square distribution since the bounds on the p-value are sufficient to reject the null hypothesis at any <code>classical</code> level.</p>
 </div>
   </div>
 

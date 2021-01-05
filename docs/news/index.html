@@ -130,14 +130,14 @@
   <div class="col-md-9 contents">
     <div class="page-header">
       <h1 data-toc-skip>Changelog <small></small></h1>
-      <small>Source: <a href='http://github.com/baeyc/varTestnlme/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
+      <small>Source: <a href='https://github.com/baeyc/varTestnlme/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
     <div id="vartestnlme-100" class="section level1">
 <h1 class="page-header" data-toc-text="1.0.0">
 <a href="#vartestnlme-100" class="anchor"></a>varTestnlme 1.0.0<small> Unreleased </small>
 </h1>
-<p>Change the structure of the package for a more modular one. Now there are three functions for the test depending on the package that was used to fit the mixed-effect model.</p>
+<p>Change the structure of the package for a more modular one. Now the main function returns an object of class htest, which can be printed for example via the print() function of package EnvStats. To avoid conflicts with the varTest function of EnvStats package, the main function of our package was renamed from varTest to varCompTest. Paramteric bootstrap for the estimation of the FIM is now available for the saemix package also.</p>
 </div>
     <div id="vartestnlme-020" class="section level1">
 <h1 class="page-header" data-toc-text="0.2.0">

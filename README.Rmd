@@ -40,19 +40,19 @@ Install from CRAN:
 install.packages("varTestnlme")
 ```
 
-Install the development version from Github:
+Or install the development version from Github:
 
 ```{r, eval=FALSE}
-# install.packages("devtools")
-#devtools::install_github("baeyc/varTestnlme")
-
-devtools::load_all()
+install.packages("devtools")
+devtools::install_github("baeyc/varTestnlme")
 ```
 
 
 ## Example
 
 An example using the `nlme` package.
+
+**Since version 1.0.0, the name of the main function has been changed from `varTest` to `varCompTest` due to a conflict with an existing function from package `EnvStats`.**
 
 ```{r}
 library(nlme)
@@ -62,7 +62,7 @@ data("Orthodont")
 m1 <- lme(distance ~ 1 + Sex + age + age*Sex, random = pdSymm(Subject ~ 1 + age), data = Orthodont, method = "ML")
 m0 <- lme(distance ~ 1 + Sex + age + age*Sex, random = ~ 1 | Subject, data = Orthodont, method = "ML")
 
-vt <- varTest(m1,m0)
+vt <- varCompTest(m1,m0)
 ```
 
 It works similarly with lme4 package or saemix.

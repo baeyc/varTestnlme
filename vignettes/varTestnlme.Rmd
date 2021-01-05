@@ -9,8 +9,7 @@ vignette: >
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
-  collapse = FALSE,
-  message = FALSE,
+  collapse = TRUE,
   comment = "#>"
 )
 ```
@@ -24,11 +23,12 @@ The **varTesnlme** package is very easy to use. Below are small examples on how 
   
 Mixed-effect models can be run using [nlme](https://CRAN.R-project.org/package=nlme) or [lme4](https://CRAN.R-project.org/package=lme4), but also using [saemix](https://CRAN.R-project.org/package=saemix). **varTestnlme** can be used to compare two nested models using likelihood ratio tests, where the variance of at least one random effect is tested equal to 0. Fixed effects can also be tested simultaneously, as well as covariances.
 
-```{r}
+```{r, message=FALSE}
 # Load the packages
 library(nlme)
 library(lme4)
 library(saemix)
+library(EnvStats)
 ```
 
 
@@ -41,7 +41,7 @@ We illustrate the results on the **Orthodont** dataset, which is part of the **n
   
 We first need to fit the two nested models: the full model corresponding to $H_1$ and the null model corresponding to $H_0$, where there is no random effect associated to `age`.
 
-```{r results='hide'}
+```{r results='hide', message=FALSE}
 data("Orthodont")
 
 # using nlme, with correlated slope and intercept
@@ -55,13 +55,32 @@ m0.lme4 <- lmer(distance ~ 1 + Sex + (1 | Subject), data = Orthodont, REML = FAL
 ```
 
 
-Now we can run the likelihood ratio test using the **varTestnlme** package.
+Now we can run the likelihood ratio test using the **varTestnlme** package. The function returns an object from S3 class `htest`.
 ```{r}
 vt1.nlme <- varCompTest(m1.nlme,m0.nlme)
 vt1.lme4 <- varCompTest(m1.lme4,m0.lme4)
 ```
 
+Using the `EnvStats` package, nice printing options are available for objects of type `htest`:
+```{r}
+print(vt1.nlme)
+```
+
+It is also possible to access the components of the object using $ or [[:
+```{r}
+vt1.nlme$statistic
+vt1.nlme$p.value
+```
+
+For the p-value, four different values are provided: 
+
+  1. the p-value computed using the chi-bar-square expression as a mixture of chi-square distributions. This requires that the weights of the chi-bar-square are available, either because their exact expression is known (only in some simple cases), or because the user ask for their approximation via the option `pval.comp = "both"` or `pval.comp = "approx"`.
+  2. the p-value computed using a sample from the chi-bar-square distribution. This sample is used to approximate the chi-bar-square weights, and thus the corresponding p-value is only available when `pval.comp = "both"` or `pval.comp = "approx"`.
+  3. the lower bound on the p-value: this is always available
+  4. the upper bound on the p-value: this is always available
+
 ### Case 2 : testing the variance of one effect with uncorrelated random effects
+
 
 ```{r}
 # using nlme, with uncorrelated slope and intercept
@@ -72,7 +91,6 @@ m1diag.lme4 <- lmer(distance ~ 1 + Sex + age + age*Sex + (1 + age || Subject), d
 
 vt1diag.nlme <- varCompTest(m1diag.nlme,m0.nlme)
 vt1diag.lme4 <- varCompTest(m1diag.lme4,m0.lme4)
-
 ```
 
 
@@ -92,11 +110,8 @@ By default, the FIM is extracted from the packages, but it is also possible to c
 To get the exact p-value one can use
 
 ```{r}
-vt <- varCompTest(m1diag.nlme,m0noRE,fim="compute",pval.comp = "both")
-summary(vt)
-vt2 <- varCompTest(m1diag.lme4,m0noRE,fim="compute",pval.comp = "both")
-summary(vt2)
-
+varCompTest(m1diag.nlme, m0noRE, fim = "compute", pval.comp = "both", control = list(B=100))
+varCompTest(m1diag.lme4, m0noRE, fim = "compute", pval.comp = "both", control = list(B=100))
 ```
 
 
@@ -125,7 +140,7 @@ fm2Theo.nlme <- nlme(conc ~ SSfol(Dose, Time, lKe, lKa, lCl),
                      fixed = lKe + lKa + lCl ~ 1,
                      start=c( -2.4, 0.45, -3.2),
                      random = pdDiag(lCl ~ 1))
-varCompTest(fm1Theo.nlme,fm2Theo.nlme, pval.comp = "both")
+varCompTest(fm1Theo.nlme,fm2Theo.nlme)
 
 # with lme4
 Th.start  <- c(lKe = -2.4, lKa = 0.45, lCl = -3.2)
@@ -155,3 +170,5 @@ fm0 <- nls(conc ~ SSfol(Dose, Time, lKe, lKa, lCl),
                      start=list(lKe=-2.4,lKa=0.45,lCl=-3.2))
 varCompTest(fm1,fm0)
 ```
+
+We can see that there is no need to approximate the weights of the chi-bar-square distribution since the bounds on the p-value are sufficient to reject the null hypothesis at any ``classical`` level.

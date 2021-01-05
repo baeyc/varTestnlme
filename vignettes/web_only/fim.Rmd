@@ -76,6 +76,6 @@ varCompTest(m1,m0,pval.comp = "both",fim="extract")
 In this case we get an error message from `nlme` package stating that the FIM is non-positive definite. We will then use the `fim="compute"` option to approximate the FIM using parametric bootstrap, and we set the bootstrap sample size to 100 with the `control` argument.
 
 ```{r}
-vt <- varCompTest(m1,m0,pval.comp="both",fim="compute",control=list(B=100))
+varCompTest(m1,m0,pval.comp="both",fim="compute",control=list(B=100))
 ```
 The weights of the chi-bar-square distribution are provided, along with their standard deviations associated to the Monte Carlo approximation of the weights. Note that exact formulas exist for the weights when the number of chi-bar-square components is less than or equal to 3, in which cases no Monte Carlo approximation is needed and standard deviations are thus null.
