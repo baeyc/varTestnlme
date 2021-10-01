@@ -4,7 +4,7 @@
 \alias{bootinvFIM}
 \alias{invFIM}
 \alias{bootstrap}
-\title{Approximation of the inverse of the Fisher Information Matix via parametric bootstrap}
+\title{Approximation of the inverse of the Fisher Information Matrix via parametric bootstrap}
 \usage{
 bootinvFIM(m, B = 1000)
 }

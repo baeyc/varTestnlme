@@ -7,9 +7,6 @@
 #' @param m0 the fit under H0
 #' @param randm0 a boolean indicating whether random effects are present in m0
 extractStruct.saemix <- function(m1,m0,randm0){
-  # get package used to fit m0
-  pkgm0 <- class(m0)[1]
-  
   # dimension of the parameters
   nbFixEff0 <- sum(m0@model@fixed.estim>0)
   nbFixEff1 <- sum(m1@model@fixed.estim>0)
@@ -19,8 +16,8 @@ extractStruct.saemix <- function(m1,m0,randm0){
     namesFE0 <- m0@model@name.fixed[m0@model@fixed.estim>0]
   }else{
     namesRE0 <- NULL
-    if (pkgm0 == "lm" || pkgm0 == "glm") namesFE0 <- names(stats::coefficients(m0))
-    if (pkgm0 == "nls") namesFE0 <- names(m0$m$getPars())
+    if (inherits(m0,c("lm","glm"))) namesFE0 <- names(stats::coefficients(m0))
+    if (inherits(m0,"nls")) namesFE0 <- names(m0$m$getPars())
   }
   namesRE1 <- m1@model@name.random
   namesFE1 <- m1@model@name.fixed[m1@model@fixed.estim>0]
@@ -31,8 +28,8 @@ extractStruct.saemix <- function(m1,m0,randm0){
   nbRanEff1 <- length(namesRE1)
   nbRanEffTest <- nbRanEff1-nbRanEff0
   
-  if (!prod(namesFE0 %in% namesFE1)) stop("Error: the models should be nested, but it seems that some fixed effects are in <m0> but not in <m1>")
-  if (!prod(namesRE0 %in% namesRE1)) stop("Error: the models should be nested, but it seems that some random effects are in <m0> but not in <m1>")
+  if (!prod(namesFE0 %in% namesFE1)) stop("the models should be nested, but it seems that some fixed effects are in <m0> but not in <m1>")
+  if (!prod(namesRE0 %in% namesRE1)) stop("the models should be nested, but it seems that some random effects are in <m0> but not in <m1>")
   
   covStruct1 <- m1@model@covariance.model
   if (randm0) covStruct0 <- m0@model@covariance.model
@@ -54,8 +51,8 @@ extractStruct.saemix <- function(m1,m0,randm0){
     dimSigma <- 1
   }
   
-  if(nbRanEff0==nbRanEff1) stop("Error: there are the same number of random effects in models m0 and m1. Please check the models' formulation.")
-  if(randm0) if (min(covStruct1-covStruct0) < 0) stop("Error: the models should be nested, but it seems that some random effects are in m0 but not in m1")
+  if(nbRanEff0==nbRanEff1) stop("there are the same number of random effects in models m0 and m1. Please check the models' formulation.")
+  if(randm0) if (min(covStruct1-covStruct0) < 0) stop("the models should be nested, but it seems that some random effects are in m0 but not in m1")
   
   # create a dataset with the list of parameters and: their tyoe (fixed, variance or correlation)
   # whether they are tested equal to 0 or not, and if they are tested, if it's as a subpart of a block
@@ -133,6 +130,8 @@ extractStruct.saemix <- function(m1,m0,randm0){
 #'
 #' @param m the model under H1
 #' @param B the bootstrap sample size
+#' @export bootinvFIM.saemix
+#' @export
 bootinvFIM.saemix <- function(m, B=1000){
   
   simul <- saemix::simul.saemix(m,nsim=B)

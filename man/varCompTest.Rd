@@ -78,7 +78,8 @@ assumed to be nested within the model under H1. These functions can be used on o
 
 It is possible to tests if any subset of the variances are equal to zero. However, the function does not
 currently support nested random effects, and assumes that the random effects are Gaussian.
-
+}
+\details{
 The asymptotic distribution of the likelihood ratio test is a chi-bar-square, with weights that need to be
 approximated by Monte Carlo methods, apart from some specific cases where they are available explicitly. 
 Therefore, the p-value of the test is not exact but approximated. This computation can be time-consuming, so
@@ -86,13 +87,13 @@ the default behaviour of the function is to provide bounds on the exact p-value,
 to decide whether to reject or not the null hypothesis. This is triggered by the option \code{pval.comp="bounds"}.
 To compute an approximation of the exact p-value, one should use the option \code{pval.comp="approx"} or \code{pval.comp="both"}.
 
-When \code{pval.comp="approx"} or \code{pval.comp="both"}, the weights of th chi-bar-square distribution are computed and thus
-
+When \code{pval.comp="approx"} or \code{pval.comp="both"}, the weights of the chi-bar-square distribution are computed using Monte Carlo,
+which might involve a larger computing time.
 
 The \code{control} argument controls the options for chi-bar-square weights computation. It is a list with the
 following elements: \code{M} the size of the Monte Carlo simulation, i.e. the number of samples generated, \code{parallel} a
-boolean which is equal to \code{TRUE} to compute the projection of the samples on the cone, and \code{nbcores} the number
-of cores to be used in case of parallel computing. Default is \code{M=5000}, \code{parallel=FALSE} and \code{nb_cores=1}.
+boolean to specify if parallel computing should be used, and \code{nbcores} the number of cores to be used in case of 
+parallel computing. Default is \code{M=5000}, \code{parallel=FALSE} and \code{nb_cores=1}.
 If \code{parallel=TRUE} but the value of \code{nb_cores} is not given, then it is set to the number of detected
 cores minus 1
 }

@@ -1,7 +1,7 @@
 Package: varTestnlme
 Type: Package
 Title: Variance Components Testing for Linear and Nonlinear Mixed Effects Models
-Version: 1.0.0
+Version: 1.1.0
 Authors@R: c(
     person("Charlotte","Baey", ,"charlotte.baey@univ-lille.fr", role = c("aut", "cre"),
        comment = c(ORCID= "0000-0002-1413-1058")
@@ -20,7 +20,6 @@ Description: An implementation of the Likelihood ratio Test (LRT) for testing th
     Charlotte Baey, Paul-Henry Cournède and Estelle Kuhn (2019) <doi:10.1016/j.csda.2019.01.014>.
 License: GPL (>= 2)
 Encoding: UTF-8
-LazyData: true
 Imports: 
     mvtnorm,
     alabama,

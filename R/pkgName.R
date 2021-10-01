@@ -3,15 +3,14 @@
 #' @param m a model with random effects fitted with \code{nlme}, \code{lme4} or \code{saemix}
 #' @return a string giving the name of the package
 pckName <- function(m){
-  cl <- class(m)
-  if ("lme" %in% cl) {
+  if (inherits(m,"lme")) {
     pkg <- "nlme"
-  }else if(max(c("lmerMod","glmerMod","nlmerMod") %in% cl)){
+  }else if(inherits(m,c("lmerMod","glmerMod","nlmerMod"))){
     pkg <- "lme4"
-  }else if("SaemixObject" %in% cl){
+  }else if(inherits(m,"SaemixObject")){
     pkg <- "saemix"
   }else{
-    pkg <- cl
+    pkg <- class(m)
   }
   return(pkg)
 }

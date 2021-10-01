@@ -36,7 +36,7 @@ library(EnvStats)
 Here we focus on models run using **lme4** and **nlme**, but **saemix** can also be used.
   
 ### Case 1 : testing the variance of one random effect
-We illustrate the results on the **Orthodont** dataset, which is part of the **nlme** package. We are interested in modelling the distance between the pituitary annd the pterygomaxillary fissure (in mm) as a function of age, in 27 children. We will fit a random slope and random intercept model, and test whether the slope is random or not.
+We illustrate the results on the **Orthodont** dataset, which is part of the **nlme** package. We are interested in modeling the distance between the pituitary and the pterygomaxillary fissure (in mm) as a function of age, in 27 children. We will fit a random slope and random intercept model, and test whether the slope is random or not.
   
   
 We first need to fit the two nested models: the full model corresponding to $H_1$ and the null model corresponding to $H_0$, where there is no random effect associated to `age`.
@@ -109,7 +109,7 @@ vt2 <- varCompTest(m1diag.lme4,m0noRE)
 By default, the FIM is extracted from the packages, but it is also possible to compute it via parametric bootstrap. In this case, simply use the option `fim="compute"`. The default bootstrap sampling size is `B=1000` but it can be changed.
 To get the exact p-value one can use
 
-```{r}
+```{r, eval=FALSE}
 varCompTest(m1diag.nlme, m0noRE, fim = "compute", pval.comp = "both", control = list(B=100))
 varCompTest(m1diag.lme4, m0noRE, fim = "compute", pval.comp = "both", control = list(B=100))
 ```

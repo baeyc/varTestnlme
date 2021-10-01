@@ -7,7 +7,7 @@
 #'
 #' @param x A vector
 #' @param cst A list of constants to be passed to the optimisation function
-#' @return value of the objective function, its gradient, and the set of inequality and euqality constraints
+#' @return value of the objective function, its gradient, and the set of inequality and equality constraints
 #'
 objFunction <- function(x,cst){
   return(t(cst$Z-x)%*%cst$invV%*%(cst$Z-x))

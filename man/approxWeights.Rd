@@ -20,7 +20,11 @@ A vector containing the estimated weights, as well as their covariance matrix.
 The chi-bar-square distribution \eqn{\bar{\chi}^2(I,C)} is a mixture of chi-square distributions. The function provides
 a method to approximate the weights of the mixture components, when the number of components is known as well as the
 degrees of freedom of each chi-square distribution in the mixture, and given a vector of simulated values from the target
-\eqn{\bar{\chi}^2(I,C)} distribution. Let us assume that there are \eqn{p} components in the mixture, with degrees of
+\eqn{\bar{\chi}^2(I,C)} distribution. Note that the estimation is based on (pseudo)-random Monte Carlo samples. For reproducible
+results, one should fix the seed of the (pseudo)-random number generator.
+}
+\details{
+Let us assume that there are \eqn{p} components in the mixture, with degrees of
 freedom between \eqn{n_1} and \eqn{n_p}. By definition of a mixture distribution, we have :
 \deqn{ P(\bar{\chi}^2(I,C) \leq c) = \sum_{i=n_1}^{n_p} w_i P(\chi^2_{i} \leq c)}
 Choosing \eqn{p-2} values \eqn{c_1, \dots, c_{p-2}}, the function will generate a system of \eqn{p-2} equations

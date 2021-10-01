@@ -30,7 +30,7 @@ jacobianEqCstr(x, cst)
 \item{cst}{A list of constants to be passed to the optimisation function}
 }
 \value{
-value of the objective function, its gradient, and the set of inequality and euqality constraints
+value of the objective function, its gradient, and the set of inequality and equality constraints
 }
 \description{
 Groups of functions used for the constrained minimization problem arising in the computation of the

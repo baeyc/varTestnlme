@@ -6,7 +6,7 @@ extractFIM.lme <- function(m,struct){
   namesRE <- attr(vc,"Dimnames")[[1]]
   
   apVarNu <- m$apVar # covariance matrix of TRANSFORMED variance components
-  if (is.character(apVarNu)) stop(paste0("Error in nlme package for apVar in m1: ",apVarNu,"\n Try to re-run with fim='compute'"))
+  if (is.character(apVarNu)) stop(paste0("in nlme package for apVar in m1: ",apVarNu,". Try to re-run with fim='compute'"))
   # variances are log-transformed in nu and covariances are logit-transformed (see Pinheiro and Bates)
   meanNu <- attr(apVarNu,"Pars")
   nre <- length(namesRE)
@@ -71,11 +71,19 @@ extractFIM.lme <- function(m,struct){
 #' @param m0 the fit under H0
 #' @param randm0 a boolean indicating whether random effects are present in m0
 extractStruct.lme <- function(m1,m0,randm0){
-  # get package used to fit m0
-  pkgm0 <- class(m0)[1]
-  
   # name of the random grouping variable
   nameRE <- names(m1$groups)
+  
+  # get the residual variance structure
+  varStructm1 <- m1$modelStruct$varStruct
+  varStructm0 <- m0$modelStruct$varStruct
+  if (length(varStructm0) != length(varStructm1)){
+    stop("the residual variance model should be the same under both hypotheses")
+  }else if (length(varStructm0) > 0 & length(varStructm1) > 0){
+    if (varStructm0 != varStructm1){
+      stop("the residual variance model should be the same under both hypotheses")
+    }
+  }
   
   # get the structure of the random effects in m0 and m1
   if (randm0){
@@ -95,8 +103,8 @@ extractStruct.lme <- function(m1,m0,randm0){
     namesFE0 <- names(m0$coefficients$fixed)
   }else{
     namesRE0 <- NULL
-    if (pkgm0 == "lm") namesFE0 <- names(stats::coefficients(m0))
-    if (pkgm0 == "nls") namesFE0 <- names(m0$m$getPars())
+    if (inherits(m0,"lm")) namesFE0 <- names(stats::coefficients(m0))
+    if (inherits(m0,"nls")) namesFE0 <- names(m0$m$getPars())
   }
   namesRE1 <- colnames(m1$coefficients$random[[1]])
   nameVarTested <- namesRE1[!(namesRE1%in%namesRE0)]
@@ -106,8 +114,8 @@ extractStruct.lme <- function(m1,m0,randm0){
   
   # Throwing errors for cases not covered by the package
   #if ( !!!!!!! ) stop("Error: the current version of the package does not support more than 1 level of random effects")
-  if (!prod(namesFE0 %in% namesFE1)) stop("Error: the models should be nested, but it seems that some fixed effects are in m0 but not in m1")
-  if (!prod(namesRE0 %in% namesRE1)) stop("Error: the models should be nested, but it seems that some random effects are in m0 but not in m1")
+  if (!prod(namesFE0 %in% namesFE1)) stop("the models should be nested, but it seems that some fixed effects are in m0 but not in m1")
+  if (!prod(namesRE0 %in% namesRE1)) stop("the models should be nested, but it seems that some random effects are in m0 but not in m1")
   
   # dimension of the parameters
   nbFixEff0 <- length(namesFE0)
@@ -142,7 +150,7 @@ extractStruct.lme <- function(m1,m0,randm0){
     }
   }
   
-  if (!prod(covNames0%in%covNames1)) stop("Error: the models should be nested but there are some covariances in m0 which are not in m1")
+  if (!prod(covNames0%in%covNames1)) stop("the models should be nested but there are some covariances in m0 which are not in m1")
   
   nameParams0 <- c(namesFE0,paste0("sd(",namesRE0,")"),covNames0)
   nameParams1 <- c(namesFE1,paste0("sd(",namesRE1,")"),covNames1)
@@ -169,7 +177,7 @@ extractStruct.lme <- function(m1,m0,randm0){
   # Throwing errors for cases not covered by the package
   #if ( !!!!!!! ) stop("Error: the current version of the package does not support more than 1 level of random effects")
   #if (nbFixEff1 != nbFixEff0) stop("Error: the current version of the package does not support simultaneously testing means and variances. Models should have the same fixed effects")
-  if (!prod(namesRE0 %in% namesRE1)) stop("Error: the models should be nested, but it seems that some random effects are in m0 but not in m1")
+  if (!prod(namesRE0 %in% namesRE1)) stop("the models should be nested, but it seems that some random effects are in m0 but not in m1")
   
   # get the dimension of the residual variance
   # it should be identical under H0 and H1
@@ -227,10 +235,10 @@ extractStruct.lme <- function(m1,m0,randm0){
 #' @description Extract covariance matrix of the random effects for a model fitted with nlme.
 #'
 #' @param m a fit from nlme package (either linear or nonlinear)
+#' @export extractVarCov.lme
+#' @export
 extractVarCov.lme <- function(m){
-  
-  pkg <- class(m)
-  if (! ("nlme" %in% pkg)){
+  if (! (inherits(m,"nlme"))){
     v <- nlme::getVarCov(m)
     v <- matrix(as.numeric(v),ncol=ncol(v),nrow=nrow(v))
   }else{
@@ -265,6 +273,8 @@ extractVarCov.lme <- function(m){
 #'
 #' @param m the model under H1
 #' @param B the bootstrap sample size
+#' @export bootinvFIM.lme
+#' @export
 bootinvFIM.lme <- function(m, B=1000){
   
   mySumm <- function(m,diagSigma=F) {
@@ -278,7 +288,7 @@ bootinvFIM.lme <- function(m, B=1000){
     }
     return(theta)
   }
-  nonlin <- (class(m)[1] == "nlme")
+  nonlin <- inherits(m,"nlme")
   
   if (!nonlin){
     bootstrap <- lmeresampler::bootstrap(m, mySumm, B = B, type = "parametric")
@@ -295,9 +305,9 @@ bootinvFIM.lme <- function(m, B=1000){
       colNonZeros <- posNonZeros[,"col"]
       covNames1 <- sapply(1:nrow(posNonZeros),FUN=function(i){
         if (rowNonZeros[i]==colNonZeros[i]){
-          nme <- paste0("sd(",namesRE[rowNonZeros[i]],")")
+          nme <- paste0("var(",namesRE[rowNonZeros[i]],")")
         }else{
-          nme <- paste0("cor(",namesRE[rowNonZeros[i]],",",namesRE[colNonZeros[i]],")")
+          nme <- paste0("cov(",namesRE[rowNonZeros[i]],",",namesRE[colNonZeros[i]],")")
         }
         return(nme)
       })
@@ -305,10 +315,10 @@ bootinvFIM.lme <- function(m, B=1000){
       if (length(Gamma1) == 1){
         covNames1 <- namesRE[1]
       }else{
-        covNames1 <- paste0("sd(",namesRE,")")
+        covNames1 <- paste0("var(",namesRE,")")
       }
     }
-    namesParams <- c(names(m$coefficients$fixed),covNames1,"residual")
+    namesParams <- c(names(m$coefficients$fixed),covNames1,"sd_residual")
     colnames(invfim) <- rownames(invfim) <- namesParams
   }else{
     beta <- nlme::fixef(m) # fixed effects
@@ -322,7 +332,7 @@ bootinvFIM.lme <- function(m, B=1000){
     
     diagSigma <- Matrix::isDiagonal(Sigma)
     if (diagSigma){
-      namesParams <- c(names(m$coefficients$fixed),paste0("sd(",namesRE,")"),"residual")
+      namesParams <- c(names(m$coefficients$fixed),paste0("var(",namesRE,")"),"sd_residual")
     }else{
       Sigma2 <- Sigma
       Sigma2[lower.tri(Sigma2)] <- NA
@@ -330,11 +340,11 @@ bootinvFIM.lme <- function(m, B=1000){
       
       namesCovParams <- character()
       for (l in 1:nrow(nonZeros)){
-        if (nonZeros[l,1] == nonZeros[l,2]) namesCovParams <- c(namesCovParams,paste0("sd(",colnames(Sigma)[nonZeros[l,1]],")"))
+        if (nonZeros[l,1] == nonZeros[l,2]) namesCovParams <- c(namesCovParams,paste0("var(",colnames(Sigma)[nonZeros[l,1]],")"))
         if (nonZeros[l,1] != nonZeros[l,2]) namesCovParams <- c(namesCovParams,paste0("cov(",colnames(Sigma)[nonZeros[l,1]],",",colnames(Sigma)[nonZeros[l,2]],")"))
       }
       
-      namesParams <- c(names(m$coefficients$fixed),namesCovParams,"residual")
+      namesParams <- c(names(m$coefficients$fixed),namesCovParams,"sd_residual")
     }
     
     
@@ -381,7 +391,7 @@ bootinvFIM.lme <- function(m, B=1000){
       namesFE <- names(m$coefficients$fixed)
       simuResp <- lapply(1:nrow(betaAll),FUN = function(i){
         eval(parse(text=paste0(namesFE,"=",betaAll[i,posParamInBeta],sep=";")))
-        with(data.m[eval(parse(text=paste0("data.m$",grpFactor,"==i"))),],
+        with(data.m[eval(parse(text=paste0("data.m$",grpFactor,"==nmeInd[i]"))),],
              eval(parse(text=as.character(getCovariateFormula(m))[2])))
       })
       simuResp <- do.call("c",simuResp)
@@ -389,7 +399,7 @@ bootinvFIM.lme <- function(m, B=1000){
       data.m[,responseVar] <- simuResp  + stats::rnorm(nrow(betaAll),0,resStd)
       
       #############################
-      fitInd <- suppressWarnings(try({setTimeLimit(100)
+      fitInd <- suppressWarnings(try({setTimeLimit(10)
         stats::update(m, data=data.m)},silent=TRUE))
       
       if (!inherits(fitInd,"try-error")){

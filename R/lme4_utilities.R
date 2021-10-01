@@ -7,12 +7,9 @@
 #' @param m0 the fit under H0
 #' @param randm0 a boolean indicating whether random effects are present in m0
 extractStruct.merMod <- function(m1,m0,randm0){
-  # get package used to fit m0
-  pkgm0 <- class(m0)[1]
-  
   # name of the grouping factor
   nameRE <- names(m1@flist)
-  if (length(nameRE)>1) stop("Error: the package does not currently support more than one level of random effects")
+  if (length(nameRE)>1) stop("the package does not currently support more than one level of random effects")
   
   # dimension of the parameters
   nbFixEff1 <- lme4::getME(m1,"p")
@@ -23,8 +20,8 @@ extractStruct.merMod <- function(m1,m0,randm0){
     nbFixEff0 <- lme4::getME(m0,"p")
   }else{
     namesRE0 <- NULL
-    if (pkgm0 %in% c("lm","glm")) namesFE0 <- names(stats::coefficients(m0))
-    if (pkgm0 == "nls") namesFE0 <- names(m0$m$getPars())
+    if (inherits(m0,c("lm","glm"))) namesFE0 <- names(stats::coefficients(m0))
+    if (inherits(m0,"nls")) namesFE0 <- names(m0$m$getPars())
     nbFixEff0 <- length(namesFE0)
   }
   namesFE1 <- names(lme4::getME(m1,"fixef"))
@@ -52,11 +49,11 @@ extractStruct.merMod <- function(m1,m0,randm0){
   nbCov1 <- nbCompVar1 - nbRanEff1
   nbCov0 <- nbCompVar0 - nbRanEff0
   
-  if (nbCov1 < nbCov0) stop("Error: the models should be nested but there are some covariances in m0 which are not in m1")
+  if (nbCov1 < nbCov0) stop("the models should be nested but there are some covariances in <m0> which are not in <m1>")
   
   # CHECK IF ML WAS USED AND NOT REML
-  if (lme4::isREML(m1)) stop("Error: the models should be fitted using Maximum Likelihood (ML) instead of Restricted ML (REML)")
-  if (randm0) if (lme4::isREML(m0)) stop("Error: the models should be fitted using Maximum Likelihood (ML) instead of Restricted ML (REML)")
+  if (lme4::isREML(m1)) stop("the models should be fitted using Maximum Likelihood (ML) instead of Restricted ML (REML)")
+  if (randm0) if (lme4::isREML(m0)) stop("the models should be fitted using Maximum Likelihood (ML) instead of Restricted ML (REML)")
   
   # retrieve names of parameters to identify their order in the FIM and in the cone
   #nbTotParam <- ncol(invfim1)
@@ -109,7 +106,7 @@ extractStruct.merMod <- function(m1,m0,randm0){
   return(list(detailStruct=dd,
               nameVarTested=nameVarTested,
               nameFixedTested=nameFixedTested,
-              dims=list(nbFE1=nbFixEff1,nbFE0=nbFixEff0,nbRE1=nbRanEff1,nbRE0=nbRanEff0,nbCov1=nbCov1,nbCov0=nbCov0,dimSigma=1*!(pkgm0%in%c("glm"))),
+              dims=list(nbFE1=nbFixEff1,nbFE0=nbFixEff0,nbRE1=nbRanEff1,nbRE0=nbRanEff0,nbCov1=nbCov1,nbCov0=nbCov0,dimSigma=1*!(inherits(m0,"glm"))),
               structGamma=struct))
 }
 
@@ -121,6 +118,8 @@ extractStruct.merMod <- function(m1,m0,randm0){
 #' @description Extract covariance matrix of the random effects for a model fitted with lme4.
 #'
 #' @param m a fit from lme4 package (either linear or nonlinear)
+#' @export extractVarCov.merMod
+#' @export
 extractVarCov.merMod <- function(m){
   varcorr <- as.data.frame(lme4::VarCorr(m))
   varcorr <- varcorr[varcorr$grp!="Residual",]
@@ -150,6 +149,8 @@ extractVarCov.merMod <- function(m){
 #'
 #' @param m the model under H1
 #' @param B the bootstrap sample size
+#' @export bootinvFIM.merMod
+#' @export
 bootinvFIM.merMod <- function(m, B=1000){
   
   mySumm <- function(m,diagSigma=F) {
@@ -189,7 +190,7 @@ bootinvFIM.merMod <- function(m, B=1000){
     nrandEfft <- nrow(Sigma)
     namesRE <- lme4::getME(m,"cnms")
     
-    namesParams <- c(names(lme4::fixef(m)),paste0("cov_",names(lme4::getME(m,"theta"))),"residual")
+    namesParams <- c(names(lme4::fixef(m)),paste0("cov_",names(lme4::getME(m,"theta"))),"sd_residual")
     
     message(paste0("\t ...generating the B=",B," bootstrap samples ...\n"))
     #no_cores <- max(1,parallel::detectCores() - 1)
@@ -237,7 +238,7 @@ bootinvFIM.merMod <- function(m, B=1000){
       d <- m@frame
       d[,responseVar] <- simuResp + stats::rnorm(nrow(betaAll),0,resStd)
       
-      fitInd <- suppressWarnings(try({setTimeLimit(100)
+      fitInd <- suppressWarnings(try({setTimeLimit(10)
         stats::update(m, data=d, start=beta)},silent=TRUE))
       #fitInd <- update(m, data=d)
       

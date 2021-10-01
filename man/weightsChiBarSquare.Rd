@@ -19,7 +19,7 @@ weightsChiBarSquare(df, V, dimsCone, orthan, control)
 two elements: \code{parallel} a boolean indicating whether computation should be done in parallel (FALSE 
 by default), \code{nb_cores} the number of cores for parallel computing (if \code{parallel=TRUE} but no value is given
 for \code{nb_cores}, it is set to number of detected cores minus 1), and \code{M} the Monte Carlo sample
-size for the computation of the weigths.}
+size for the computation of the weights.}
 }
 \value{
 A list containing the estimated weights, the standard deviations of the estimated weights and the

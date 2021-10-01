@@ -2,7 +2,7 @@
 #'
 #' @description Computation of the degrees of freedom of the chi-bar-square 
 #'
-#' @param msdata a list containing the structure of the model and data, as outputed from 
+#' @param msdata a list containing the structure of the model and data, as an output from 
 #' \code{extractStruct.<package_name>} functions
 #' @return a list containing the vector of the degrees of freedom of the chi-bar-square and the dimensions
 #' of the cone of the chi-bar-square distribution
@@ -72,7 +72,7 @@ dfChiBarSquare <- function(msdata){
 #' two elements: \code{parallel} a boolean indicating whether computation should be done in parallel (FALSE 
 #' by default), \code{nb_cores} the number of cores for parallel computing (if \code{parallel=TRUE} but no value is given
 #' for \code{nb_cores}, it is set to number of detected cores minus 1), and \code{M} the Monte Carlo sample
-#' size for the computation of the weigths.
+#' size for the computation of the weights.
 #' 
 #' @return A list containing the estimated weights, the standard deviations of the estimated weights and the
 #' random sample of \code{M} realizations from the chi-bar-square distribution
@@ -133,7 +133,7 @@ weightsChiBarSquare <- function(df,V,dimsCone,orthan,control){
       Z <- mvtnorm::rmvnorm(control$M,mean=rep(0,nrow(V)),sigma=V)
       chibarsquare <- rep(0,control$M)
       
-      message("\nSimulating chi-bar-square weights ...\n")
+      message("Simulating chi-bar-square weights ...")
       nb_cores <- ifelse(control$parallel,max(1,parallel::detectCores() - 1),1)
       
       # Initiate cluster
@@ -205,7 +205,10 @@ weightsChiBarSquare <- function(df,V,dimsCone,orthan,control){
 #' @description The chi-bar-square distribution \eqn{\bar{\chi}^2(I,C)} is a mixture of chi-square distributions. The function provides
 #' a method to approximate the weights of the mixture components, when the number of components is known as well as the
 #' degrees of freedom of each chi-square distribution in the mixture, and given a vector of simulated values from the target
-#' \eqn{\bar{\chi}^2(I,C)} distribution. Let us assume that there are \eqn{p} components in the mixture, with degrees of
+#' \eqn{\bar{\chi}^2(I,C)} distribution. Note that the estimation is based on (pseudo)-random Monte Carlo samples. For reproducible
+#' results, one should fix the seed of the (pseudo)-random number generator.
+#' 
+#' @details Let us assume that there are \eqn{p} components in the mixture, with degrees of
 #' freedom between \eqn{n_1} and \eqn{n_p}. By definition of a mixture distribution, we have :
 #' \deqn{ P(\bar{\chi}^2(I,C) \leq c) = \sum_{i=n_1}^{n_p} w_i P(\chi^2_{i} \leq c)}
 #' Choosing \eqn{p-2} values \eqn{c_1, \dots, c_{p-2}}, the function will generate a system of \eqn{p-2} equations

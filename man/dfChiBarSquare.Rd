@@ -7,7 +7,7 @@
 dfChiBarSquare(msdata)
 }
 \arguments{
-\item{msdata}{a list containing the structure of the model and data, as outputed from 
+\item{msdata}{a list containing the structure of the model and data, as an output from 
 \code{extractStruct.<package_name>} functions}
 }
 \value{

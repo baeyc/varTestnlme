@@ -8,20 +8,20 @@
 #' It is possible to tests if any subset of the variances are equal to zero. However, the function does not
 #' currently support nested random effects, and assumes that the random effects are Gaussian.
 #' 
-#' The asymptotic distribution of the likelihood ratio test is a chi-bar-square, with weights that need to be
+#' @details The asymptotic distribution of the likelihood ratio test is a chi-bar-square, with weights that need to be
 #' approximated by Monte Carlo methods, apart from some specific cases where they are available explicitly. 
 #' Therefore, the p-value of the test is not exact but approximated. This computation can be time-consuming, so
 #' the default behaviour of the function is to provide bounds on the exact p-value, which can be enough in practice
 #' to decide whether to reject or not the null hypothesis. This is triggered by the option \code{pval.comp="bounds"}.
 #' To compute an approximation of the exact p-value, one should use the option \code{pval.comp="approx"} or \code{pval.comp="both"}.
 #' 
-#' When \code{pval.comp="approx"} or \code{pval.comp="both"}, the weights of th chi-bar-square distribution are computed and thus
-#' 
+#' When \code{pval.comp="approx"} or \code{pval.comp="both"}, the weights of the chi-bar-square distribution are computed using Monte Carlo,
+#' which might involve a larger computing time.
 #' 
 #' The \code{control} argument controls the options for chi-bar-square weights computation. It is a list with the
 #' following elements: \code{M} the size of the Monte Carlo simulation, i.e. the number of samples generated, \code{parallel} a
-#' boolean which is equal to \code{TRUE} to compute the projection of the samples on the cone, and \code{nbcores} the number
-#' of cores to be used in case of parallel computing. Default is \code{M=5000}, \code{parallel=FALSE} and \code{nb_cores=1}.
+#' boolean to specify if parallel computing should be used, and \code{nbcores} the number of cores to be used in case of 
+#' parallel computing. Default is \code{M=5000}, \code{parallel=FALSE} and \code{nb_cores=1}.
 #' If \code{parallel=TRUE} but the value of \code{nb_cores} is not given, then it is set to the number of detected
 #' cores minus 1
 #'
@@ -140,12 +140,14 @@ extractStruct <- function(m1,m0,randm0){
 #' @description Extract covariance matrix of the random effects for a model fitted with lme4.
 #'
 #' @param m a fit from lme4 package (either linear or nonlinear)
+#' 
+#' @export extractVarCov
 extractVarCov <- function(m){
   UseMethod("extractVarCov",m)
 }
 
 
-#' @title Approximation of the inverse of the Fisher Information Matix via parametric bootstrap
+#' @title Approximation of the inverse of the Fisher Information Matrix via parametric bootstrap
 #'
 #' @description When the FIM is not available, this function provides an approximation of the FIM based on an estimate
 #' of the covariance matrix of the model's parameters obtained via parametric bootstrap.
@@ -159,8 +161,8 @@ extractVarCov <- function(m){
 #' @return the empirical covariance matrix of the parameter estimates obtained on the bootstrap sample
 #' @author Charlotte Baey <\email{charlotte.baey@univ-lille.fr}>
 #'
-#' @export bootinvFIM
 #' @importFrom foreach %dopar%
+#' @export bootinvFIM
 bootinvFIM <- function(m,B=1000){
   UseMethod("bootinvFIM",m)
 }
