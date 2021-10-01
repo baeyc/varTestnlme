@@ -5,7 +5,7 @@
 pckName <- function(m){
   if (inherits(m,"lme")) {
     pkg <- "nlme"
-  }else if(inherits(m,c("lmerMod","glmerMod","nlmerMod"))){
+  }else if(inherits(m,c("lmerMod","glmerMod","nlmerMod","lmerModLmerTest"))){
     pkg <- "lme4"
   }else if(inherits(m,"SaemixObject")){
     pkg <- "saemix"
