@@ -2,6 +2,7 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 [![](https://www.r-pkg.org/badges/version/varTestnlme)](https://CRAN.R-project.org/package=varTestnlme)
+[![](https://cranlogs.r-pkg.org/badges/grand-total/varTestnlme)](https://cranlogs.r-pkg.org/badges/grand-total/varTesnlme)
 
 # varTestnlme
 
