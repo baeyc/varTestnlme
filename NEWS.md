@@ -1,6 +1,7 @@
 # varTestnlme 1.1.0
 
 Correct some typos in documentation, and export print and summary functions. Also export some functions needed to compute the Fisher Information Matrix. Small improvements in the outputs of print and summary functions. Also add some warning when the residual variance structure is not the same between the two models, when using nlme.
+Correct a bug in chi-bar-square weights estimation.
 
 # varTestnlme 1.0.0
 

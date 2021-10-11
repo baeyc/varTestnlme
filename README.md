@@ -2,7 +2,6 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 [![](https://www.r-pkg.org/badges/version/varTestnlme)](https://CRAN.R-project.org/package=varTestnlme)
-[![](https://cranlogs.r-pkg.org/badges/grand-total/varTestnlme)](https://cranlogs.r-pkg.org/badges/grand-total/varTesnlme)
 
 # varTestnlme
 
@@ -64,13 +63,12 @@ m0 <- lme(distance ~ 1 + Sex + age + age*Sex, random = ~ 1 | Subject, data = Ort
 
 vt <- varCompTest(m1,m0)
 #> Variance components testing in mixed effects models
-#> Testing that the variance of age is null
-#> Likelihood ratio test statistic: 
-#>  LRT =  0.83311 
+#> Testing that the variance of the random effect associated to age is equal to 0
+#> Likelihood ratio test statistic:
+#>  LRT = 0.8331072
 #> 
-#> Limiting distribution:
-#> mixture of 2 chi-bar-square distributions with degrees of freedom 1, 2
-#> lower-bound for p-value: 0.51035  upper bound for p-value: 0.51035
+#> p-value from exact weights: 0.5103454
+#> 
 ```
 
 It works similarly with lme4 package or saemix.

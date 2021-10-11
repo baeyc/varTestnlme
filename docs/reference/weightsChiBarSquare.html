@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Chi-bar-square weights computation — weightsChiBarSquare • varTestnlme</title>
+<title>Monte Carlo approximation of chi-bar-square weights — weightsChiBarSquare • varTestnlme</title>
 
 
 <!-- jquery -->
@@ -39,9 +39,12 @@
 
 
 
-<meta property="og:title" content="Chi-bar-square weights computation — weightsChiBarSquare" />
-<meta property="og:description" content="The function computes an approximation of the weights of the chi-bar-square distribution
-\(\bar{\chi}^2(V,C)\), with V a positive semi-definite matrix and C a convex cone." />
+<meta property="og:title" content="Monte Carlo approximation of chi-bar-square weights — weightsChiBarSquare" />
+<meta property="og:description" content="The function provides a method to approximate the weights of the mixture components, 
+when the number of components is known as well as the degrees of freedom of each chi-square distribution 
+in the mixture, and given a vector of simulated values from the target \(\bar{\chi}^2(V,C)\) 
+distribution. Note that the estimation is based on (pseudo)-random Monte Carlo samples. For reproducible
+results, one should fix the seed of the (pseudo)-random number generator." />
 
 
 
@@ -73,7 +76,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">varTestnlme</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
       </span>
     </div>
 
@@ -81,13 +84,13 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fa fa-home"></span>
+    <span class="fas fa-home"></span>
      
   </a>
 </li>
 <li>
   <a href="../articles/varTestnlme.html">
-    <span class="fa fa-play-circle"></span>
+    <span class="fas fa-play-circle"></span>
      
     Get started
   </a>
@@ -97,7 +100,7 @@
 </li>
 <li>
   <a href="../reference/index.html">
-    <span class="fa fa-file-code-o"></span>
+    <span class="fas fa-file-code-o"></span>
      
     Functions
   </a>
@@ -106,14 +109,14 @@
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="../news/index.html">
-    <span class="fa fa-newspaper-o"></span>
+    <span class="fas fa-newspaper-o"></span>
      
     News
   </a>
 </li>
 <li>
   <a href="https://github.com/baeyc/varTestnlme">
-    <span class="fa fa-github fa-lg"></span>
+    <span class="fas fa-github fa-lg"></span>
      
     github
   </a>
@@ -131,14 +134,17 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Chi-bar-square weights computation</h1>
+    <h1>Monte Carlo approximation of chi-bar-square weights</h1>
     <small class="dont-index">Source: <a href='https://github.com/baeyc/varTestnlme/blob/master/R/chibarsquare.R'><code>R/chibarsquare.R</code></a></small>
     <div class="hidden name"><code>weightsChiBarSquare.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>The function computes an approximation of the weights of the chi-bar-square distribution
-\(\bar{\chi}^2(V,C)\), with V a positive semi-definite matrix and C a convex cone.</p>
+    <p>The function provides a method to approximate the weights of the mixture components, 
+when the number of components is known as well as the degrees of freedom of each chi-square distribution 
+in the mixture, and given a vector of simulated values from the target \(\bar{\chi}^2(V,C)\) 
+distribution. Note that the estimation is based on (pseudo)-random Monte Carlo samples. For reproducible
+results, one should fix the seed of the (pseudo)-random number generator.</p>
     </div>
 
     <pre class="usage"><span class='fu'>weightsChiBarSquare</span><span class='op'>(</span><span class='va'>df</span>, <span class='va'>V</span>, <span class='va'>dimsCone</span>, <span class='va'>orthan</span>, <span class='va'>control</span><span class='op'>)</span></pre>
@@ -168,7 +174,7 @@
 two elements: <code>parallel</code> a boolean indicating whether computation should be done in parallel (FALSE 
 by default), <code>nb_cores</code> the number of cores for parallel computing (if <code>parallel=TRUE</code> but no value is given
 for <code>nb_cores</code>, it is set to number of detected cores minus 1), and <code>M</code> the Monte Carlo sample
-size for the computation of the weigths.</p></td>
+size for the computation of the weights.</p></td>
     </tr>
     </table>
 

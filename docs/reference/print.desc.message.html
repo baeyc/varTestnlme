@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Approximation of the inverse of the Fisher Information Matrix via parametric bootstrap — bootinvFIM • varTestnlme</title>
+<title>print.desc.message — print.desc.message • varTestnlme</title>
 
 
 <!-- jquery -->
@@ -39,9 +39,8 @@
 
 
 
-<meta property="og:title" content="Approximation of the inverse of the Fisher Information Matrix via parametric bootstrap — bootinvFIM" />
-<meta property="og:description" content="When the FIM is not available, this function provides an approximation of the FIM based on an estimate
-of the covariance matrix of the model's parameters obtained via parametric bootstrap." />
+<meta property="og:title" content="print.desc.message — print.desc.message" />
+<meta property="og:description" content="print a message to indicate the null and alternative hypotheses" />
 
 
 
@@ -131,38 +130,28 @@ of the covariance matrix of the model's parameters obtained via parametric boots
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Approximation of the inverse of the Fisher Information Matrix via parametric bootstrap</h1>
-    <small class="dont-index">Source: <a href='https://github.com/baeyc/varTestnlme/blob/master/R/generics.R'><code>R/generics.R</code></a></small>
-    <div class="hidden name"><code>bootinvFIM.Rd</code></div>
+    <h1>print.desc.message</h1>
+    <small class="dont-index">Source: <a href='https://github.com/baeyc/varTestnlme/blob/master/R/utils.R'><code>R/utils.R</code></a></small>
+    <div class="hidden name"><code>print.desc.message.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>When the FIM is not available, this function provides an approximation of the FIM based on an estimate
-of the covariance matrix of the model's parameters obtained via parametric bootstrap.</p>
+    <p>print a message to indicate the null and alternative hypotheses</p>
     </div>
 
-    <pre class="usage"><span class='fu'>bootinvFIM</span><span class='op'>(</span><span class='va'>m</span>, B <span class='op'>=</span> <span class='fl'>1000</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='co'># S3 method for desc.message</span>
+<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>msdata</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>m</th>
-      <td><p>a fitted model that will be used as the basis of the parametric bootstrap (providing the initial maximum
-likelihood estimate of the parameters and the modelling framework)</p></td>
-    </tr>
-    <tr>
-      <th>B</th>
-      <td><p>the size of the bootstrap sample</p></td>
+      <th>msdata</th>
+      <td><p>a list containing the structure of the model and data, as an output from 
+<code>extractStruct.&lt;package_name&gt;</code> functions</p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>the empirical covariance matrix of the parameter estimates obtained on the bootstrap sample</p>
-    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
-
-    <p>Charlotte Baey &lt;<a href='mailto:charlotte.baey@univ-lille.fr'>charlotte.baey@univ-lille.fr</a>&gt;</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

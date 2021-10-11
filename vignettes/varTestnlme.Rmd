@@ -46,11 +46,11 @@ data("Orthodont")
 
 # using nlme, with correlated slope and intercept
 m1.nlme <- lme(distance ~ 1 + Sex + age + age*Sex, random = pdSymm(Subject ~ 1 + age), data = Orthodont, method = "ML")
-m0.nlme <- lme(distance ~ 1 + Sex, random = ~ 1 | Subject, data = Orthodont, method = "ML")
+m0.nlme <- lme(distance ~ 1 + Sex + age + age*Sex, random = ~ 1 | Subject, data = Orthodont, method = "ML")
 
 # using lme4, with correlated slope and intercept
 m1.lme4 <- lmer(distance ~ 1 + Sex + age + age*Sex + (1 + age | Subject), data = Orthodont, REML = FALSE)
-m0.lme4 <- lmer(distance ~ 1 + Sex + (1 | Subject), data = Orthodont, REML = FALSE)
+m0.lme4 <- lmer(distance ~ 1 + Sex + age + age*Sex + (1 | Subject), data = Orthodont, REML = FALSE)
 
 ```
 
@@ -127,6 +127,7 @@ varCompTest(m1,m0)
 
 
 ## Nonlinear model
+Testing that one variance is equal to 0 in a model with two correlated random effects, using the Theophylline dataset and the nlme package.
 
 ```{r}
 # with nlme
@@ -141,7 +142,12 @@ fm2Theo.nlme <- nlme(conc ~ SSfol(Dose, Time, lKe, lKa, lCl),
                      start=c( -2.4, 0.45, -3.2),
                      random = pdDiag(lCl ~ 1))
 varCompTest(fm1Theo.nlme,fm2Theo.nlme)
+```
 
+
+Testing that one variance is null in a model with 3 correlated random effects, using the Theophylline dataset and the lme4 package.
+
+```{r}
 # with lme4
 Th.start  <- c(lKe = -2.4, lKa = 0.45, lCl = -3.2)
 nm1  <- nlmer(conc ~ SSfol(Dose , Time ,lKe , lKa , lCl) ~
@@ -158,7 +164,7 @@ varCompTest(nm1,nm0)
 ```
 
 
-Testing for the presence of randomness in the model.
+Testing for the presence of randomness in the model, using the nlme package.
 ```{r}
 fm1 <- nlme(conc ~ SSfol(Dose, Time, lKe, lKa, lCl),
                      Theoph,

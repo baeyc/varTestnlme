@@ -2,6 +2,8 @@
 #' 
 #' @title null.desc
 #' @description create null.value description
+#' @param msdata a list containing the structure of the model and data, as an output from 
+#' \code{extractStruct.<package_name>} functions
 null.desc <- function(msdata){
   null.value <- rep(0,1+length(msdata$nameFixedTested))
   if (length(msdata$nameFixedTested)==0){
@@ -19,6 +21,8 @@ null.desc <- function(msdata){
 
 #' @title alt.desc
 #' @description create alternative description
+#' @param msdata a list containing the structure of the model and data, as an output from 
+#' \code{extractStruct.<package_name>} functions
 alt.desc <- function(msdata){
   if (length(msdata$nameFixedTested)==0){
     if (length(msdata$nameVarTested)==1){
@@ -35,6 +39,8 @@ alt.desc <- function(msdata){
 
 #' @title print.desc.message
 #' @description print a message to indicate the null and alternative hypotheses
+#' @param msdata a list containing the structure of the model and data, as an output from 
+#' \code{extractStruct.<package_name>} functions
 print.desc.message <- function(msdata){
   if (length(msdata$nameFixedTested)==0){
     if (length(msdata$nameVarTested)==1){
@@ -72,4 +78,35 @@ print.desc.message <- function(msdata){
               ifelse(length(namesToPrint)==1," is"," are")," equal to 0")
     }
   }
+}
+
+#' @title print.res.message
+#' @description print a message with the results
+#' @param results an object of class vctest
+print.res.message <- function(results){
+  pval_sample <- !is.na(results$p.value["pvalue.sample"])
+  pval_weights <- !is.na(results$p.value["pvalue.weights"])
+  
+  message("Likelihood ratio test statistic:\n\tLRT = ",format(results$statistic,5))
+  
+  if (pval_weights | pval_sample){
+    if (results$p.value["pvalue.lowerbound"] == results$p.value["pvalue.upperbound"]){
+      message("\np-value from exact weights: ",format(results$p.value["pvalue.weights"],5))
+    }else{
+      if (pval_weights) message("\np-value from estimated weights: ",format(results$p.value["pvalue.weights"],5))
+      if (pval_sample) message("\np-value from random sample: ",format(results$p.value["pvalue.sample"],5))
+      
+      message("bounds on p-value: lower ",format(results$p.value["pvalue.lowerbound"],5),
+              "\tupper ",format(results$p.value["pvalue.upperbound"],5))  
+    }
+  }else{
+    if (results$p.value["pvalue.lowerbound"] != results$p.value["pvalue.upperbound"]){
+      message("bounds on p-value: lower ",format(results$p.value["pvalue.lowerbound"],5),
+          "\tupper ",format(results$p.value["pvalue.upperbound"],5))  
+    }else{
+      message("exact p-value: ",format(results$p.value["pvalue.lowerbound"],5)) 
+    }
+  }
+  
+  message("\n")
 }

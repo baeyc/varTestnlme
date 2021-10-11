@@ -43,13 +43,8 @@
 <meta property="og:description" content="The chi-bar-square distribution \(\bar{\chi}^2(I,C)\) is a mixture of chi-square distributions. The function provides
 a method to approximate the weights of the mixture components, when the number of components is known as well as the
 degrees of freedom of each chi-square distribution in the mixture, and given a vector of simulated values from the target
-\(\bar{\chi}^2(I,C)\) distribution. Let us assume that there are \(p\) components in the mixture, with degrees of
-freedom between \(n_1\) and \(n_p\). By definition of a mixture distribution, we have :
-$$ P(\bar{\chi}^2(I,C) \leq c) = \sum_{i=n_1}^{n_p} w_i P(\chi^2_{i} \leq c)$$
-Choosing \(p-2\) values \(c_1, \dots, c_{p-2}\), the function will generate a system of \(p-2\) equations
-according to the above relationship, and add two additional relationships stating that the sum of all the weights is
-equal to 1, and that the sum of odd weights and of even weights is equal to 1/2, so that we end up with a system a \(p\)
-equations with \(p\) variables." />
+\(\bar{\chi}^2(I,C)\) distribution. Note that the estimation is based on (pseudo)-random Monte Carlo samples. For reproducible
+results, one should fix the seed of the (pseudo)-random number generator." />
 
 
 
@@ -81,7 +76,7 @@ equations with \(p\) variables." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">varTestnlme</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
       </span>
     </div>
 
@@ -89,13 +84,13 @@ equations with \(p\) variables." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fa fa-home"></span>
+    <span class="fas fa-home"></span>
      
   </a>
 </li>
 <li>
   <a href="../articles/varTestnlme.html">
-    <span class="fa fa-play-circle"></span>
+    <span class="fas fa-play-circle"></span>
      
     Get started
   </a>
@@ -105,7 +100,7 @@ equations with \(p\) variables." />
 </li>
 <li>
   <a href="../reference/index.html">
-    <span class="fa fa-file-code-o"></span>
+    <span class="fas fa-file-code-o"></span>
      
     Functions
   </a>
@@ -114,14 +109,14 @@ equations with \(p\) variables." />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="../news/index.html">
-    <span class="fa fa-newspaper-o"></span>
+    <span class="fas fa-newspaper-o"></span>
      
     News
   </a>
 </li>
 <li>
   <a href="https://github.com/baeyc/varTestnlme">
-    <span class="fa fa-github fa-lg"></span>
+    <span class="fas fa-github fa-lg"></span>
      
     github
   </a>
@@ -148,13 +143,8 @@ equations with \(p\) variables." />
     <p>The chi-bar-square distribution \(\bar{\chi}^2(I,C)\) is a mixture of chi-square distributions. The function provides
 a method to approximate the weights of the mixture components, when the number of components is known as well as the
 degrees of freedom of each chi-square distribution in the mixture, and given a vector of simulated values from the target
-\(\bar{\chi}^2(I,C)\) distribution. Let us assume that there are \(p\) components in the mixture, with degrees of
-freedom between \(n_1\) and \(n_p\). By definition of a mixture distribution, we have :
-$$ P(\bar{\chi}^2(I,C) \leq c) = \sum_{i=n_1}^{n_p} w_i P(\chi^2_{i} \leq c)$$
-Choosing \(p-2\) values \(c_1, \dots, c_{p-2}\), the function will generate a system of \(p-2\) equations
-according to the above relationship, and add two additional relationships stating that the sum of all the weights is
-equal to 1, and that the sum of odd weights and of even weights is equal to 1/2, so that we end up with a system a \(p\)
-equations with \(p\) variables.</p>
+\(\bar{\chi}^2(I,C)\) distribution. Note that the estimation is based on (pseudo)-random Monte Carlo samples. For reproducible
+results, one should fix the seed of the (pseudo)-random number generator.</p>
     </div>
 
     <pre class="usage"><span class='fu'>approxWeights</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>df</span>, <span class='va'>q</span><span class='op'>)</span></pre>
@@ -179,6 +169,15 @@ equations with \(p\) variables.</p>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>A vector containing the estimated weights, as well as their covariance matrix.</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>Let us assume that there are \(p\) components in the mixture, with degrees of
+freedom between \(n_1\) and \(n_p\). By definition of a mixture distribution, we have :
+$$ P(\bar{\chi}^2(I,C) \leq c) = \sum_{i=n_1}^{n_p} w_i P(\chi^2_{i} \leq c)$$
+Choosing \(p-2\) values \(c_1, \dots, c_{p-2}\), the function will generate a system of \(p-2\) equations
+according to the above relationship, and add two additional relationships stating that the sum of all the weights is
+equal to 1, and that the sum of odd weights and of even weights is equal to 1/2, so that we end up with a system a \(p\)
+equations with \(p\) variables.</p>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
     <p>Charlotte Baey &lt;<a href='mailto:charlotte.baey@univ-lille.fr'>charlotte.baey@univ-lille.fr</a>&gt;</p>

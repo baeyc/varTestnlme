@@ -82,7 +82,7 @@ summary.vctest <- function(object, ...)
     }
     if (pval_sample) cat("\n\tfrom random sample:",object$p.value["pvalue.sample"])
     if (object$p.value["pvalue.lowerbound"] != object$p.value["pvalue.upperbound"]){
-      cat("\n\t","bounds on p-value: lower ",format(object$p.value["pvalue.lowerbound"],5),
+      cat("\n\tbounds on p-value: lower ",format(object$p.value["pvalue.lowerbound"],5),
           "upper ",format(object$p.value["pvalue.upperbound"],5)) 
       
       message("\n\nBounds based on the smallest and biggest degrees of freedom of the chi-bar-square distribution components. Re-run with option 'pval.comp=\"both\" or pval.comp=\"comp\" to approximate the weights of each chi-bar-square component and the p-value.")

@@ -49,7 +49,7 @@ extractStruct.merMod <- function(m1,m0,randm0){
   nbCov1 <- nbCompVar1 - nbRanEff1
   nbCov0 <- nbCompVar0 - nbRanEff0
   
-  if (namesRE0 == namesRE1 && nbCompVar0 == nbCompVar1) stop("the models have the same covariance structure under both hypotheses")
+  if (prod(namesRE1 %in% namesRE0) && nbCompVar0 == nbCompVar1) stop("the models have the same covariance structure under both hypotheses")
   
   if (nbCov1 < nbCov0) stop("the models should be nested but there are some covariances in <m0> which are not in <m1>")
   

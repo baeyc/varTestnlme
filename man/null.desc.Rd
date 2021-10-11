@@ -6,6 +6,10 @@
 \usage{
 null.desc(msdata)
 }
+\arguments{
+\item{msdata}{a list containing the structure of the model and data, as an output from 
+\code{extractStruct.<package_name>} functions}
+}
 \description{
 create null.value description
 }

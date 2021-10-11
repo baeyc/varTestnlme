@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../../index.html">varTestnlme</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
       </span>
     </div>
 
@@ -39,13 +39,13 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="../../index.html">
-    <span class="fa fa-home"></span>
+    <span class="fas fa-home"></span>
      
   </a>
 </li>
 <li>
   <a href="../../articles/varTestnlme.html">
-    <span class="fa fa-play-circle"></span>
+    <span class="fas fa-play-circle"></span>
      
     Get started
   </a>
@@ -55,7 +55,7 @@
 </li>
 <li>
   <a href="../../reference/index.html">
-    <span class="fa fa-file-code-o"></span>
+    <span class="fas fa-file-code-o"></span>
      
     Functions
   </a>
@@ -64,14 +64,14 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="../../news/index.html">
-    <span class="fa fa-newspaper-o"></span>
+    <span class="fas fa-newspaper-o"></span>
      
     News
   </a>
 </li>
 <li>
   <a href="https://github.com/baeyc/varTestnlme">
-    <span class="fa fa-github fa-lg"></span>
+    <span class="fas fa-github fa-lg"></span>
      
     github
   </a>
@@ -86,8 +86,7 @@
 
       
 
-      </header><script src="fim_files/header-attrs-2.5/header-attrs.js"></script><link href="fim_files/anchor-sections-1.0/anchor-sections.css" rel="stylesheet">
-<script src="fim_files/anchor-sections-1.0/anchor-sections.js"></script><div class="row">
+      </header><script src="fim_files/header-attrs-2.6/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Estimation of the Fisher Information Matrix</h1>
@@ -100,8 +99,8 @@
 
     
     
-<div class="sourceCode" id="cb1"><pre class="downlit">
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/baeyc/varTestnlme/">varTestnlme</a></span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/baeyc/varTestnlme/">varTestnlme</a></span><span class="op">)</span></code></pre></div>
 <p>When testing that the variance of at least one random effect is equal to 0, the limiting distribution of the test statistic is a chi-bar-square distribution whose weights depend on the Fisher Information Matrix (FIM) of the model.</p>
 <p><code>varCompTestnlme</code> provides different ways to handle the FIM. Depending on the package used to fit the model and on your preferences, it is possible to specify different options with the argument <code>fim</code>:</p>
 <ul>
@@ -125,37 +124,34 @@
 0 &amp; 0 &amp; \gamma_3^2 
 \end{pmatrix}\]</span></p>
 <p>Using <code>nlme</code>, the two models under <span class="math inline">\(H_0\)</span> and <span class="math inline">\(H_1\)</span> can be specified in the following way:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit">
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://svn.r-project.org/R-packages/trunk/nlme/">nlme</a></span><span class="op">)</span>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://svn.r-project.org/R-packages/trunk/nlme/">nlme</a></span><span class="op">)</span>
 <span class="va">fm1.lis</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/nlsList.html">nlsList</a></span><span class="op">(</span><span class="va">rate</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/stats/SSasympOff.html">SSasympOff</a></span><span class="op">(</span><span class="va">pressure</span>, <span class="va">Asym</span>, <span class="va">lrc</span>, <span class="va">c0</span><span class="op">)</span>, data<span class="op">=</span><span class="va">Dialyzer</span><span class="op">)</span>
 <span class="va">m1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/nlme.html">nlme</a></span><span class="op">(</span><span class="va">fm1.lis</span>, random <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/pdDiag.html">pdDiag</a></span><span class="op">(</span><span class="va">Asym</span> <span class="op">+</span> <span class="va">lrc</span> <span class="op">+</span> <span class="va">c0</span> <span class="op">~</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span>
-<span class="va">m0</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/nlme.html">nlme</a></span><span class="op">(</span><span class="va">fm1.lis</span>, random <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/pdDiag.html">pdDiag</a></span><span class="op">(</span><span class="va">Asym</span> <span class="op">~</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></pre></div>
+<span class="va">m0</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/nlme.html">nlme</a></span><span class="op">(</span><span class="va">fm1.lis</span>, random <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/pdDiag.html">pdDiag</a></span><span class="op">(</span><span class="va">Asym</span> <span class="op">~</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="run-the-test" class="section level1">
 <h1 class="hasAnchor">
 <a href="#run-the-test" class="anchor"></a>Run the test</h1>
 <p>To run the test with the default settings, simply use:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit">
-<span class="fu"><a href="../../reference/varCompTest.html">varCompTest</a></span><span class="op">(</span><span class="va">m1</span>,<span class="va">m0</span><span class="op">)</span>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../../reference/varCompTest.html">varCompTest</a></span><span class="op">(</span><span class="va">m1</span>,<span class="va">m0</span><span class="op">)</span>
 <span class="co">#&gt; Variance components testing in mixed effects models</span>
-<span class="co">#&gt; Testing that the variances of lrc and c0 are null</span>
-<span class="co">#&gt; Likelihood ratio test statistic: </span>
-<span class="co">#&gt;  LRT =  28.982 </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Limiting distribution:</span>
-<span class="co">#&gt; mixture of 3 chi-bar-square distributions with degrees of freedom 0, 1, 2</span>
-<span class="co">#&gt; lower-bound for p-value: 3.6522e-08  upper bound for p-value: 2.9094e-07</span></pre></div>
+<span class="co">#&gt; Testing that the covariance matrix of lrc and c0 is equal to 0</span>
+<span class="co">#&gt; Likelihood ratio test statistic:</span>
+<span class="co">#&gt;  LRT = 28.98229</span>
+<span class="co">#&gt; bounds on p-value: lower 3.652152e-08    upper 2.909383e-07</span>
+<span class="co">#&gt; </span></code></pre></div>
 <p>With the default settings, only bounds on the p-value are computed. In this case it is largely enough to reject the null hypothesis that the asymptote is the only random effect. However, if more precision is needed, one should specify it using <code>pval.comp = "both"</code> or <code>pval.comp="approx"</code>. By default, the <code>fim</code> option is set to <code>"extract"</code>, which means that <code>varCompTestnlme</code> will extract the FIM computed by the package used to fit the model (i.e. <code>nlme</code>, <code>lme4</code> or <code>saemix</code>).</p>
-<div class="sourceCode" id="cb4"><pre class="downlit">
-<span class="fu"><a href="../../reference/varCompTest.html">varCompTest</a></span><span class="op">(</span><span class="va">m1</span>,<span class="va">m0</span>,pval.comp <span class="op">=</span> <span class="st">"both"</span>,fim<span class="op">=</span><span class="st">"extract"</span><span class="op">)</span>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../../reference/varCompTest.html">varCompTest</a></span><span class="op">(</span><span class="va">m1</span>,<span class="va">m0</span>,pval.comp <span class="op">=</span> <span class="st">"both"</span>,fim<span class="op">=</span><span class="st">"extract"</span><span class="op">)</span>
 <span class="co">#&gt; Variance components testing in mixed effects models</span>
-<span class="co">#&gt; Testing that the variances of lrc and c0 are null</span>
-<span class="co">#&gt; Error in extractFIM.lme(m1, msdata$structGamma): Error in nlme package for apVar in m1: Non-positive definite approximate variance-covariance</span>
-<span class="co">#&gt;  Try to re-run with fim='compute'</span></pre></div>
+<span class="co">#&gt; Testing that the covariance matrix of lrc and c0 is equal to 0</span>
+<span class="co">#&gt; Error in extractFIM.lme(m1, msdata$structGamma): in nlme package for apVar in m1: Non-positive definite approximate variance-covariance. Try to re-run with fim='compute'</span></code></pre></div>
 <p>In this case we get an error message from <code>nlme</code> package stating that the FIM is non-positive definite. We will then use the <code>fim="compute"</code> option to approximate the FIM using parametric bootstrap, and we set the bootstrap sample size to 100 with the <code>control</code> argument.</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">varCompTest</span>(m1,m0,<span class="at">pval.comp=</span><span class="st">"both"</span>,<span class="at">fim=</span><span class="st">"compute"</span>,<span class="at">control=</span><span class="fu">list</span>(<span class="at">B=</span><span class="dv">100</span>))</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Variance components testing in mixed effects models</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Testing that the variances of lrc and c0 are null</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Testing that the covariance matrix of lrc and c0 is equal to 0</span></span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Computing Fisher Information Matrix by bootstrap...</span></span>
 <span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   ...generating the B=100 bootstrap samples ...</span></span>
 <span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
@@ -359,15 +355,12 @@
 <span id="cb5-204"><a href="#cb5-204" aria-hidden="true" tabindex="-1"></a>  <span class="er">|</span>..................................................................... <span class="sc">|</span>  <span class="dv">99</span>%</span>
 <span id="cb5-205"><a href="#cb5-205" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|</span>                                                                            </span>
 <span id="cb5-206"><a href="#cb5-206" aria-hidden="true" tabindex="-1"></a>  <span class="er">|</span>......................................................................<span class="sc">|</span> <span class="dv">100</span>%</span>
-<span id="cb5-207"><a href="#cb5-207" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Likelihood ratio test statistic: </span></span>
-<span id="cb5-208"><a href="#cb5-208" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  LRT =  28.982 </span></span>
+<span id="cb5-207"><a href="#cb5-207" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Likelihood ratio test statistic:</span></span>
+<span id="cb5-208"><a href="#cb5-208" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  LRT = 28.98229</span></span>
 <span id="cb5-209"><a href="#cb5-209" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb5-210"><a href="#cb5-210" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Limiting distribution:</span></span>
-<span id="cb5-211"><a href="#cb5-211" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; mixture of 3 chi-bar-square distributions with degrees of freedom 0, 1, 2</span></span>
-<span id="cb5-212"><a href="#cb5-212" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  associated weights and sd:  0.218 (0), 0.5 (0), 0.282 (0) </span></span>
-<span id="cb5-213"><a href="#cb5-213" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb5-214"><a href="#cb5-214" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; p-value (from estimated weights): 1.7976e-07</span></span>
-<span id="cb5-215"><a href="#cb5-215" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; lower-bound for p-value: 3.6522e-08  upper bound for p-value: 2.9094e-07</span></span></code></pre></div>
+<span id="cb5-210"><a href="#cb5-210" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; p-value from estimated weights: 1.648479e-07</span></span>
+<span id="cb5-211"><a href="#cb5-211" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; bounds on p-value: lower 3.652152e-08    upper 2.909383e-07</span></span>
+<span id="cb5-212"><a href="#cb5-212" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span></code></pre></div>
 <p>The weights of the chi-bar-square distribution are provided, along with their standard deviations associated to the Monte Carlo approximation of the weights. Note that exact formulas exist for the weights when the number of chi-bar-square components is less than or equal to 3, in which cases no Monte Carlo approximation is needed and standard deviations are thus null.</p>
 </div>
   </div>

@@ -45,21 +45,7 @@ are equal to zero. The test is defined by two hypotheses, H0 and H1, and the mod
 assumed to be nested within the model under H1. These functions can be used on objects of class
 lme-, nlme-, mer-, lmerMod, glmerMod, nlmerMord or SaemixObject.
 It is possible to tests if any subset of the variances are equal to zero. However, the function does not
-currently support nested random effects, and assumes that the random effects are Gaussian.
-The asymptotic distribution of the likelihood ratio test is a chi-bar-square, with weights that need to be
-approximated by Monte Carlo methods, apart from some specific cases where they are available explicitly. 
-Therefore, the p-value of the test is not exact but approximated. This computation can be time-consuming, so
-the default behaviour of the function is to provide bounds on the exact p-value, which can be enough in practice
-to decide whether to reject or not the null hypothesis. This is triggered by the option pval.comp=&quot;bounds&quot;.
-To compute an approximation of the exact p-value, one should use the option pval.comp=&quot;approx&quot; or pval.comp=&quot;both&quot;.
-When pval.comp=&quot;approx&quot; or pval.comp=&quot;both&quot;, the weights of th chi-bar-square distribution are computed and thus
-
-The control argument controls the options for chi-bar-square weights computation. It is a list with the
-following elements: M the size of the Monte Carlo simulation, i.e. the number of samples generated, parallel a
-boolean which is equal to TRUE to compute the projection of the samples on the cone, and nbcores the number
-of cores to be used in case of parallel computing. Default is M=5000, parallel=FALSE and nb_cores=1.
-If parallel=TRUE but the value of nb_cores is not given, then it is set to the number of detected
-cores minus 1" />
+currently support nested random effects, and assumes that the random effects are Gaussian." />
 
 
 
@@ -91,7 +77,7 @@ cores minus 1" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">varTestnlme</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
       </span>
     </div>
 
@@ -99,13 +85,13 @@ cores minus 1" />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fa fa-home"></span>
+    <span class="fas fa-home"></span>
      
   </a>
 </li>
 <li>
   <a href="../articles/varTestnlme.html">
-    <span class="fa fa-play-circle"></span>
+    <span class="fas fa-play-circle"></span>
      
     Get started
   </a>
@@ -115,7 +101,7 @@ cores minus 1" />
 </li>
 <li>
   <a href="../reference/index.html">
-    <span class="fa fa-file-code-o"></span>
+    <span class="fas fa-file-code-o"></span>
      
     Functions
   </a>
@@ -124,14 +110,14 @@ cores minus 1" />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="../news/index.html">
-    <span class="fa fa-newspaper-o"></span>
+    <span class="fas fa-newspaper-o"></span>
      
     News
   </a>
 </li>
 <li>
   <a href="https://github.com/baeyc/varTestnlme">
-    <span class="fa fa-github fa-lg"></span>
+    <span class="fas fa-github fa-lg"></span>
      
     github
   </a>
@@ -161,20 +147,6 @@ assumed to be nested within the model under H1. These functions can be used on o
 <code>lme</code>-, <code>nlme</code>-, <code>mer</code>-, <code>lmerMod</code>, <code>glmerMod</code>, <code>nlmerMord</code> or <code>SaemixObject</code>.</p>
 <p>It is possible to tests if any subset of the variances are equal to zero. However, the function does not
 currently support nested random effects, and assumes that the random effects are Gaussian.</p>
-<p>The asymptotic distribution of the likelihood ratio test is a chi-bar-square, with weights that need to be
-approximated by Monte Carlo methods, apart from some specific cases where they are available explicitly. 
-Therefore, the p-value of the test is not exact but approximated. This computation can be time-consuming, so
-the default behaviour of the function is to provide bounds on the exact p-value, which can be enough in practice
-to decide whether to reject or not the null hypothesis. This is triggered by the option <code>pval.comp="bounds"</code>.
-To compute an approximation of the exact p-value, one should use the option <code>pval.comp="approx"</code> or <code>pval.comp="both"</code>.</p>
-<p>When <code>pval.comp="approx"</code> or <code>pval.comp="both"</code>, the weights of th chi-bar-square distribution are computed and thus</p>
-
-<p>The <code>control</code> argument controls the options for chi-bar-square weights computation. It is a list with the
-following elements: <code>M</code> the size of the Monte Carlo simulation, i.e. the number of samples generated, <code>parallel</code> a
-boolean which is equal to <code>TRUE</code> to compute the projection of the samples on the cone, and <code>nbcores</code> the number
-of cores to be used in case of parallel computing. Default is <code>M=5000</code>, <code>parallel=FALSE</code> and <code>nb_cores=1</code>.
-If <code>parallel=TRUE</code> but the value of <code>nb_cores</code> is not given, then it is set to the number of detected
-cores minus 1</p>
     </div>
 
     <pre class="usage"><span class='fu'>varCompTest</span><span class='op'>(</span>
@@ -189,7 +161,7 @@ cores minus 1</p>
 <span class='fu'>varCompTest</span><span class='op'>(</span>
   <span class='va'>m1</span>,
   <span class='va'>m0</span>,
-  control <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>M <span class='op'>=</span> <span class='fl'>5000</span>, parallel <span class='op'>=</span> <span class='cn'>T</span>, nb_cores <span class='op'>=</span> <span class='fl'>1</span>, B <span class='op'>=</span> <span class='fl'>1000</span><span class='op'>)</span>,
+  control <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>M <span class='op'>=</span> <span class='fl'>5000</span>, parallel <span class='op'>=</span> <span class='cn'>FALSE</span>, nb_cores <span class='op'>=</span> <span class='fl'>1</span>, B <span class='op'>=</span> <span class='fl'>1000</span><span class='op'>)</span>,
   pval.comp <span class='op'>=</span> <span class='st'>"bounds"</span>,
   fim <span class='op'>=</span> <span class='st'>"extract"</span>
 <span class='op'>)</span>
@@ -198,7 +170,7 @@ cores minus 1</p>
 <span class='fu'>varCompTest</span><span class='op'>(</span>
   <span class='va'>m1</span>,
   <span class='va'>m0</span>,
-  control <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>M <span class='op'>=</span> <span class='fl'>5000</span>, parallel <span class='op'>=</span> <span class='cn'>T</span>, nb_cores <span class='op'>=</span> <span class='fl'>1</span>, B <span class='op'>=</span> <span class='fl'>1000</span><span class='op'>)</span>,
+  control <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>M <span class='op'>=</span> <span class='fl'>5000</span>, parallel <span class='op'>=</span> <span class='cn'>FALSE</span>, nb_cores <span class='op'>=</span> <span class='fl'>1</span>, B <span class='op'>=</span> <span class='fl'>1000</span><span class='op'>)</span>,
   pval.comp <span class='op'>=</span> <span class='st'>"bounds"</span>,
   fim <span class='op'>=</span> <span class='st'>"extract"</span>
 <span class='op'>)</span>
@@ -207,7 +179,7 @@ cores minus 1</p>
 <span class='fu'>varCompTest</span><span class='op'>(</span>
   <span class='va'>m1</span>,
   <span class='va'>m0</span>,
-  control <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>M <span class='op'>=</span> <span class='fl'>5000</span>, parallel <span class='op'>=</span> <span class='cn'>T</span>, nb_cores <span class='op'>=</span> <span class='fl'>1</span>, B <span class='op'>=</span> <span class='fl'>1000</span><span class='op'>)</span>,
+  control <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>M <span class='op'>=</span> <span class='fl'>5000</span>, parallel <span class='op'>=</span> <span class='cn'>FALSE</span>, nb_cores <span class='op'>=</span> <span class='fl'>1</span>, B <span class='op'>=</span> <span class='fl'>1000</span><span class='op'>)</span>,
   pval.comp <span class='op'>=</span> <span class='st'>"bounds"</span>,
   fim <span class='op'>=</span> <span class='st'>"extract"</span>
 <span class='op'>)</span></pre>
@@ -255,6 +227,22 @@ the weights of the chi-bar-square components and the Fisher Information Matrix</
 the p-value.</p></li>
 </ul>
 
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>The asymptotic distribution of the likelihood ratio test is a chi-bar-square, with weights that need to be
+approximated by Monte Carlo methods, apart from some specific cases where they are available explicitly. 
+Therefore, the p-value of the test is not exact but approximated. This computation can be time-consuming, so
+the default behaviour of the function is to provide bounds on the exact p-value, which can be enough in practice
+to decide whether to reject or not the null hypothesis. This is triggered by the option <code>pval.comp="bounds"</code>.
+To compute an approximation of the exact p-value, one should use the option <code>pval.comp="approx"</code> or <code>pval.comp="both"</code>.</p>
+<p>When <code>pval.comp="approx"</code> or <code>pval.comp="both"</code>, the weights of the chi-bar-square distribution are computed using Monte Carlo,
+which might involve a larger computing time.</p>
+<p>The <code>control</code> argument controls the options for chi-bar-square weights computation. It is a list with the
+following elements: <code>M</code> the size of the Monte Carlo simulation, i.e. the number of samples generated, <code>parallel</code> a
+boolean to specify if parallel computing should be used, and <code>nbcores</code> the number of cores to be used in case of 
+parallel computing. Default is <code>M=5000</code>, <code>parallel=FALSE</code> and <code>nb_cores=1</code>.
+If <code>parallel=TRUE</code> but the value of <code>nb_cores</code> is not given, then it is set to the number of detected
+cores minus 1</p>
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
     <p>Baey C, Cournède P-H, Kuhn E, 2019. Asymptotic distribution of likelihood ratio test
@@ -277,10 +265,9 @@ Statistics and Data Analysis</em> 135:107-122.</p>
 
 <span class='co'># compare them (order is important: m1 comes first)</span>
 <span class='fu'>varCompTest</span><span class='op'>(</span><span class='va'>m1</span>,<span class='va'>m0</span>,pval.comp<span class='op'>=</span><span class='st'>"bounds"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>Variance components testing in mixed effects models</span></div><div class='output co'>#&gt; <span class='message'>Testing that the variance of age is null</span></div><div class='output co'>#&gt; <span class='message'>Likelihood ratio test statistic: </span>
-#&gt; <span class='message'> LRT =  46.588 </span>
-#&gt; <span class='message'></span>
-#&gt; <span class='message'>Limiting distribution:</span></div><div class='output co'>#&gt; <span class='message'>mixture of 2 chi-bar-square distributions with degrees of freedom 0, 1 </span></div><div class='output co'>#&gt; <span class='message'>lower-bound for p-value: 4.3792e-12  upper bound for p-value: 4.3792e-12</span></div><div class='input'>
+</div><div class='output co'>#&gt; <span class='message'>Variance components testing in mixed effects models</span></div><div class='output co'>#&gt; <span class='message'>Testing that the variance of the random effect associated to age is equal to 0</span></div><div class='output co'>#&gt; <span class='message'>Likelihood ratio test statistic:</span>
+#&gt; <span class='message'>	LRT = 46.58827</span></div><div class='output co'>#&gt; <span class='message'></span>
+#&gt; <span class='message'>p-value from exact weights: 4.379151e-12</span></div><div class='output co'>#&gt; <span class='message'></span></div><div class='input'>
 <span class='co'># using nlme</span>
 <span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://svn.r-project.org/R-packages/trunk/nlme/'>nlme</a></span><span class='op'>)</span>
 </div><div class='output co'>#&gt; <span class='message'></span>
@@ -291,10 +278,9 @@ random <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/pkg/n
 <span class='va'>m0</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/nlme/man/lme.html'>lme</a></span><span class='op'>(</span><span class='va'>distance</span> <span class='op'>~</span> <span class='fl'>1</span> <span class='op'>+</span> <span class='va'>Sex</span>, random <span class='op'>=</span> <span class='op'>~</span> <span class='fl'>1</span> <span class='op'>|</span> <span class='va'>Subject</span>, data <span class='op'>=</span> <span class='va'>Orthodont</span>, method <span class='op'>=</span> <span class='st'>"ML"</span><span class='op'>)</span>
 
 <span class='fu'>varCompTest</span><span class='op'>(</span><span class='va'>m1</span>,<span class='va'>m0</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>Variance components testing in mixed effects models</span></div><div class='output co'>#&gt; <span class='message'>Testing that the variance of age is null</span></div><div class='output co'>#&gt; <span class='message'>Likelihood ratio test statistic: </span>
-#&gt; <span class='message'> LRT =  79.152 </span>
-#&gt; <span class='message'></span>
-#&gt; <span class='message'>Limiting distribution:</span></div><div class='output co'>#&gt; <span class='message'>mixture of 2 chi-bar-square distributions with degrees of freedom 3, 4 </span></div><div class='output co'>#&gt; <span class='message'>lower-bound for p-value: 1.5502e-16  upper bound for p-value: 1.5502e-16</span></div><div class='input'>
+</div><div class='output co'>#&gt; <span class='message'>Variance components testing in mixed effects models</span></div><div class='output co'>#&gt; <span class='message'>Testing that the means of the random effects associated to age and SexFemale:age are equal to 0 and that</span></div><div class='output co'>#&gt; <span class='message'> the variance of the random effect associated to age is equal to 0</span></div><div class='output co'>#&gt; <span class='message'>Likelihood ratio test statistic:</span>
+#&gt; <span class='message'>	LRT = 79.15214</span></div><div class='output co'>#&gt; <span class='message'></span>
+#&gt; <span class='message'>p-value from exact weights: 1.550226e-16</span></div><div class='output co'>#&gt; <span class='message'></span></div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

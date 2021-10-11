@@ -105,5 +105,7 @@ varCompTest.lme <- function(m1,m0,control = list(M=5000,parallel=FALSE,nb_cores=
                   p.value=c(pvalue.weights=pvalue1,pvalue.sample=pvalue2,pvalue.lowerbound=lowboundpval,pvalue.upperbound=uppboundpval))
   class(results) <- c("vctest","htest")
   
+  print.res.message(results)
+  
   invisible(results)
 }
