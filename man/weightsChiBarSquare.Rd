@@ -2,7 +2,7 @@
 % Please edit documentation in R/chibarsquare.R
 \name{weightsChiBarSquare}
 \alias{weightsChiBarSquare}
-\title{Chi-bar-square weights computation}
+\title{Monte Carlo approximation of chi-bar-square weights}
 \usage{
 weightsChiBarSquare(df, V, dimsCone, orthan, control)
 }
@@ -26,6 +26,9 @@ A list containing the estimated weights, the standard deviations of the estimate
 random sample of \code{M} realizations from the chi-bar-square distribution
 }
 \description{
-The function computes an approximation of the weights of the chi-bar-square distribution
-\eqn{\bar{\chi}^2(V,C)}, with V a positive semi-definite matrix and C a convex cone.
+The function provides a method to approximate the weights of the mixture components, 
+when the number of components is known as well as the degrees of freedom of each chi-square distribution 
+in the mixture, and given a vector of simulated values from the target \eqn{\bar{\chi}^2(V,C)} 
+distribution. Note that the estimation is based on (pseudo)-random Monte Carlo samples. For reproducible
+results, one should fix the seed of the (pseudo)-random number generator.
 }

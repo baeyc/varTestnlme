@@ -8,7 +8,7 @@
 #' of the cone of the chi-bar-square distribution
 #' 
 #' @name dfChiBarSquare
-#' @export dfChiBarSquare
+# #' @export dfChiBarSquare
 dfChiBarSquare <- function(msdata){
   
   orthan <- (msdata$struct == "diag")
@@ -56,13 +56,16 @@ dfChiBarSquare <- function(msdata){
   return(list(df=seq(dimLSincluded,dimLScontaining,1),dimsCone=dims))
 }
 
-#' @title Chi-bar-square weights computation
+#' @title Monte Carlo approximation of chi-bar-square weights
 #'
-#' @description The function computes an approximation of the weights of the chi-bar-square distribution
-#' \eqn{\bar{\chi}^2(V,C)}, with V a positive semi-definite matrix and C a convex cone.
+#' @description The function provides a method to approximate the weights of the mixture components, 
+#' when the number of components is known as well as the degrees of freedom of each chi-square distribution 
+#' in the mixture, and given a vector of simulated values from the target \eqn{\bar{\chi}^2(V,C)} 
+#' distribution. Note that the estimation is based on (pseudo)-random Monte Carlo samples. For reproducible
+#' results, one should fix the seed of the (pseudo)-random number generator.
 #' 
 #' @name weightsChiBarSquare
-#' @export weightsChiBarSquare
+# #' @export weightsChiBarSquare
 #' 
 #' @param df a vector with the degrees of freedom of the chi-square components of the chi-bar-square distribution
 #' @param V a positive semi-definite matrix 
@@ -127,8 +130,6 @@ weightsChiBarSquare <- function(df,V,dimsCone,orthan,control){
         sdw <- sqrt(w*(1-w)/control$M)
       }
     }else{
-      #invI <- cbs@V
-      #I <- cbs@invV
       invV <- chol2inv(chol(V))
       Z <- mvtnorm::rmvnorm(control$M,mean=rep(0,nrow(V)),sigma=V)
       chibarsquare <- rep(0,control$M)
@@ -158,7 +159,7 @@ weightsChiBarSquare <- function(df,V,dimsCone,orthan,control){
                                          # we set those values to 0 otherwise it results in incorrect projected Z
                                          projZzero <- projZ$par
                                          projZzero[abs(projZzero)<1e-5] <- 0
-                                         Z[i,]%*%I%*%Z[i,] - objFunction(projZzero,constantes)
+                                         Z[i,]%*%invV%*%Z[i,] - objFunction(projZzero,constantes)
                                        }
       chibarsquare <- chibarsquare[chibarsquare>-1e-04]
       doParallel::stopImplicitCluster()
@@ -168,7 +169,7 @@ weightsChiBarSquare <- function(df,V,dimsCone,orthan,control){
       w_covw <- lapply(empQuant, FUN = function(q){try(approxWeights(chibarsquare,df,q))})
       w <- na.omit(t(sapply(1:length(empQuant), FUN = function(i){if (is.null(names(w_covw[[i]]))) {NA*df} else {w_covw[[i]]$w}})))
       covw <- na.omit(t(sapply(1:length(empQuant), FUN = function(i){if (is.null(names(w_covw[[i]]))) {NA*df} else {sqrt(diag(w_covw[[i]]$covw))}})))
-      
+
       # Take into account the constraints on the weights : they should be between 0 and 1/2
       minW <- apply(w,1,min)
       maxW <- apply(w,1,max)
@@ -184,16 +185,9 @@ weightsChiBarSquare <- function(df,V,dimsCone,orthan,control){
         eps <- eps+0.01
       }
       
-      if (min(NROW(admissibleWeights),NCOL(admissibleWeights)) > 1){
-        # if several weights are admissible, we keep those whose variances are minimal
-        maxvar <- apply(sdAdmissibleWeights,1,max)
-        #meanvar <- apply(sdAdmissibleWeights,1,mean)
-        admissibleWeights <- admissibleWeights[which.min(maxvar),]
-        sdAdmissibleWeights <- sdAdmissibleWeights[which.min(maxvar),]
-      }
+      w <- apply(admissibleWeights,2,mean)
+      sdw <- sqrt(apply(sdAdmissibleWeights,2,mean)/nrow(admissibleWeights))
       
-      w <- admissibleWeights
-      sdw <- sdAdmissibleWeights
     }
   }
   
