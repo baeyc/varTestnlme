@@ -20,7 +20,7 @@ varCompTest(
 \method{varCompTest}{lme}(
   m1,
   m0,
-  control = list(M = 5000, parallel = T, nb_cores = 1, B = 1000),
+  control = list(M = 5000, parallel = FALSE, nb_cores = 1, B = 1000),
   pval.comp = "bounds",
   fim = "extract"
 )
@@ -28,7 +28,7 @@ varCompTest(
 \method{varCompTest}{merMod}(
   m1,
   m0,
-  control = list(M = 5000, parallel = T, nb_cores = 1, B = 1000),
+  control = list(M = 5000, parallel = FALSE, nb_cores = 1, B = 1000),
   pval.comp = "bounds",
   fim = "extract"
 )
@@ -36,7 +36,7 @@ varCompTest(
 \method{varCompTest}{saemix}(
   m1,
   m0,
-  control = list(M = 5000, parallel = T, nb_cores = 1, B = 1000),
+  control = list(M = 5000, parallel = FALSE, nb_cores = 1, B = 1000),
   pval.comp = "bounds",
   fim = "extract"
 )

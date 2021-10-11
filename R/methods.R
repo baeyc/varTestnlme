@@ -15,9 +15,8 @@ fim.vctest <- function(object)  {
 print.vctest <- function(x, ...) 
 {
   cat("Variance components testing in mixed effects models\n")
-  nval <- gsub("variance of ","",names(x$null.value))
-  if (length(nval) == 1) cat("Testing that variance of",nval,"is null")
-  if (length(nval) > 1) cat("Testing that variances of",paste0(nval,collapse=" and "),"are null")
+  cat("Testing that:\n",paste(paste(names(x$null.value),"is equal to 0"),collapse="\n "))
+  cat("\nagainst the alternative that:\n",paste(x$alternative,collapse="\n "))
   
   lrt <- x$statistic
   pval_sample <- !is.na(x$p.value["pvalue.sample"])
@@ -54,9 +53,8 @@ print.vctest <- function(x, ...)
 summary.vctest <- function(object, ...)
 {
   cat("Variance components testing in mixed effects models\n")
-  nval <- gsub("variance of ","",names(object$null.value))
-  if (length(nval) == 1) cat("Testing that variance of ",nval,"is null")
-  if (length(nval) > 1) cat("Testing that variances of",paste0(nval,collapse=" and "),"are null")
+  cat("Testing that:\n",paste(paste(names(object$null.value),"is equal to 0"),collapse="\n "))
+  cat("\nagainst the alternative that:\n",paste(object$alternative,collapse="\n "))
   
   lrt <- object$statistic
   w <- object$parameters$weights

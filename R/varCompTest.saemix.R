@@ -2,13 +2,13 @@
 #' @importFrom stats formula pchisq
 #' @rawNamespace export(varCompTest.saemix)
 #' @export
-varCompTest.saemix <- function(m1,m0,control = list(M=5000,parallel=T,nb_cores=1,B=1000),pval.comp = "bounds",fim = "extract"){
+varCompTest.saemix <- function(m1,m0,control = list(M=5000,parallel=FALSE,nb_cores=1,B=1000),pval.comp = "bounds",fim = "extract"){
   
   # Specify default arguments in control
   if (!is.null(control)) {
     optionNames <- names(control)
     if (!"M" %in% optionNames) control$M=5000
-    if (!"parallel" %in% optionNames) control$parallel=T
+    if (!"parallel" %in% optionNames) control$parallel=FALSE
     if (!"nbcores" %in% optionNames) control$nbcores=1
     if (!"B" %in% optionNames) control$B = 1000
   }
@@ -20,14 +20,9 @@ varCompTest.saemix <- function(m1,m0,control = list(M=5000,parallel=T,nb_cores=1
   
   # Extract data structure
   msdata <- extractStruct(m1,m0,randm0)
-  
-  if (length(msdata$nameVarTested)==1){
-    message(paste("Testing that the variance of",msdata$nameVarTested,"is null\n"))
-  }else if (length(msdata$nameVarTested) > 1){
-    message(paste("Testing that the variances of",paste(msdata$nameVarTested,sep="",collapse = " and "),"are null\n"))
-  }else{
-    message(paste("Testing that covariances ",paste0(msdata$detailStruct$names[msdata$detailStruct$tested],collapse=", "),"are null"))
-  }
+
+  # Print message
+  print.desc.message(msdata)
   
   # Compute LRT
   lrt <- -2*(stats::logLik(m0) - stats::logLik(m1))
@@ -97,14 +92,8 @@ varCompTest.saemix <- function(m1,m0,control = list(M=5000,parallel=T,nb_cores=1
   lowboundpval <- (1/2)*sum(stats::pchisq(lrt,cbs.df.dims$df[1:2],lower.tail = F))
   
   # create results, object of class htest
-  null.value <- rep(0,length(msdata$nameVarTested)+length(msdata$nameFixedTested))
-  if (length(msdata$nameFixedTested)==0){
-    names(null.value) <- paste("variance of",msdata$nameVarTested)
-    alternative=c(paste("variance of",msdata$nameVarTested,"> 0"))
-  }else{
-    names(null.value) <- c(paste("variance of",msdata$nameVarTested),paste(" mean of",msdata$nameFixedTested)) 
-    alternative=c(paste("variance of",msdata$nameVarTested,"> 0"),paste(" mean of",msdata$nameFixedTested," different from 0"))
-  }
+  null.value <- null.desc(msdata)
+  alternative <- alt.desc(msdata)
   
   results <- list(statistic=c(LRT=lrt),
                   null.value=null.value,
