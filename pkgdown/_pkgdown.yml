@@ -20,17 +20,16 @@ reference:
     desc: Main functions
     contents:
       - varCompTest
-      - bootinvFIM
-      - dfChiBarSquare
-      - weightsChiBarSquare
-      - approxWeights
+      - fim
+      - print
+      - summary
   - title: Other
     desc: Other utility functions
     contents:
       - extractStruct
-      - extractFIM.lme
-      - getVarCov
-      - pkgName
+      - extractVarCov
+      - bootinvFIM
+      - approxWeights
 
 navbar:
   left:
@@ -48,6 +47,5 @@ navbar:
     - icon: fa-newspaper-o
       text: "News"
       href: news/index.html
-    - icon: fa-github fa-lg
-      text: "github"
+    - icon: fab fa-github fa-lg
       href: https://github.com/baeyc/varTestnlme

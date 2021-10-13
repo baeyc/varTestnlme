@@ -4,7 +4,7 @@ pkgdown_sha: ~
 articles:
   varTestnlme: varTestnlme.html
   web_only/fim: fim.html
-last_built: 2021-10-11T14:06Z
+last_built: 2021-10-13T20:37Z
 urls:
   reference: https://baeyc.github.io/varTestnlme//reference
   article: https://baeyc.github.io/varTestnlme//articles
