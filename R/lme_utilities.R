@@ -282,9 +282,9 @@ bootinvFIM.lme <- function(m, B=1000){
     resStd <- stats::sigma(m)
     Sigma <- extractVarCov(m)
     if(diagSigma){
-      theta <- c(beta,diag(Sigma),resStd)
+      theta <- c(beta=beta,Gamma=diag(Sigma),sigma=resStd)
     }else{
-      theta <- c(beta,Sigma[lower.tri(Sigma,diag = T)],resStd)
+      theta <- c(beta=beta,Gamma=Sigma[lower.tri(Sigma,diag = T)],sigma=resStd)
     }
     return(theta)
   }
@@ -292,7 +292,7 @@ bootinvFIM.lme <- function(m, B=1000){
   
   if (!nonlin){
     bootstrap <- lmeresampler::bootstrap(m, mySumm, B = B, type = "parametric")
-    bootstrap <- bootstrap$t[, colSums(bootstrap$t != 0) > 0]
+    bootstrap <- bootstrap$replicates[, colSums(bootstrap$replicates != 0) > 0]
     invfim <- cov(bootstrap)
     
     Gamma1 <- extractVarCov(m)

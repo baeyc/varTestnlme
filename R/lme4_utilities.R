@@ -162,14 +162,14 @@ bootinvFIM.merMod <- function(m, B=1000){
     vc <- lme4::VarCorr(m)
     Sigma <- as.matrix(Matrix::bdiag(as.matrix(vc)))
     if(diagSigma){
-      theta <- c(beta,diag(Sigma),resStd)
+      theta <- c(beta=beta,Gamma=diag(Sigma),sigma=resStd)
     }else{
-      theta <- c(beta,Sigma[lower.tri(Sigma,diag = T)],resStd)
+      theta <- c(beta=beta,Gamma=Sigma[lower.tri(Sigma,diag = T)],sigma=resStd)
     }
     return(theta)
   }
   
-  nonlin <- (class(m) %in% "nlmerMod")
+  nonlin <- inherits(m,"nlmerMod")
   
   # Use bootMer functions if linear or generalized linear, otherwise code our own bootstrap
   if (!nonlin){
