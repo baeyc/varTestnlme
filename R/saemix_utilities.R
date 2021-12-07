@@ -1,12 +1,12 @@
-#' @name extractStruct.saemix
-#' @rdname extractStruct.saemix
+#' @name extractStruct.SaemixObject
+#' @rdname extractStruct.SaemixObject
 #'
 #' @title Extract model structure
 #'
 #' @param m1 the fit under H1
 #' @param m0 the fit under H0
 #' @param randm0 a boolean indicating whether random effects are present in m0
-extractStruct.saemix <- function(m1,m0,randm0){
+extractStruct.SaemixObject <- function(m1,m0,randm0){
   # dimension of the parameters
   nbFixEff0 <- sum(m0@model@fixed.estim>0)
   nbFixEff1 <- sum(m1@model@fixed.estim>0)
@@ -123,16 +123,16 @@ extractStruct.saemix <- function(m1,m0,randm0){
 }
 
 
-#' @name bootinvFIM.saemix
-#' @rdname bootinvFIM.saemix
+#' @name bootinvFIM.SaemixObject
+#' @rdname bootinvFIM.SaemixObject
 #'
 #' @title Compute the inverse of the Fisher Information Matrix using parametric bootstrap
 #'
 #' @param m the model under H1
 #' @param B the bootstrap sample size
-#' @export bootinvFIM.saemix
+#' @export bootinvFIM.SaemixObject
 #' @export
-bootinvFIM.saemix <- function(m, B=1000){
+bootinvFIM.SaemixObject <- function(m, B=1000){
   
   simul <- saemix::simul.saemix(m,nsim=B)
   m.data <- m@data

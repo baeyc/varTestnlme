@@ -36,7 +36,7 @@ print.vctest <- function(x, ...)
       cat("\n\n","bounds on p-value: lower ",format(x$p.value["pvalue.lowerbound"],5),
           "upper ",format(x$p.value["pvalue.upperbound"],5))  
       
-      message("\n\nBounds based on the smallest and biggest degrees of freedom of the chi-bar-square distribution components. Re-run with option 'pval.comp=\"both\" or pval.comp=\"comp\" to approximate the weights of each chi-bar-square component and the p-value.")
+      if (is.na(x$parameters$FIM)) message("\n\nBounds based on the smallest and biggest degrees of freedom of the chi-bar-square distribution components. Re-run with option 'pval.comp=\"both\" or pval.comp=\"comp\" to approximate the weights of each chi-bar-square component and the p-value.")
     }else{
       cat("\n\n","exact p-value: ",format(x$p.value["pvalue.lowerbound"],5)) 
     }
@@ -88,7 +88,7 @@ summary.vctest <- function(object, ...)
       message("\n\nBounds based on the smallest and biggest degrees of freedom of the chi-bar-square distribution components. Re-run with option 'pval.comp=\"both\" or pval.comp=\"comp\" to approximate the weights of each chi-bar-square component and the p-value.")
     }
   }else{
-    cat("chi-bar-square distributions with ",df," degree of freedom\n")
+    cat("chi-bar-square distribution with ",df," degree of freedom\n")
     cat("p-value: ",format(object$p.value["pvalue.weights"],5))
   }
   

@@ -1,3 +1,12 @@
+# varTestnlme 1.2.0
+
+Correct a typo in the definition of generic functions for SaemixObject.
+
+
+# varTestnlme 1.1.1
+
+Due to the updated version of package lmeresampler, some bugs appeared in the previous version and were corrected. More precisely, the mySumm function used for the parametric bootstrap now outputs named vectors to avoid bugs when using dplyr::bind_rows fnction inside lmeresampler package.
+
 # varTestnlme 1.1.0
 
 Correct some typos in documentation, and export print and summary functions. Also export some functions needed to compute the Fisher Information Matrix. Small improvements in the outputs of print and summary functions. Also add some warning when the residual variance structure is not the same between the two models, when using nlme.

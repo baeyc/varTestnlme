@@ -95,13 +95,16 @@ varCompTest.merMod <- function(m1,m0,control = list(M=5000,parallel=FALSE,nb_cor
   }else{
     pvalue1 <- stats::pchisq(lrt,cbs.df.dims$df[1],lower.tail = F)
     pvalue2 <- NA
-    cbs.weights.sample <- list(weights=NA,sdWeights=NA,randomCBS=NA)
+    cbs.weights.sample <- list(weights=1,sdWeights=0,randomCBS=NA)
   }
   
   # Bounds on p-value
-  uppboundpval <- (1/2)*sum(stats::pchisq(lrt,cbs.df.dims$df[(length(cbs.df.dims$df)-1):length(cbs.df.dims$df)],lower.tail = F))
-  lowboundpval <- (1/2)*sum(stats::pchisq(lrt,cbs.df.dims$df[1:2],lower.tail = F))
-  
+  if (length(cbs.df.dims$df) > 1){
+    uppboundpval <- (1/2)*sum(stats::pchisq(lrt,cbs.df.dims$df[(length(cbs.df.dims$df)-1):length(cbs.df.dims$df)],lower.tail = F))
+    lowboundpval <- (1/2)*sum(stats::pchisq(lrt,cbs.df.dims$df[1:2],lower.tail = F))
+  }else{
+    uppboundpval <- lowboundpval <- stats::pchisq(lrt,cbs.df.dims$df,lower.tail = F)
+  }
   
   # create results, object of class htest
   null.value <- null.desc(msdata)

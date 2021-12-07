@@ -86,7 +86,7 @@ varCompTest.lme <- function(m1,m0,control = list(M=5000,parallel=FALSE,nb_cores=
   }else{
     pvalue1 <- stats::pchisq(lrt,cbs.df.dims$df[1],lower.tail = F)
     pvalue2 <- NA
-    cbs.weights.sample <- list(weights=NA,sdWeights=NA,randomCBS=NA)
+    cbs.weights.sample <- list(weights=1,sdWeights=0,randomCBS=NA)
   }
   
   # Bounds on p-value

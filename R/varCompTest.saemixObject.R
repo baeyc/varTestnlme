@@ -1,8 +1,8 @@
 #' @rdname varCompTest
 #' @importFrom stats formula pchisq
-#' @rawNamespace export(varCompTest.saemix)
+#' @rawNamespace export(varCompTest.SaemixObject)
 #' @export
-varCompTest.saemix <- function(m1,m0,control = list(M=5000,parallel=FALSE,nb_cores=1,B=1000),pval.comp = "bounds",fim = "extract"){
+varCompTest.SaemixObject <- function(m1,m0,control = list(M=5000,parallel=FALSE,nb_cores=1,B=1000),pval.comp = "bounds",fim = "extract"){
   
   # Specify default arguments in control
   if (!is.null(control)) {
@@ -25,7 +25,7 @@ varCompTest.saemix <- function(m1,m0,control = list(M=5000,parallel=FALSE,nb_cor
   print.desc.message(msdata)
   
   # Compute LRT
-  lrt <- -2*(stats::logLik(m0) - stats::logLik(m1))
+  lrt <- -2*(saemix::logLik.SaemixObject(m0) - saemix::logLik.SaemixObject(m1))
   
   
   # Degrees of freedom of the chi-square components
@@ -84,7 +84,7 @@ varCompTest.saemix <- function(m1,m0,control = list(M=5000,parallel=FALSE,nb_cor
   }else{
     pvalue1 <- stats::pchisq(lrt,cbs.df.dims$df[1],lower.tail = F)
     pvalue2 <- NA
-    cbs.weights.sample <- list(weights=NA,sdWeights=NA,randomCBS=NA)
+    cbs.weights.sample <- list(weights=1,sdWeights=0,randomCBS=NA)
   }
   
   # Bounds on p-value
