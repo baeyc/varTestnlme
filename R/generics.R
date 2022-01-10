@@ -81,7 +81,7 @@
 #' Silvapulle  MJ, Sen PK, 2011. Constrained statistical inference: order, inequality and shape constraints.
 #' @export varCompTest
 #' @importFrom stats formula pchisq
-varCompTest <- function(m1, m0, control = list(M=5000,parallel=T,nb_cores=1,B=1000),pval.comp = "bounds",fim = "extract") {
+varCompTest <- function(m1, m0, control = list(M=5000,parallel=T,nb_cores=1,B=1000),pval.comp = "bounds",fim = "extract", output=TRUE) {
   # Specify default arguments in control
   if (!is.null(control)) {
     optionNames <- names(control)
@@ -107,7 +107,7 @@ varCompTest <- function(m1, m0, control = list(M=5000,parallel=T,nb_cores=1,B=10
 varTest <- function(m1, m0, control = list(M=5000,parallel=T,nb_cores=1,B=1000),pval.comp = "bounds",fim = "extract") {
   .Deprecated("varCompTest")
   
-  varCompTest(m1, m0, control = list(M=5000,parallel=T,nb_cores=1,B=1000),pval.comp = "bounds",fim = "extract")
+  varCompTest(m1, m0, control = list(M=5000,parallel=T,nb_cores=1,B=1000),pval.comp = "bounds",fim = "extract", output=TRUE)
 }
 
 

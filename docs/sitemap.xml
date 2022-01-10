@@ -13,13 +13,13 @@
     <loc>https://baeyc.github.io/varTestnlme//reference/bootinvFIM.html</loc>
   </url>
   <url>
+    <loc>https://baeyc.github.io/varTestnlme//reference/bootinvFIM.SaemixObject.html</loc>
+  </url>
+  <url>
     <loc>https://baeyc.github.io/varTestnlme//reference/bootinvFIM.lme.html</loc>
   </url>
   <url>
     <loc>https://baeyc.github.io/varTestnlme//reference/bootinvFIM.merMod.html</loc>
-  </url>
-  <url>
-    <loc>https://baeyc.github.io/varTestnlme//reference/bootinvFIM.saemix.html</loc>
   </url>
   <url>
     <loc>https://baeyc.github.io/varTestnlme//reference/dfChiBarSquare.html</loc>
@@ -28,13 +28,13 @@
     <loc>https://baeyc.github.io/varTestnlme//reference/extractStruct.html</loc>
   </url>
   <url>
+    <loc>https://baeyc.github.io/varTestnlme//reference/extractStruct.SaemixObject.html</loc>
+  </url>
+  <url>
     <loc>https://baeyc.github.io/varTestnlme//reference/extractStruct.lme.html</loc>
   </url>
   <url>
     <loc>https://baeyc.github.io/varTestnlme//reference/extractStruct.merMod.html</loc>
-  </url>
-  <url>
-    <loc>https://baeyc.github.io/varTestnlme//reference/extractStruct.saemix.html</loc>
   </url>
   <url>
     <loc>https://baeyc.github.io/varTestnlme//reference/extractVarCov.html</loc>

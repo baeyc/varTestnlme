@@ -2,7 +2,7 @@
 #' @importFrom stats formula pchisq
 #' @rawNamespace export(varCompTest.merMod)
 #' @export
-varCompTest.merMod <- function(m1,m0,control = list(M=5000,parallel=FALSE,nb_cores=1,B=1000),pval.comp = "bounds",fim = "extract"){
+varCompTest.merMod <- function(m1,m0,control = list(M=5000,parallel=FALSE,nb_cores=1,B=1000),pval.comp = "bounds",fim = "extract", output=TRUE){
   
   # Specify default arguments in control
   if (!is.null(control)) {
@@ -13,7 +13,7 @@ varCompTest.merMod <- function(m1,m0,control = list(M=5000,parallel=FALSE,nb_cor
     if (!"B" %in% optionNames) control$B = 1000
   }
   
-  message("Variance components testing in mixed effects models")
+  if (output) message("Variance components testing in mixed effects models")
   
   # Identify the packages from which m0 and m1 come from
   randm0 <- !inherits(m0,c("lm","glm","nls")) # are there any random effect under H0?
@@ -22,8 +22,7 @@ varCompTest.merMod <- function(m1,m0,control = list(M=5000,parallel=FALSE,nb_cor
   msdata <- extractStruct(m1,m0,randm0)
   
   # Print message
-  print.desc.message(msdata)
-  
+  if (output) print.desc.message(msdata)
   
   # Compute LRT
   lrt <- -2*(stats::logLik(m0) - stats::logLik(m1))
@@ -42,7 +41,7 @@ varCompTest.merMod <- function(m1,m0,control = list(M=5000,parallel=FALSE,nb_cor
         invfim <- as.matrix(merDeriv::vcov.glmerMod(m1,full=T))
       }
     }else if (fim == "compute"){
-      message("Computing Fisher Information Matrix by bootstrap...")
+      if (output) message("Computing Fisher Information Matrix by bootstrap...")
       invfim <- bootinvFIM(m1, control$B)
     }else if (is.matrix(fim)){
       invfim <- chol2inv(fim)
@@ -118,7 +117,7 @@ varCompTest.merMod <- function(m1,m0,control = list(M=5000,parallel=FALSE,nb_cor
                   p.value=c(pvalue.weights=pvalue1,pvalue.sample=pvalue2,pvalue.lowerbound=lowboundpval,pvalue.upperbound=uppboundpval))
   class(results) <- c("vctest","htest")
   
-  print.res.message(results)
+  if (output) print.res.message(results)
   
   invisible(results)
 }

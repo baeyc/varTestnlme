@@ -2,7 +2,7 @@
 #' @importFrom stats formula pchisq
 #' @rawNamespace export(varCompTest.SaemixObject)
 #' @export
-varCompTest.SaemixObject <- function(m1,m0,control = list(M=5000,parallel=FALSE,nb_cores=1,B=1000),pval.comp = "bounds",fim = "extract"){
+varCompTest.SaemixObject <- function(m1,m0,control = list(M=5000,parallel=FALSE,nb_cores=1,B=1000),pval.comp = "bounds",fim = "extract", output=TRUE){
   
   # Specify default arguments in control
   if (!is.null(control)) {
@@ -13,7 +13,7 @@ varCompTest.SaemixObject <- function(m1,m0,control = list(M=5000,parallel=FALSE,
     if (!"B" %in% optionNames) control$B = 1000
   }
   
-  message("Variance components testing in mixed effects models")
+  if (output) message("Variance components testing in mixed effects models")
   
   # Identify the packages from which m0 and m1 come from
   randm0 <- !(class(m0) %in% c("lm","glm","nls")) # are there any random effect under H0?
@@ -22,7 +22,7 @@ varCompTest.SaemixObject <- function(m1,m0,control = list(M=5000,parallel=FALSE,
   msdata <- extractStruct(m1,m0,randm0)
 
   # Print message
-  print.desc.message(msdata)
+  if (output) print.desc.message(msdata)
   
   # Compute LRT
   lrt <- -2*(saemix::logLik.SaemixObject(m0) - saemix::logLik.SaemixObject(m1))
@@ -103,7 +103,7 @@ varCompTest.SaemixObject <- function(m1,m0,control = list(M=5000,parallel=FALSE,
                   p.value=c(pvalue.weights=pvalue1,pvalue.sample=pvalue2,pvalue.lowerbound=lowboundpval,pvalue.upperbound=uppboundpval))
   class(results) <- c("vctest","htest")
   
-  print.res.message(results)
+  if (output) print.res.message(results)
   
   invisible(results)
 }

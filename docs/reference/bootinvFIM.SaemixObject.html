@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Chi-bar-square degrees of freedom computation — dfChiBarSquare • varTestnlme</title>
+<title>Compute the inverse of the Fisher Information Matrix using parametric bootstrap — bootinvFIM.SaemixObject • varTestnlme</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Chi-bar-square degrees of freedom computation — dfChiBarSquare" />
-<meta property="og:description" content="Computation of the degrees of freedom of the chi-bar-square" />
+<meta property="og:title" content="Compute the inverse of the Fisher Information Matrix using parametric bootstrap — bootinvFIM.SaemixObject" />
+<meta property="og:description" content="Compute the inverse of the Fisher Information Matrix using parametric bootstrap" />
 
 
 
@@ -129,31 +129,31 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Chi-bar-square degrees of freedom computation</h1>
-    <small class="dont-index">Source: <a href='https://github.com/baeyc/varTestnlme/blob/master/R/chibarsquare.R'><code>R/chibarsquare.R</code></a></small>
-    <div class="hidden name"><code>dfChiBarSquare.Rd</code></div>
+    <h1>Compute the inverse of the Fisher Information Matrix using parametric bootstrap</h1>
+    <small class="dont-index">Source: <a href='https://github.com/baeyc/varTestnlme/blob/master/R/saemix_utilities.R'><code>R/saemix_utilities.R</code></a></small>
+    <div class="hidden name"><code>bootinvFIM.SaemixObject.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Computation of the degrees of freedom of the chi-bar-square</p>
+    <p>Compute the inverse of the Fisher Information Matrix using parametric bootstrap</p>
     </div>
 
-    <pre class="usage"><span class='fu'>dfChiBarSquare</span><span class='op'>(</span><span class='va'>msdata</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='co'># S3 method for SaemixObject</span>
+<span class='fu'><a href='bootinvFIM.html'>bootinvFIM</a></span><span class='op'>(</span><span class='va'>m</span>, B <span class='op'>=</span> <span class='fl'>1000</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>msdata</th>
-      <td><p>a list containing the structure of the model and data, as an output from 
-<code>extractStruct.&lt;package_name&gt;</code> functions</p></td>
+      <th>m</th>
+      <td><p>the model under H1</p></td>
+    </tr>
+    <tr>
+      <th>B</th>
+      <td><p>the bootstrap sample size</p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>a list containing the vector of the degrees of freedom of the chi-bar-square and the dimensions
-of the cone of the chi-bar-square distribution</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

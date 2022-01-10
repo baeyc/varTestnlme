@@ -2,7 +2,7 @@
 #' @importFrom stats formula pchisq
 #' @rawNamespace export(varCompTest.lme)
 #' @export
-varCompTest.lme <- function(m1,m0,control = list(M=5000,parallel=FALSE,nb_cores=1,B=1000),pval.comp = "bounds",fim = "extract"){
+varCompTest.lme <- function(m1,m0,control = list(M=5000,parallel=FALSE,nb_cores=1,B=1000),pval.comp = "bounds",fim = "extract", output=TRUE){
   
   # Specify default arguments in control
   if (!is.null(control)) {
@@ -13,7 +13,7 @@ varCompTest.lme <- function(m1,m0,control = list(M=5000,parallel=FALSE,nb_cores=
     if (!"B" %in% optionNames) control$B = 1000
   }
   
-  message("Variance components testing in mixed effects models")
+  if (output) message("Variance components testing in mixed effects models")
   
   randm0 <- !(max(class(m0) %in% c("lm","glm","nls"))) # are there any random effect under H0?
   
@@ -21,7 +21,7 @@ varCompTest.lme <- function(m1,m0,control = list(M=5000,parallel=FALSE,nb_cores=
   msdata <- extractStruct(m1,m0,randm0)
   
   # Print message
-  print.desc.message(msdata)
+  if (output) print.desc.message(msdata)
   
   # Compute LRT
   ll1 <- m1$logLik
@@ -37,7 +37,7 @@ varCompTest.lme <- function(m1,m0,control = list(M=5000,parallel=FALSE,nb_cores=
     if (fim == "extract"){
       invfim <- extractFIM.lme(m1,msdata$structGamma) # error message in case apVar is non positive definite
     }else if (fim == "compute"){
-      message("Computing Fisher Information Matrix by bootstrap...\n")
+      if (output) message("Computing Fisher Information Matrix by bootstrap...\n")
       invfim <- bootinvFIM(m1, control$B)
     }else if (is.matrix(fim)){
       invfim <- chol2inv(fim)
@@ -105,7 +105,7 @@ varCompTest.lme <- function(m1,m0,control = list(M=5000,parallel=FALSE,nb_cores=
                   p.value=c(pvalue.weights=pvalue1,pvalue.sample=pvalue2,pvalue.lowerbound=lowboundpval,pvalue.upperbound=uppboundpval))
   class(results) <- c("vctest","htest")
   
-  print.res.message(results)
+  if (output) print.res.message(results)
   
   invisible(results)
 }
