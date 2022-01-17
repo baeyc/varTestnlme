@@ -1,3 +1,7 @@
+# varTestnlme 1.3.0
+
+Correct a bug for Windows platforms, where new control arguments in varCompTest function could not e accounted for.
+
 # varTestnlme 1.2.0
 
 Correct a typo in the definition of generic functions for SaemixObject.

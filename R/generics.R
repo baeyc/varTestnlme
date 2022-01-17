@@ -82,15 +82,7 @@
 #' @export varCompTest
 #' @importFrom stats formula pchisq
 varCompTest <- function(m1, m0, control = list(M=5000,parallel=T,nb_cores=1,B=1000),pval.comp = "bounds",fim = "extract", output=TRUE) {
-  # Specify default arguments in control
-  if (!is.null(control)) {
-    optionNames <- names(control)
-    if (!"M" %in% optionNames) control$M=5000
-    if (!"parallel" %in% optionNames) control$parallel=T
-    if (!"nbcores" %in% optionNames) control$nbcores=1
-    if (!"B" %in% optionNames) control$B = 1000
-  }
-  
+
   pkg1 <- pckName(m1)
   pkg0 <- pckName(m0)
   
