@@ -37,6 +37,7 @@
 #' @param fim (optional) the method to compute the Fisher Information Matrix. Options are: \code{fim="extract"} to extract the
 #' FIM computed by the package which was used to fit the models, \code{fim="compute"} to evaluate the FIM using parametric
 #' bootstrap, and \code{fim=I} with \code{I} a positive semidefinite matrix, for a FIM provided by the user.
+#' @param  output a boolean specifying if any output should be printed in the console (default to TRUE) 
 #' 
 #' @return An object of class \code{htest} with the following components:
 #' \itemize{

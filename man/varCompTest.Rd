@@ -15,7 +15,8 @@ varCompTest(
   m0,
   control = list(M = 5000, parallel = T, nb_cores = 1, B = 1000),
   pval.comp = "bounds",
-  fim = "extract"
+  fim = "extract",
+  output = TRUE
 )
 
 \method{varCompTest}{lme}(
@@ -23,7 +24,8 @@ varCompTest(
   m0,
   control = list(M = 5000, parallel = FALSE, nb_cores = 1, B = 1000),
   pval.comp = "bounds",
-  fim = "extract"
+  fim = "extract",
+  output = TRUE
 )
 
 \method{varCompTest}{merMod}(
@@ -31,7 +33,8 @@ varCompTest(
   m0,
   control = list(M = 5000, parallel = FALSE, nb_cores = 1, B = 1000),
   pval.comp = "bounds",
-  fim = "extract"
+  fim = "extract",
+  output = TRUE
 )
 
 \method{varCompTest}{SaemixObject}(
@@ -39,7 +42,8 @@ varCompTest(
   m0,
   control = list(M = 5000, parallel = FALSE, nb_cores = 1, B = 1000),
   pval.comp = "bounds",
-  fim = "extract"
+  fim = "extract",
+  output = TRUE
 )
 }
 \arguments{
@@ -56,6 +60,8 @@ or \code{saemix}}
 \item{fim}{(optional) the method to compute the Fisher Information Matrix. Options are: \code{fim="extract"} to extract the
 FIM computed by the package which was used to fit the models, \code{fim="compute"} to evaluate the FIM using parametric
 bootstrap, and \code{fim=I} with \code{I} a positive semidefinite matrix, for a FIM provided by the user.}
+
+\item{output}{a boolean specifying if any output should be printed in the console (default to TRUE)}
 }
 \value{
 An object of class \code{htest} with the following components:
