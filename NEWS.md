@@ -1,3 +1,19 @@
+# varTestnlme 1.3.5
+
+Add reference (doi number) for the associated JSS paper.
+
+# varTestnlme 1.3.4
+
+Add an export for function extractFIM.lme 
+
+# varTestnlme 1.3.2
+
+Correct a bug in the comparison of residual variance structure, and coming back to lmersampler for parametric bootstrap in linear mixed model after the package being un-archived.
+
+# varTesnlme 1.3.1
+
+Change the computation of parametric bootstrap for linear mixed models fitted with nlme after lmersampler package was archived
+
 # varTestnlme 1.3.0
 
 Correct a bug for Windows platforms, where new control arguments in varCompTest function could not e accounted for.

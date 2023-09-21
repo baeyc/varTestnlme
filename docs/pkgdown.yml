@@ -1,11 +1,11 @@
-pandoc: 2.11.1.1
-pkgdown: 1.6.1
+pandoc: 3.1.1
+pkgdown: 2.0.7
 pkgdown_sha: ~
 articles:
   varTestnlme: varTestnlme.html
-  web_only/fim: fim.html
-last_built: 2022-01-17T20:40Z
+  fim: web_only/fim.html
+last_built: 2023-09-21T11:58Z
 urls:
-  reference: https://baeyc.github.io/varTestnlme//reference
-  article: https://baeyc.github.io/varTestnlme//articles
+  reference: https://baeyc.github.io/varTestnlme/reference
+  article: https://baeyc.github.io/varTestnlme/articles
 

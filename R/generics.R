@@ -122,7 +122,7 @@ varTest <- function(m1, m0, control = list(M=5000,parallel=T,nb_cores=1,B=1000),
 #' \code{blockDiag}}
 #' 
 #' @name extractStruct
-#' @export extractStruct
+#' @export
 extractStruct <- function(m1,m0,randm0){
   UseMethod("extractStruct",m1)
 }

@@ -20,16 +20,33 @@ reference:
     desc: Main functions
     contents:
       - varCompTest
-      - fim
-      - print
-      - summary
+      - fim.vctest
+      - print.vctest
+      - summary.vctest
+      - weightsChiBarSquare
   - title: Other
     desc: Other utility functions
     contents:
       - extractStruct
+      - extractStruct.lme
+      - extractStruct.merMod
+      - extractStruct.SaemixObject
       - extractVarCov
+      - extractVarCov.lme
+      - extractVarCov.merMod
       - bootinvFIM
+      - bootinvFIM.lme
+      - bootinvFIM.merMod
+      - bootinvFIM.SaemixObject
+      - null.desc
+      - alt.desc
+      - dfChiBarSquare
+      - extractFIM.lme
       - approxWeights
+      - print.desc.message
+      - print.res.message
+      - objFunction
+      - pckName
 
 navbar:
   left:

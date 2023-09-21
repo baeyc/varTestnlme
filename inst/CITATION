@@ -1,12 +1,20 @@
-bibentry(bibtype = "Misc",
-         title = "varTestnlme: variance components testing in mixed-effect models",
-         author = c(person("Charlotte", "Baey"),
-                    person("Estelle", "Kuhn")
-                    ),
-         year = 2019,
-         url = c("https://github.com/baeyc/varTestnlme"),
-         header = "To cite the varTestnlme R package:"
+bibentry(bibtype = "Article",
+  title        = "{varTestnlme}: An {R} Package for Variance Components Testing in Linear and Nonlinear Mixed-Effects Models",
+  author       = c(person(given = "Charlotte",
+                          family = "Baey",
+                          email = "charlotte.baey@univ-lille.fr"),
+                   person(given = "Estelle",
+                          family = "Kuhn",
+                          email = "estelle.kuhn@inrae.fr")),
+  journal      = "Journal of Statistical Software",
+  year         = "2023",
+  volume       = "107",
+  number       = "6",
+  pages        = "1--32",
+  doi          = "10.18637/jss.v107.i06",
+  header       = "To cite varTestnlme in publications use:"
 )
+
 
 bibentry(bibtype = "Article",
          title = "Asymptotic distribution of likelihood ratio test statistics for variance components in nonlinear mixed effects models",
@@ -19,5 +27,5 @@ bibentry(bibtype = "Article",
          volume = 135,
          pages = "107-122",
          doi = "10.1016/j.csda.2019.01.014",
-         header = "To cite the associated theoretical paper:"
+         header = "To cite the associated theoretical paper use:"
 )

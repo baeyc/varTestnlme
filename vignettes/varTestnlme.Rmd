@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
 library(varTestnlme)
 ```
 
-The **varTesnlme** package is very easy to use. Below are small examples on how to run it for linear, generalized linear and nonlinear mixed-effect models.
+The **varTesnlme** package is very easy to use. Below are small examples on how to run it for linear, generalized linear and nonlinear mixed-effect models. A more detailed description is available in the paper <doi:10.18637/jss.v107.i06>.
 
   
 Mixed-effect models can be run using [nlme](https://CRAN.R-project.org/package=nlme) or [lme4](https://CRAN.R-project.org/package=lme4), but also using [saemix](https://CRAN.R-project.org/package=saemix). **varTestnlme** can be used to compare two nested models using likelihood ratio tests, where the variance of at least one random effect is tested equal to 0. Fixed effects can also be tested simultaneously, as well as covariances.

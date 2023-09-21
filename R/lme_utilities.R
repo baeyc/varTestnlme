@@ -1,4 +1,10 @@
-# Extract FIM
+#' @name extractFIM.lme
+#' @rdname extractFIM.lme
+#'
+#' @title Extract FIM
+#'
+#' @param m the model to extract the FIM from
+#' @param struct the structure of the covariance matrix (either 'full', 'diag', or 'blockdiag)
 extractFIM.lme <- function(m,struct){
   nameGroup <- names(m$groups)
   namesFE <- names(m$coefficients$fixed)
@@ -75,13 +81,11 @@ extractStruct.lme <- function(m1,m0,randm0){
   nameRE <- names(m1$groups)
   
   # get the residual variance structure
-  varStructm1 <- m1$modelStruct$varStruct
-  varStructm0 <- m0$modelStruct$varStruct
-  if (length(varStructm0) != length(varStructm1)){
-    stop("the residual variance model should be the same under both hypotheses")
-  }else if (length(varStructm0) > 0 & length(varStructm1) > 0){
+  varStructm1 <- formula(m1$modelStruct$varStruct)
+  varStructm0 <- formula(m0$modelStruct$varStruct)
+  if (length(varStructm0) > 0 & length(varStructm1) > 0){
     if (varStructm0 != varStructm1){
-      stop("the residual variance model should be the same under both hypotheses")
+        stop("the residual variance model should be the same under both hypotheses")
     }
   }
   
@@ -275,12 +279,13 @@ extractVarCov.lme <- function(m){
 #' @param B the bootstrap sample size
 #' @export bootinvFIM.lme
 #' @export
-bootinvFIM.lme <- function(m, B=1000){
+bootinvFIM.lme <- function(m, B=1000, seed=0){
   
   mySumm <- function(m,diagSigma=F) {
     beta <- nlme::fixef(m)
     resStd <- stats::sigma(m)
     Sigma <- extractVarCov(m)
+    diagSigma = Matrix::isDiagonal(Sigma)
     if(diagSigma){
       theta <- c(beta=beta,Gamma=diag(Sigma),sigma=resStd)
     }else{
@@ -291,10 +296,57 @@ bootinvFIM.lme <- function(m, B=1000){
   nonlin <- inherits(m,"nlme")
   
   if (!nonlin){
-    bootstrap <- lmeresampler::bootstrap(m, mySumm, B = B, type = "parametric")
+    message(paste0("\t ...generating the B=",B," bootstrap samples ...\n"))
+    success <- F
+    set.seed(seed)
+    while(!success){
+      bootstrap <- try(lmeresampler::bootstrap(m, mySumm, B = B, type = "parametric"),silent=TRUE)
+      success <- !inherits(bootstrap,"try-error")
+      if (!success){
+        set.seed(seed)
+        bootstrap <- try(lmeresampler::bootstrap(m, mySumm, B = B, type = "residual"),silent=TRUE)
+        success <- !inherits(bootstrap,"try-error")
+      }
+    }
     bootstrap <- bootstrap$replicates[, colSums(bootstrap$replicates != 0) > 0]
     invfim <- cov(bootstrap)
     
+    ## new version to avoid using archived package lmersampler
+    # paramBoot <- mySumm(m)
+    # 
+    # message(paste0("\t ...generating the B=",B," bootstrap samples ...\n"))
+    # refits <- list()
+    # 
+    # b <- 1
+    # tbar <- utils::txtProgressBar(min=1,max=B,char = ".", style = 3)
+    # while (b <= B){  
+    #   ystar <- nlmeU::simulateY(m, nsim = 1)
+    #   row.names(ystar) <- 1:m$dims$N
+    #   ystar <- data.frame(ystar)
+    #   
+    #   mod.fixd <- stats::as.formula(m$call$fixed)
+    #   mod.rand <- m$call$random
+    #   mod.data <- m$data
+    #   
+    #   mod.data[,as.character(mod.fixd[[2]])] <- unname(ystar)
+    #   # create new lme
+    #   if(is.null(mod.rand)){
+    #     fitInd <- try(do.call("lme", args = list(fixed = mod.fixd, data = mod.data)))
+    #   } else{
+    #     mod.rand <- stats::as.formula(mod.rand)
+    #     fitInd <- try(do.call("lme", args = list(fixed = mod.fixd, data = mod.data, random = mod.rand)))
+    #   }
+    #   
+    #   if (!inherits(fitInd,"try-error")){
+    #     refits[[b]] <- fitInd
+    #     b <- b + 1
+    #   }
+    # }
+    # 
+    # bootstrap <- t(sapply(refits, FUN=function(fitInd){mySumm(fitInd)}))
+    # bootstrap <- bootstrap[, colSums(bootstrap != 0) > 0]
+    # invfim <- cov(bootstrap)
+    # 
     Gamma1 <- extractVarCov(m)
     namesRE <- colnames(m$coefficients$random[[1]])
     if (length(Gamma1)>1 & !Matrix::isDiagonal(Gamma1)){
@@ -320,6 +372,8 @@ bootinvFIM.lme <- function(m, B=1000){
     }
     namesParams <- c(names(m$coefficients$fixed),covNames1,"sd_residual")
     colnames(invfim) <- rownames(invfim) <- namesParams
+    
+    
   }else{
     beta <- nlme::fixef(m) # fixed effects
     resStd <- stats::sigma(m)
@@ -354,6 +408,7 @@ bootinvFIM.lme <- function(m, B=1000){
     b <- 1
     tbar <- utils::txtProgressBar(min=1,max=B,char = ".", style = 3)
     grpVar <- m$groups[,1]
+    set.seed(seed)
     while (b <= B){  
       utils::setTxtProgressBar(tbar,b)
       phi <- t(chol(Sigma)%*%matrix(stats::rnorm(nrow(Sigma)*nind,0,1),ncol=nind))

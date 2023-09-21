@@ -38,18 +38,18 @@ likelihood ratio test statistics.
 }
 \section{Functions}{
 \itemize{
-\item \code{objFunction}: objective function to be optimized
+\item \code{objFunction()}: objective function to be optimized
 
-\item \code{gradObjFunction}: gradient of the objective function
+\item \code{gradObjFunction()}: gradient of the objective function
 
-\item \code{symMatrixFromVect}: function creating a symmetric matrix from its unique elements stored in a vector
+\item \code{symMatrixFromVect()}: function creating a symmetric matrix from its unique elements stored in a vector
 
-\item \code{ineqCstr}: set of inequality constraints
+\item \code{ineqCstr()}: set of inequality constraints
 
-\item \code{jacobianIneqCstr}: jacobian of the inequality constraints
+\item \code{jacobianIneqCstr()}: jacobian of the inequality constraints
 
-\item \code{eqCstr}: set of equality constraints
+\item \code{eqCstr()}: set of equality constraints
 
-\item \code{jacobianEqCstr}: jacobian of the inequality constraints
+\item \code{jacobianEqCstr()}: jacobian of the inequality constraints
+
 }}
-

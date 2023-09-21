@@ -11,10 +11,10 @@ the likelihood ratio test (LRT) for testing the presence of random
 effects in linear, generalized linear and nonlinear mixed-effects model.
 The test can be used to answer questions of the type:
 
--   should a certain subset of random effects be in fact considered as
-    fixed effects?
--   is there any random effects in the model?
--   are there any correlation between two subsets of random effects?
+- should a certain subset of random effects be in fact considered as
+  fixed effects?
+- is there any random effects in the model?
+- are there any correlation between two subsets of random effects?
 
 It is possible to compare two models with different random effects,
 provided that the random structures of the two models are **nested**.
@@ -26,10 +26,14 @@ The package works on models that were fitted using
 
 ## Reference
 
+Baey C, Kuhn E, 2023. varTestnlme: An R Package for Variance Components
+Testing in Linear and Nonlinear Mixed-Effects Models. **Journal of
+Statistical Software**. <https://doi.org/10.18637/jss.v107.i06>
+
 Baey C, Cournède P-H, Kuhn E, 2019. Asymptotic distribution of
 likelihood ratio test statistics for variance components in nonlinear
-mixed effects models. 135:107–122 (2019),
-<https://doi.org/10.1016/j.csda.2019.01.014>
+mixed effects models. **Computational Statistic and Data Analysis**.
+135:107–122 (2019), <https://doi.org/10.1016/j.csda.2019.01.014>
 
 ## Installation
 

@@ -19,6 +19,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -31,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">varTestnlme</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.3.5</span>
       </span>
     </div>
 
@@ -70,7 +72,7 @@
   </a>
 </li>
 <li>
-  <a href="https://github.com/baeyc/varTestnlme">
+  <a href="https://github.com/baeyc/varTestnlme" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -85,13 +87,13 @@
 
       
 
-      </header><script src="varTestnlme_files/header-attrs-2.11/header-attrs.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Get started</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/baeyc/varTestnlme/blob/master/vignettes/varTestnlme.Rmd"><code>vignettes/varTestnlme.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/baeyc/varTestnlme/blob/HEAD/vignettes/varTestnlme.Rmd" class="external-link"><code>vignettes/varTestnlme.Rmd</code></a></small>
       <div class="hidden name"><code>varTestnlme.Rmd</code></div>
 
     </div>
@@ -99,220 +101,276 @@
     
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/baeyc/varTestnlme/">varTestnlme</a></span><span class="op">)</span></code></pre></div>
-<p>The <strong>varTesnlme</strong> package is very easy to use. Below are small examples on how to run it for linear, generalized linear and nonlinear mixed-effect models.</p>
-<p>Mixed-effect models can be run using <a href="https://CRAN.R-project.org/package=nlme">nlme</a> or <a href="https://CRAN.R-project.org/package=lme4">lme4</a>, but also using <a href="https://CRAN.R-project.org/package=saemix">saemix</a>. <strong>varTestnlme</strong> can be used to compare two nested models using likelihood ratio tests, where the variance of at least one random effect is tested equal to 0. Fixed effects can also be tested simultaneously, as well as covariances.</p>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/baeyc/varTestnlme/" class="external-link">varTestnlme</a></span><span class="op">)</span></span></code></pre></div>
+<p>The <strong>varTesnlme</strong> package is very easy to use. Below
+are small examples on how to run it for linear, generalized linear and
+nonlinear mixed-effect models. A more detailed description is available
+in the paper <a href="doi:10.18637/jss.v107.i06" class="uri">doi:10.18637/jss.v107.i06</a>.</p>
+<p>Mixed-effect models can be run using <a href="https://CRAN.R-project.org/package=nlme" class="external-link">nlme</a> or <a href="https://CRAN.R-project.org/package=lme4" class="external-link">lme4</a>, but also using
+<a href="https://CRAN.R-project.org/package=saemix" class="external-link">saemix</a>.
+<strong>varTestnlme</strong> can be used to compare two nested models
+using likelihood ratio tests, where the variance of at least one random
+effect is tested equal to 0. Fixed effects can also be tested
+simultaneously, as well as covariances.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Load the packages</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://svn.r-project.org/R-packages/trunk/nlme/">nlme</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/lme4/lme4/">lme4</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">saemix</span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/alexkowa/EnvStats">EnvStats</a></span><span class="op">)</span></code></pre></div>
-<div id="linear-models" class="section level2">
-<h2 class="hasAnchor">
-<a href="#linear-models" class="anchor"></a>Linear models</h2>
-<p>Here we focus on models run using <strong>lme4</strong> and <strong>nlme</strong>, but <strong>saemix</strong> can also be used.</p>
-<div id="case-1-testing-the-variance-of-one-random-effect" class="section level3">
-<h3 class="hasAnchor">
-<a href="#case-1-testing-the-variance-of-one-random-effect" class="anchor"></a>Case 1 : testing the variance of one random effect</h3>
-<p>We illustrate the results on the <strong>Orthodont</strong> dataset, which is part of the <strong>nlme</strong> package. We are interested in modeling the distance between the pituitary and the pterygomaxillary fissure (in mm) as a function of age, in 27 children. We will fit a random slope and random intercept model, and test whether the slope is random or not.</p>
-<p>We first need to fit the two nested models: the full model corresponding to <span class="math inline">\(H_1\)</span> and the null model corresponding to <span class="math inline">\(H_0\)</span>, where there is no random effect associated to <code>age</code>.</p>
+<code class="sourceCode R"><span><span class="co"># Load the packages</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://svn.r-project.org/R-packages/trunk/nlme/" class="external-link">nlme</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/lme4/lme4/" class="external-link">lme4</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">saemix</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/alexkowa/EnvStats" class="external-link">EnvStats</a></span><span class="op">)</span></span></code></pre></div>
+<div class="section level2">
+<h2 id="linear-models">Linear models<a class="anchor" aria-label="anchor" href="#linear-models"></a>
+</h2>
+<p>Here we focus on models run using <strong>lme4</strong> and
+<strong>nlme</strong>, but <strong>saemix</strong> can also be used.</p>
+<div class="section level3">
+<h3 id="case-1-testing-the-variance-of-one-random-effect">Case 1 : testing the variance of one random effect<a class="anchor" aria-label="anchor" href="#case-1-testing-the-variance-of-one-random-effect"></a>
+</h3>
+<p>We illustrate the results on the <strong>Orthodont</strong> dataset,
+which is part of the <strong>nlme</strong> package. We are interested in
+modeling the distance between the pituitary and the pterygomaxillary
+fissure (in mm) as a function of age, in 27 children. We will fit a
+random slope and random intercept model, and test whether the slope is
+random or not.</p>
+<p>We first need to fit the two nested models: the full model
+corresponding to <span class="math inline">\(H_1\)</span> and the null
+model corresponding to <span class="math inline">\(H_0\)</span>, where
+there is no random effect associated to <code>age</code>.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="st">"Orthodont"</span><span class="op">)</span>
-
-<span class="co"># using nlme, with correlated slope and intercept</span>
-<span class="va">m1.nlme</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/lme.html">lme</a></span><span class="op">(</span><span class="va">distance</span> <span class="op">~</span> <span class="fl">1</span> <span class="op">+</span> <span class="va">Sex</span> <span class="op">+</span> <span class="va">age</span> <span class="op">+</span> <span class="va">age</span><span class="op">*</span><span class="va">Sex</span>, random <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/pdSymm.html">pdSymm</a></span><span class="op">(</span><span class="va">Subject</span> <span class="op">~</span> <span class="fl">1</span> <span class="op">+</span> <span class="va">age</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">Orthodont</span>, method <span class="op">=</span> <span class="st">"ML"</span><span class="op">)</span>
-<span class="va">m0.nlme</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/lme.html">lme</a></span><span class="op">(</span><span class="va">distance</span> <span class="op">~</span> <span class="fl">1</span> <span class="op">+</span> <span class="va">Sex</span> <span class="op">+</span> <span class="va">age</span> <span class="op">+</span> <span class="va">age</span><span class="op">*</span><span class="va">Sex</span>, random <span class="op">=</span> <span class="op">~</span> <span class="fl">1</span> <span class="op">|</span> <span class="va">Subject</span>, data <span class="op">=</span> <span class="va">Orthodont</span>, method <span class="op">=</span> <span class="st">"ML"</span><span class="op">)</span>
-
-<span class="co"># using lme4, with correlated slope and intercept</span>
-<span class="va">m1.lme4</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/lme4/man/lmer.html">lmer</a></span><span class="op">(</span><span class="va">distance</span> <span class="op">~</span> <span class="fl">1</span> <span class="op">+</span> <span class="va">Sex</span> <span class="op">+</span> <span class="va">age</span> <span class="op">+</span> <span class="va">age</span><span class="op">*</span><span class="va">Sex</span> <span class="op">+</span> <span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="va">age</span> <span class="op">|</span> <span class="va">Subject</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">Orthodont</span>, REML <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-<span class="co">#&gt; Warning in checkConv(attr(opt, "derivs"), opt$par, ctrl = control$checkConv, :</span>
-<span class="co">#&gt; Model failed to converge with max|grad| = 0.0464695 (tol = 0.002, component 1)</span>
-<span class="va">m0.lme4</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/lme4/man/lmer.html">lmer</a></span><span class="op">(</span><span class="va">distance</span> <span class="op">~</span> <span class="fl">1</span> <span class="op">+</span> <span class="va">Sex</span> <span class="op">+</span> <span class="va">age</span> <span class="op">+</span> <span class="va">age</span><span class="op">*</span><span class="va">Sex</span> <span class="op">+</span> <span class="op">(</span><span class="fl">1</span> <span class="op">|</span> <span class="va">Subject</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">Orthodont</span>, REML <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
-<p>Now we can run the likelihood ratio test using the <strong>varTestnlme</strong> package. The function returns an object from S3 class <code>htest</code>.</p>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"Orthodont"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># using nlme, with correlated slope and intercept</span></span>
+<span><span class="va">m1.nlme</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/lme.html" class="external-link">lme</a></span><span class="op">(</span><span class="va">distance</span> <span class="op">~</span> <span class="fl">1</span> <span class="op">+</span> <span class="va">Sex</span> <span class="op">+</span> <span class="va">age</span> <span class="op">+</span> <span class="va">age</span><span class="op">*</span><span class="va">Sex</span>, random <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/pdSymm.html" class="external-link">pdSymm</a></span><span class="op">(</span><span class="va">Subject</span> <span class="op">~</span> <span class="fl">1</span> <span class="op">+</span> <span class="va">age</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">Orthodont</span>, method <span class="op">=</span> <span class="st">"ML"</span><span class="op">)</span></span>
+<span><span class="va">m0.nlme</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/lme.html" class="external-link">lme</a></span><span class="op">(</span><span class="va">distance</span> <span class="op">~</span> <span class="fl">1</span> <span class="op">+</span> <span class="va">Sex</span> <span class="op">+</span> <span class="va">age</span> <span class="op">+</span> <span class="va">age</span><span class="op">*</span><span class="va">Sex</span>, random <span class="op">=</span> <span class="op">~</span> <span class="fl">1</span> <span class="op">|</span> <span class="va">Subject</span>, data <span class="op">=</span> <span class="va">Orthodont</span>, method <span class="op">=</span> <span class="st">"ML"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># using lme4, with correlated slope and intercept</span></span>
+<span><span class="va">m1.lme4</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/lme4/man/lmer.html" class="external-link">lmer</a></span><span class="op">(</span><span class="va">distance</span> <span class="op">~</span> <span class="fl">1</span> <span class="op">+</span> <span class="va">Sex</span> <span class="op">+</span> <span class="va">age</span> <span class="op">+</span> <span class="va">age</span><span class="op">*</span><span class="va">Sex</span> <span class="op">+</span> <span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="va">age</span> <span class="op">|</span> <span class="va">Subject</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">Orthodont</span>, REML <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning in checkConv(attr(opt, "derivs"), opt$par, ctrl = control$checkConv, :</span></span>
+<span><span class="co">#&gt; Model failed to converge with max|grad| = 0.0464695 (tol = 0.002, component 1)</span></span>
+<span><span class="va">m0.lme4</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/lme4/man/lmer.html" class="external-link">lmer</a></span><span class="op">(</span><span class="va">distance</span> <span class="op">~</span> <span class="fl">1</span> <span class="op">+</span> <span class="va">Sex</span> <span class="op">+</span> <span class="va">age</span> <span class="op">+</span> <span class="va">age</span><span class="op">*</span><span class="va">Sex</span> <span class="op">+</span> <span class="op">(</span><span class="fl">1</span> <span class="op">|</span> <span class="va">Subject</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">Orthodont</span>, REML <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<p>Now we can run the likelihood ratio test using the
+<strong>varTestnlme</strong> package. The function returns an object
+from S3 class <code>htest</code>.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">vt1.nlme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/varCompTest.html">varCompTest</a></span><span class="op">(</span><span class="va">m1.nlme</span>,<span class="va">m0.nlme</span><span class="op">)</span>
-<span class="co">#&gt; Variance components testing in mixed effects models</span>
-<span class="co">#&gt; Testing that the variance of the random effect associated to age is equal to 0</span>
-<span class="co">#&gt; Likelihood ratio test statistic:</span>
-<span class="co">#&gt;  LRT = 0.8331072</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; p-value from exact weights: 0.5103454</span>
-<span class="co">#&gt; </span>
-<span class="va">vt1.lme4</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/varCompTest.html">varCompTest</a></span><span class="op">(</span><span class="va">m1.lme4</span>,<span class="va">m0.lme4</span><span class="op">)</span>
-<span class="co">#&gt; Variance components testing in mixed effects models</span>
-<span class="co">#&gt; Testing that the variance of the random effect associated to age is equal to 0</span>
-<span class="co">#&gt; Likelihood ratio test statistic:</span>
-<span class="co">#&gt;  LRT = 0.8326426</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; p-value from exact weights: 0.5104889</span>
-<span class="co">#&gt; </span></code></pre></div>
-<p>Using the <code>EnvStats</code> package, nice printing options are available for objects of type <code>htest</code>:</p>
+<code class="sourceCode R"><span><span class="va">vt1.nlme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/varCompTest.html">varCompTest</a></span><span class="op">(</span><span class="va">m1.nlme</span>,<span class="va">m0.nlme</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Variance components testing in mixed effects models</span></span>
+<span><span class="co">#&gt; Testing that the variance of the random effect associated to age is equal to 0</span></span>
+<span><span class="co">#&gt; Likelihood ratio test statistic:</span></span>
+<span><span class="co">#&gt;  LRT = 0.8331072</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; p-value from exact weights: 0.5103454</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="va">vt1.lme4</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/varCompTest.html">varCompTest</a></span><span class="op">(</span><span class="va">m1.lme4</span>,<span class="va">m0.lme4</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Variance components testing in mixed effects models</span></span>
+<span><span class="co">#&gt; Testing that the variance of the random effect associated to age is equal to 0</span></span>
+<span><span class="co">#&gt; Likelihood ratio test statistic:</span></span>
+<span><span class="co">#&gt;  LRT = 0.8326426</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; p-value from exact weights: 0.5104889</span></span>
+<span><span class="co">#&gt; </span></span></code></pre></div>
+<p>Using the <code>EnvStats</code> package, nice printing options are
+available for objects of type <code>htest</code>:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/EnvStats/man/print.html">print</a></span><span class="op">(</span><span class="va">vt1.nlme</span><span class="op">)</span>
-<span class="co">#&gt; Variance components testing in mixed effects models</span>
-<span class="co">#&gt; Testing that:</span>
-<span class="co">#&gt;  variance of the random effect associated to age is equal to 0</span>
-<span class="co">#&gt; against the alternative that:</span>
-<span class="co">#&gt;  variance of the random effect associated to age &gt; 0 </span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;  Likelihood ratio test statistic:</span>
-<span class="co">#&gt;  LRT =  0.8331072</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;  exact p-value: 0.5103454</span></code></pre></div>
-<p>It is also possible to access the components of the object using $ or [[:</p>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/EnvStats/man/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">vt1.nlme</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Variance components testing in mixed effects models</span></span>
+<span><span class="co">#&gt; Testing that:</span></span>
+<span><span class="co">#&gt;  variance of the random effect associated to age is equal to 0</span></span>
+<span><span class="co">#&gt; against the alternative that:</span></span>
+<span><span class="co">#&gt;  variance of the random effect associated to age &gt; 0 </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;  Likelihood ratio test statistic:</span></span>
+<span><span class="co">#&gt;  LRT =  0.8331072</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;  exact p-value: 0.5103454</span></span></code></pre></div>
+<p>It is also possible to access the components of the object using $ or
+[[:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">vt1.nlme</span><span class="op">$</span><span class="va">statistic</span>
-<span class="co">#&gt;       LRT </span>
-<span class="co">#&gt; 0.8331072</span>
-<span class="va">vt1.nlme</span><span class="op">$</span><span class="va">p.value</span>
-<span class="co">#&gt;    pvalue.weights     pvalue.sample pvalue.lowerbound pvalue.upperbound </span>
-<span class="co">#&gt;         0.5103454                NA         0.5103454         0.5103454</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">vt1.nlme</span><span class="op">$</span><span class="va">statistic</span></span>
+<span><span class="co">#&gt;       LRT </span></span>
+<span><span class="co">#&gt; 0.8331072</span></span>
+<span><span class="va">vt1.nlme</span><span class="op">$</span><span class="va">p.value</span></span>
+<span><span class="co">#&gt;    pvalue.weights     pvalue.sample pvalue.lowerbound pvalue.upperbound </span></span>
+<span><span class="co">#&gt;         0.5103454                NA         0.5103454         0.5103454</span></span></code></pre></div>
 <p>For the p-value, four different values are provided:</p>
 <ol style="list-style-type: decimal">
-<li>the p-value computed using the chi-bar-square expression as a mixture of chi-square distributions. This requires that the weights of the chi-bar-square are available, either because their exact expression is known (only in some simple cases), or because the user ask for their approximation via the option <code>pval.comp = "both"</code> or <code>pval.comp = "approx"</code>.</li>
-<li>the p-value computed using a sample from the chi-bar-square distribution. This sample is used to approximate the chi-bar-square weights, and thus the corresponding p-value is only available when <code>pval.comp = "both"</code> or <code>pval.comp = "approx"</code>.</li>
+<li>the p-value computed using the chi-bar-square expression as a
+mixture of chi-square distributions. This requires that the weights of
+the chi-bar-square are available, either because their exact expression
+is known (only in some simple cases), or because the user ask for their
+approximation via the option <code>pval.comp = "both"</code> or
+<code>pval.comp = "approx"</code>.</li>
+<li>the p-value computed using a sample from the chi-bar-square
+distribution. This sample is used to approximate the chi-bar-square
+weights, and thus the corresponding p-value is only available when
+<code>pval.comp = "both"</code> or
+<code>pval.comp = "approx"</code>.</li>
 <li>the lower bound on the p-value: this is always available</li>
 <li>the upper bound on the p-value: this is always available</li>
 </ol>
 </div>
-<div id="case-2-testing-the-variance-of-one-effect-with-uncorrelated-random-effects" class="section level3">
-<h3 class="hasAnchor">
-<a href="#case-2-testing-the-variance-of-one-effect-with-uncorrelated-random-effects" class="anchor"></a>Case 2 : testing the variance of one effect with uncorrelated random effects</h3>
+<div class="section level3">
+<h3 id="case-2-testing-the-variance-of-one-effect-with-uncorrelated-random-effects">Case 2 : testing the variance of one effect with uncorrelated random
+effects<a class="anchor" aria-label="anchor" href="#case-2-testing-the-variance-of-one-effect-with-uncorrelated-random-effects"></a>
+</h3>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># using nlme, with uncorrelated slope and intercept</span>
-<span class="va">m1diag.nlme</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/lme.html">lme</a></span><span class="op">(</span><span class="va">distance</span> <span class="op">~</span> <span class="fl">1</span> <span class="op">+</span> <span class="va">Sex</span> <span class="op">+</span> <span class="va">age</span> <span class="op">+</span> <span class="va">age</span><span class="op">*</span><span class="va">Sex</span>, random <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/pdDiag.html">pdDiag</a></span><span class="op">(</span><span class="va">Subject</span> <span class="op">~</span> <span class="fl">1</span> <span class="op">+</span> <span class="va">age</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">Orthodont</span>, method <span class="op">=</span> <span class="st">"ML"</span><span class="op">)</span>
-
-<span class="co"># using lme4, with uncorrelated slope and intercept</span>
-<span class="va">m1diag.lme4</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/lme4/man/lmer.html">lmer</a></span><span class="op">(</span><span class="va">distance</span> <span class="op">~</span> <span class="fl">1</span> <span class="op">+</span> <span class="va">Sex</span> <span class="op">+</span> <span class="va">age</span> <span class="op">+</span> <span class="va">age</span><span class="op">*</span><span class="va">Sex</span> <span class="op">+</span> <span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="va">age</span> <span class="op">||</span> <span class="va">Subject</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">Orthodont</span>, REML <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-
-<span class="va">vt1diag.nlme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/varCompTest.html">varCompTest</a></span><span class="op">(</span><span class="va">m1diag.nlme</span>,<span class="va">m0.nlme</span><span class="op">)</span>
-<span class="co">#&gt; Variance components testing in mixed effects models</span>
-<span class="co">#&gt; Testing that the variance of the random effect associated to age is equal to 0</span>
-<span class="co">#&gt; Likelihood ratio test statistic:</span>
-<span class="co">#&gt;  LRT = 0.5304105</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; p-value from exact weights: 0.2332172</span>
-<span class="co">#&gt; </span>
-<span class="va">vt1diag.lme4</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/varCompTest.html">varCompTest</a></span><span class="op">(</span><span class="va">m1diag.lme4</span>,<span class="va">m0.lme4</span><span class="op">)</span>
-<span class="co">#&gt; Variance components testing in mixed effects models</span>
-<span class="co">#&gt; Testing that the variance of the random effect associated to age is equal to 0</span>
-<span class="co">#&gt; Likelihood ratio test statistic:</span>
-<span class="co">#&gt;  LRT = 0.5304106</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; p-value from exact weights: 0.2332171</span>
-<span class="co">#&gt; </span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># using nlme, with uncorrelated slope and intercept</span></span>
+<span><span class="va">m1diag.nlme</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/lme.html" class="external-link">lme</a></span><span class="op">(</span><span class="va">distance</span> <span class="op">~</span> <span class="fl">1</span> <span class="op">+</span> <span class="va">Sex</span> <span class="op">+</span> <span class="va">age</span> <span class="op">+</span> <span class="va">age</span><span class="op">*</span><span class="va">Sex</span>, random <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/pdDiag.html" class="external-link">pdDiag</a></span><span class="op">(</span><span class="va">Subject</span> <span class="op">~</span> <span class="fl">1</span> <span class="op">+</span> <span class="va">age</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">Orthodont</span>, method <span class="op">=</span> <span class="st">"ML"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># using lme4, with uncorrelated slope and intercept</span></span>
+<span><span class="va">m1diag.lme4</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/lme4/man/lmer.html" class="external-link">lmer</a></span><span class="op">(</span><span class="va">distance</span> <span class="op">~</span> <span class="fl">1</span> <span class="op">+</span> <span class="va">Sex</span> <span class="op">+</span> <span class="va">age</span> <span class="op">+</span> <span class="va">age</span><span class="op">*</span><span class="va">Sex</span> <span class="op">+</span> <span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="va">age</span> <span class="op">||</span> <span class="va">Subject</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">Orthodont</span>, REML <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">vt1diag.nlme</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/varCompTest.html">varCompTest</a></span><span class="op">(</span><span class="va">m1diag.nlme</span>,<span class="va">m0.nlme</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Variance components testing in mixed effects models</span></span>
+<span><span class="co">#&gt; Testing that the variance of the random effect associated to age is equal to 0</span></span>
+<span><span class="co">#&gt; Likelihood ratio test statistic:</span></span>
+<span><span class="co">#&gt;  LRT = 0.5304105</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; p-value from exact weights: 0.2332172</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="va">vt1diag.lme4</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/varCompTest.html">varCompTest</a></span><span class="op">(</span><span class="va">m1diag.lme4</span>,<span class="va">m0.lme4</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Variance components testing in mixed effects models</span></span>
+<span><span class="co">#&gt; Testing that the variance of the random effect associated to age is equal to 0</span></span>
+<span><span class="co">#&gt; Likelihood ratio test statistic:</span></span>
+<span><span class="co">#&gt;  LRT = 0.5304106</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; p-value from exact weights: 0.2332171</span></span>
+<span><span class="co">#&gt; </span></span></code></pre></div>
 </div>
-<div id="case-3-testing-all-the-variances" class="section level3">
-<h3 class="hasAnchor">
-<a href="#case-3-testing-all-the-variances" class="anchor"></a>Case 3 : testing all the variances</h3>
-<p>In the previous section, the weights of the chi-bar-square distribution where available explicitly. However, it is not always the case. By default, since the computation of these weights can be time consuming, the function is computing bounds on the p-value. In many cases this can be enough to decide whether to reject or not the null hypothesis. If more precision is wanted or needed, it is possible to specify it via the option <code>pval.comp</code>, which then needs to be set to either <code>pval.comp="approx"</code> or to <code>pval.comp="both"</code>. In both cases, the <code>control</code> argument can be used to control the computation process. It is a list which contains three slots: <code>M</code> (default to 5000), the size of the Monte Carlo computation, <code>parallel</code> (default to <code>FALSE</code>) to specify whether computation should be parallelized, and <code>nbcores</code> (default to <code>1</code>) to set the number of cores to be used in case of parallel computing.</p>
+<div class="section level3">
+<h3 id="case-3-testing-all-the-variances">Case 3 : testing all the variances<a class="anchor" aria-label="anchor" href="#case-3-testing-all-the-variances"></a>
+</h3>
+<p>In the previous section, the weights of the chi-bar-square
+distribution where available explicitly. However, it is not always the
+case. By default, since the computation of these weights can be time
+consuming, the function is computing bounds on the p-value. In many
+cases this can be enough to decide whether to reject or not the null
+hypothesis. If more precision is wanted or needed, it is possible to
+specify it via the option <code>pval.comp</code>, which then needs to be
+set to either <code>pval.comp="approx"</code> or to
+<code>pval.comp="both"</code>. In both cases, the <code>control</code>
+argument can be used to control the computation process. It is a list
+which contains three slots: <code>M</code> (default to 5000), the size
+of the Monte Carlo computation, <code>parallel</code> (default to
+<code>FALSE</code>) to specify whether computation should be
+parallelized, and <code>nbcores</code> (default to <code>1</code>) to
+set the number of cores to be used in case of parallel computing.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">m0noRE</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span><span class="va">distance</span> <span class="op">~</span> <span class="fl">1</span> <span class="op">+</span> <span class="va">Sex</span> <span class="op">+</span> <span class="va">age</span> <span class="op">+</span> <span class="va">age</span><span class="op">*</span><span class="va">Sex</span>, data <span class="op">=</span> <span class="va">Orthodont</span><span class="op">)</span>
-
-<span class="va">vt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/varCompTest.html">varCompTest</a></span><span class="op">(</span><span class="va">m1diag.nlme</span>,<span class="va">m0noRE</span>,pval.comp <span class="op">=</span> <span class="st">"both"</span><span class="op">)</span>
-<span class="co">#&gt; Variance components testing in mixed effects models</span>
-<span class="co">#&gt; Testing that the covariance matrix of Intercept and age is equal to 0</span>
-<span class="co">#&gt; Likelihood ratio test statistic:</span>
-<span class="co">#&gt;  LRT = 50.13311</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; p-value from estimated weights: 2.32255e-12</span>
-<span class="co">#&gt; bounds on p-value: lower 7.18311e-13 upper 7.215163e-12</span>
-<span class="co">#&gt; </span>
-<span class="va">vt2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/varCompTest.html">varCompTest</a></span><span class="op">(</span><span class="va">m1diag.lme4</span>,<span class="va">m0noRE</span><span class="op">)</span>
-<span class="co">#&gt; Variance components testing in mixed effects models</span>
-<span class="co">#&gt; Testing that the covariance matrix of (Intercept) and age is equal to 0</span>
-<span class="co">#&gt; Likelihood ratio test statistic:</span>
-<span class="co">#&gt;  LRT = 50.13311</span>
-<span class="co">#&gt; bounds on p-value: lower 7.18311e-13 upper 7.215163e-12</span>
-<span class="co">#&gt; </span></code></pre></div>
-<p>By default, the FIM is extracted from the packages, but it is also possible to compute it via parametric bootstrap. In this case, simply use the option <code>fim="compute"</code>. The default bootstrap sampling size is <code>B=1000</code> but it can be changed. To get the exact p-value one can use</p>
+<code class="sourceCode R"><span><span class="va">m0noRE</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">distance</span> <span class="op">~</span> <span class="fl">1</span> <span class="op">+</span> <span class="va">Sex</span> <span class="op">+</span> <span class="va">age</span> <span class="op">+</span> <span class="va">age</span><span class="op">*</span><span class="va">Sex</span>, data <span class="op">=</span> <span class="va">Orthodont</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">vt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/varCompTest.html">varCompTest</a></span><span class="op">(</span><span class="va">m1diag.nlme</span>,<span class="va">m0noRE</span>,pval.comp <span class="op">=</span> <span class="st">"both"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Variance components testing in mixed effects models</span></span>
+<span><span class="co">#&gt; Testing that the covariance matrix of Intercept and age is equal to 0</span></span>
+<span><span class="co">#&gt; Likelihood ratio test statistic:</span></span>
+<span><span class="co">#&gt;  LRT = 50.13311</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; p-value from estimated weights: 2.319657e-12</span></span>
+<span><span class="co">#&gt; bounds on p-value: lower 7.18311e-13 upper 7.215163e-12</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="va">vt2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/varCompTest.html">varCompTest</a></span><span class="op">(</span><span class="va">m1diag.lme4</span>,<span class="va">m0noRE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Variance components testing in mixed effects models</span></span>
+<span><span class="co">#&gt; Testing that the covariance matrix of (Intercept) and age is equal to 0</span></span>
+<span><span class="co">#&gt; Likelihood ratio test statistic:</span></span>
+<span><span class="co">#&gt;  LRT = 50.13311</span></span>
+<span><span class="co">#&gt; bounds on p-value: lower 7.18311e-13 upper 7.215163e-12</span></span>
+<span><span class="co">#&gt; </span></span></code></pre></div>
+<p>By default, the FIM is extracted from the packages, but it is also
+possible to compute it via parametric bootstrap. In this case, simply
+use the option <code>fim="compute"</code>. The default bootstrap
+sampling size is <code>B=1000</code> but it can be changed. To get the
+exact p-value one can use</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/varCompTest.html">varCompTest</a></span><span class="op">(</span><span class="va">m1diag.nlme</span>, <span class="va">m0noRE</span>, fim <span class="op">=</span> <span class="st">"compute"</span>, pval.comp <span class="op">=</span> <span class="st">"both"</span>, control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>B<span class="op">=</span><span class="fl">100</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="../reference/varCompTest.html">varCompTest</a></span><span class="op">(</span><span class="va">m1diag.lme4</span>, <span class="va">m0noRE</span>, fim <span class="op">=</span> <span class="st">"compute"</span>, pval.comp <span class="op">=</span> <span class="st">"both"</span>, control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>B<span class="op">=</span><span class="fl">100</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/varCompTest.html">varCompTest</a></span><span class="op">(</span><span class="va">m1diag.nlme</span>, <span class="va">m0noRE</span>, fim <span class="op">=</span> <span class="st">"compute"</span>, pval.comp <span class="op">=</span> <span class="st">"both"</span>, control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>B<span class="op">=</span><span class="fl">100</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/varCompTest.html">varCompTest</a></span><span class="op">(</span><span class="va">m1diag.lme4</span>, <span class="va">m0noRE</span>, fim <span class="op">=</span> <span class="st">"compute"</span>, pval.comp <span class="op">=</span> <span class="st">"both"</span>, control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>B<span class="op">=</span><span class="fl">100</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
-<div id="generalized-linear-model" class="section level2">
-<h2 class="hasAnchor">
-<a href="#generalized-linear-model" class="anchor"></a>Generalized linear model</h2>
+<div class="section level2">
+<h2 id="generalized-linear-model">Generalized linear model<a class="anchor" aria-label="anchor" href="#generalized-linear-model"></a>
+</h2>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">m1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/lme4/man/glmer.html">glmer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="va">incidence</span>, <span class="va">size</span> <span class="op">-</span> <span class="va">incidence</span><span class="op">)</span> <span class="op">~</span> <span class="va">period</span> <span class="op">+</span> <span class="op">(</span><span class="fl">1</span> <span class="op">|</span> <span class="va">herd</span><span class="op">)</span>,
-             family <span class="op">=</span> <span class="va">binomial</span>, data <span class="op">=</span> <span class="va">cbpp</span><span class="op">)</span>
-<span class="va">m0</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/glm.html">glm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="va">incidence</span>, <span class="va">size</span> <span class="op">-</span> <span class="va">incidence</span><span class="op">)</span> <span class="op">~</span> <span class="va">period</span>,
-             family <span class="op">=</span> <span class="va">binomial</span>, data <span class="op">=</span> <span class="va">cbpp</span><span class="op">)</span>
-<span class="fu"><a href="../reference/varCompTest.html">varCompTest</a></span><span class="op">(</span><span class="va">m1</span>,<span class="va">m0</span><span class="op">)</span>
-<span class="co">#&gt; Variance components testing in mixed effects models</span>
-<span class="co">#&gt; Testing that the variance of the random effect associated to (Intercept) is equal to 0</span>
-<span class="co">#&gt; Likelihood ratio test statistic:</span>
-<span class="co">#&gt;  LRT = 14.00527</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; p-value from exact weights: 9.114967e-05</span>
-<span class="co">#&gt; </span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">m1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/lme4/man/glmer.html" class="external-link">glmer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">incidence</span>, <span class="va">size</span> <span class="op">-</span> <span class="va">incidence</span><span class="op">)</span> <span class="op">~</span> <span class="va">period</span> <span class="op">+</span> <span class="op">(</span><span class="fl">1</span> <span class="op">|</span> <span class="va">herd</span><span class="op">)</span>,</span>
+<span>             family <span class="op">=</span> <span class="va">binomial</span>, data <span class="op">=</span> <span class="va">cbpp</span><span class="op">)</span></span>
+<span><span class="va">m0</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/glm.html" class="external-link">glm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="va">incidence</span>, <span class="va">size</span> <span class="op">-</span> <span class="va">incidence</span><span class="op">)</span> <span class="op">~</span> <span class="va">period</span>,</span>
+<span>             family <span class="op">=</span> <span class="va">binomial</span>, data <span class="op">=</span> <span class="va">cbpp</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/varCompTest.html">varCompTest</a></span><span class="op">(</span><span class="va">m1</span>,<span class="va">m0</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Variance components testing in mixed effects models</span></span>
+<span><span class="co">#&gt; Testing that the variance of the random effect associated to (Intercept) is equal to 0</span></span>
+<span><span class="co">#&gt; Likelihood ratio test statistic:</span></span>
+<span><span class="co">#&gt;  LRT = 14.00527</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; p-value from exact weights: 9.114967e-05</span></span>
+<span><span class="co">#&gt; </span></span></code></pre></div>
 </div>
-<div id="nonlinear-model" class="section level2">
-<h2 class="hasAnchor">
-<a href="#nonlinear-model" class="anchor"></a>Nonlinear model</h2>
-<p>Testing that one variance is equal to 0 in a model with two correlated random effects, using the Theophylline dataset and the nlme package.</p>
+<div class="section level2">
+<h2 id="nonlinear-model">Nonlinear model<a class="anchor" aria-label="anchor" href="#nonlinear-model"></a>
+</h2>
+<p>Testing that one variance is equal to 0 in a model with two
+correlated random effects, using the Theophylline dataset and the nlme
+package.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># with nlme</span>
-<span class="va">fm1Theo.nlme</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/nlme.html">nlme</a></span><span class="op">(</span><span class="va">conc</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/stats/SSfol.html">SSfol</a></span><span class="op">(</span><span class="va">Dose</span>, <span class="va">Time</span>, <span class="va">lKe</span>, <span class="va">lKa</span>, <span class="va">lCl</span><span class="op">)</span>,
-                     <span class="va">Theoph</span>,
-                     fixed <span class="op">=</span> <span class="va">lKe</span> <span class="op">+</span> <span class="va">lKa</span> <span class="op">+</span> <span class="va">lCl</span> <span class="op">~</span> <span class="fl">1</span>,
-                     start<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span> <span class="op">-</span><span class="fl">2.4</span>, <span class="fl">0.45</span>, <span class="op">-</span><span class="fl">3.2</span><span class="op">)</span>,
-                     random <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/pdSymm.html">pdSymm</a></span><span class="op">(</span><span class="va">lKa</span> <span class="op">+</span> <span class="va">lCl</span> <span class="op">~</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span>
-<span class="va">fm2Theo.nlme</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/nlme.html">nlme</a></span><span class="op">(</span><span class="va">conc</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/stats/SSfol.html">SSfol</a></span><span class="op">(</span><span class="va">Dose</span>, <span class="va">Time</span>, <span class="va">lKe</span>, <span class="va">lKa</span>, <span class="va">lCl</span><span class="op">)</span>,
-                     <span class="va">Theoph</span>,
-                     fixed <span class="op">=</span> <span class="va">lKe</span> <span class="op">+</span> <span class="va">lKa</span> <span class="op">+</span> <span class="va">lCl</span> <span class="op">~</span> <span class="fl">1</span>,
-                     start<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span> <span class="op">-</span><span class="fl">2.4</span>, <span class="fl">0.45</span>, <span class="op">-</span><span class="fl">3.2</span><span class="op">)</span>,
-                     random <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/pdDiag.html">pdDiag</a></span><span class="op">(</span><span class="va">lCl</span> <span class="op">~</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="../reference/varCompTest.html">varCompTest</a></span><span class="op">(</span><span class="va">fm1Theo.nlme</span>,<span class="va">fm2Theo.nlme</span><span class="op">)</span>
-<span class="co">#&gt; Variance components testing in mixed effects models</span>
-<span class="co">#&gt; Testing that the variance of the random effect associated to lKa is equal to 0</span>
-<span class="co">#&gt; Likelihood ratio test statistic:</span>
-<span class="co">#&gt;  LRT = 79.02084</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; p-value from exact weights: 3.773164e-18</span>
-<span class="co">#&gt; </span></code></pre></div>
-<p>Testing that one variance is null in a model with 3 correlated random effects, using the Theophylline dataset and the lme4 package.</p>
+<code class="sourceCode R"><span><span class="co"># with nlme</span></span>
+<span><span class="va">fm1Theo.nlme</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/nlme.html" class="external-link">nlme</a></span><span class="op">(</span><span class="va">conc</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/stats/SSfol.html" class="external-link">SSfol</a></span><span class="op">(</span><span class="va">Dose</span>, <span class="va">Time</span>, <span class="va">lKe</span>, <span class="va">lKa</span>, <span class="va">lCl</span><span class="op">)</span>,</span>
+<span>                     <span class="va">Theoph</span>,</span>
+<span>                     fixed <span class="op">=</span> <span class="va">lKe</span> <span class="op">+</span> <span class="va">lKa</span> <span class="op">+</span> <span class="va">lCl</span> <span class="op">~</span> <span class="fl">1</span>,</span>
+<span>                     start<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span> <span class="op">-</span><span class="fl">2.4</span>, <span class="fl">0.45</span>, <span class="op">-</span><span class="fl">3.2</span><span class="op">)</span>,</span>
+<span>                     random <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/pdSymm.html" class="external-link">pdSymm</a></span><span class="op">(</span><span class="va">lKa</span> <span class="op">+</span> <span class="va">lCl</span> <span class="op">~</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">fm2Theo.nlme</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/nlme.html" class="external-link">nlme</a></span><span class="op">(</span><span class="va">conc</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/stats/SSfol.html" class="external-link">SSfol</a></span><span class="op">(</span><span class="va">Dose</span>, <span class="va">Time</span>, <span class="va">lKe</span>, <span class="va">lKa</span>, <span class="va">lCl</span><span class="op">)</span>,</span>
+<span>                     <span class="va">Theoph</span>,</span>
+<span>                     fixed <span class="op">=</span> <span class="va">lKe</span> <span class="op">+</span> <span class="va">lKa</span> <span class="op">+</span> <span class="va">lCl</span> <span class="op">~</span> <span class="fl">1</span>,</span>
+<span>                     start<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span> <span class="op">-</span><span class="fl">2.4</span>, <span class="fl">0.45</span>, <span class="op">-</span><span class="fl">3.2</span><span class="op">)</span>,</span>
+<span>                     random <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/pdDiag.html" class="external-link">pdDiag</a></span><span class="op">(</span><span class="va">lCl</span> <span class="op">~</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/varCompTest.html">varCompTest</a></span><span class="op">(</span><span class="va">fm1Theo.nlme</span>,<span class="va">fm2Theo.nlme</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Variance components testing in mixed effects models</span></span>
+<span><span class="co">#&gt; Testing that the variance of the random effect associated to lKa is equal to 0</span></span>
+<span><span class="co">#&gt; Likelihood ratio test statistic:</span></span>
+<span><span class="co">#&gt;  LRT = 79.02084</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; p-value from exact weights: 3.773164e-18</span></span>
+<span><span class="co">#&gt; </span></span></code></pre></div>
+<p>Testing that one variance is null in a model with 3 correlated random
+effects, using the Theophylline dataset and the lme4 package.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># with lme4</span>
-<span class="va">Th.start</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>lKe <span class="op">=</span> <span class="op">-</span><span class="fl">2.4</span>, lKa <span class="op">=</span> <span class="fl">0.45</span>, lCl <span class="op">=</span> <span class="op">-</span><span class="fl">3.2</span><span class="op">)</span>
-<span class="va">nm1</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/lme4/man/nlmer.html">nlmer</a></span><span class="op">(</span><span class="va">conc</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/stats/SSfol.html">SSfol</a></span><span class="op">(</span><span class="va">Dose</span> , <span class="va">Time</span> ,<span class="va">lKe</span> , <span class="va">lKa</span> , <span class="va">lCl</span><span class="op">)</span> <span class="op">~</span>
-                <span class="fl">0</span><span class="op">+</span><span class="va">lKe</span><span class="op">+</span><span class="va">lKa</span><span class="op">+</span><span class="va">lCl</span> <span class="op">+</span><span class="op">(</span><span class="va">lKe</span><span class="op">+</span><span class="va">lKa</span><span class="op">+</span><span class="va">lCl</span><span class="op">|</span><span class="va">Subject</span><span class="op">)</span>,
-              nAGQ<span class="op">=</span><span class="fl">0</span>,
-              <span class="va">Theoph</span>,
-              start <span class="op">=</span> <span class="va">Th.start</span><span class="op">)</span>
-<span class="va">nm0</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/lme4/man/nlmer.html">nlmer</a></span><span class="op">(</span><span class="va">conc</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/stats/SSfol.html">SSfol</a></span><span class="op">(</span><span class="va">Dose</span> , <span class="va">Time</span> ,<span class="va">lKe</span> , <span class="va">lKa</span> , <span class="va">lCl</span><span class="op">)</span> <span class="op">~</span>
-                <span class="fl">0</span><span class="op">+</span><span class="va">lKe</span><span class="op">+</span><span class="va">lKa</span><span class="op">+</span><span class="va">lCl</span> <span class="op">+</span><span class="op">(</span><span class="va">lKa</span><span class="op">+</span><span class="va">lCl</span><span class="op">|</span><span class="va">Subject</span><span class="op">)</span>,
-              nAGQ<span class="op">=</span><span class="fl">0</span>,
-              <span class="va">Theoph</span>,
-              start <span class="op">=</span> <span class="va">Th.start</span><span class="op">)</span>
-<span class="fu"><a href="../reference/varCompTest.html">varCompTest</a></span><span class="op">(</span><span class="va">nm1</span>,<span class="va">nm0</span><span class="op">)</span>
-<span class="co">#&gt; Variance components testing in mixed effects models</span>
-<span class="co">#&gt; Testing that the variance of the random effect associated to lKe is equal to 0</span>
-<span class="co">#&gt; Likelihood ratio test statistic:</span>
-<span class="co">#&gt;  LRT = 2.043925</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; p-value from exact weights: 0.4616141</span>
-<span class="co">#&gt; </span></code></pre></div>
-<p>Testing for the presence of randomness in the model, using the nlme package.</p>
+<code class="sourceCode R"><span><span class="co"># with lme4</span></span>
+<span><span class="va">Th.start</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>lKe <span class="op">=</span> <span class="op">-</span><span class="fl">2.4</span>, lKa <span class="op">=</span> <span class="fl">0.45</span>, lCl <span class="op">=</span> <span class="op">-</span><span class="fl">3.2</span><span class="op">)</span></span>
+<span><span class="va">nm1</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/lme4/man/nlmer.html" class="external-link">nlmer</a></span><span class="op">(</span><span class="va">conc</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/stats/SSfol.html" class="external-link">SSfol</a></span><span class="op">(</span><span class="va">Dose</span> , <span class="va">Time</span> ,<span class="va">lKe</span> , <span class="va">lKa</span> , <span class="va">lCl</span><span class="op">)</span> <span class="op">~</span></span>
+<span>                <span class="fl">0</span><span class="op">+</span><span class="va">lKe</span><span class="op">+</span><span class="va">lKa</span><span class="op">+</span><span class="va">lCl</span> <span class="op">+</span><span class="op">(</span><span class="va">lKe</span><span class="op">+</span><span class="va">lKa</span><span class="op">+</span><span class="va">lCl</span><span class="op">|</span><span class="va">Subject</span><span class="op">)</span>,</span>
+<span>              nAGQ<span class="op">=</span><span class="fl">0</span>,</span>
+<span>              <span class="va">Theoph</span>,</span>
+<span>              start <span class="op">=</span> <span class="va">Th.start</span><span class="op">)</span></span>
+<span><span class="va">nm0</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/lme4/man/nlmer.html" class="external-link">nlmer</a></span><span class="op">(</span><span class="va">conc</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/stats/SSfol.html" class="external-link">SSfol</a></span><span class="op">(</span><span class="va">Dose</span> , <span class="va">Time</span> ,<span class="va">lKe</span> , <span class="va">lKa</span> , <span class="va">lCl</span><span class="op">)</span> <span class="op">~</span></span>
+<span>                <span class="fl">0</span><span class="op">+</span><span class="va">lKe</span><span class="op">+</span><span class="va">lKa</span><span class="op">+</span><span class="va">lCl</span> <span class="op">+</span><span class="op">(</span><span class="va">lKa</span><span class="op">+</span><span class="va">lCl</span><span class="op">|</span><span class="va">Subject</span><span class="op">)</span>,</span>
+<span>              nAGQ<span class="op">=</span><span class="fl">0</span>,</span>
+<span>              <span class="va">Theoph</span>,</span>
+<span>              start <span class="op">=</span> <span class="va">Th.start</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/varCompTest.html">varCompTest</a></span><span class="op">(</span><span class="va">nm1</span>,<span class="va">nm0</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Variance components testing in mixed effects models</span></span>
+<span><span class="co">#&gt; Testing that the variance of the random effect associated to lKe is equal to 0</span></span>
+<span><span class="co">#&gt; Likelihood ratio test statistic:</span></span>
+<span><span class="co">#&gt;  LRT = 2.043925</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; p-value from exact weights: 0.4616141</span></span>
+<span><span class="co">#&gt; </span></span></code></pre></div>
+<p>Testing for the presence of randomness in the model, using the nlme
+package.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">fm1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/nlme.html">nlme</a></span><span class="op">(</span><span class="va">conc</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/stats/SSfol.html">SSfol</a></span><span class="op">(</span><span class="va">Dose</span>, <span class="va">Time</span>, <span class="va">lKe</span>, <span class="va">lKa</span>, <span class="va">lCl</span><span class="op">)</span>,
-                     <span class="va">Theoph</span>,
-                     fixed <span class="op">=</span> <span class="va">lKe</span> <span class="op">+</span> <span class="va">lKa</span> <span class="op">+</span> <span class="va">lCl</span> <span class="op">~</span> <span class="fl">1</span>,
-                     start<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span> <span class="op">-</span><span class="fl">2.4</span>, <span class="fl">0.45</span>, <span class="op">-</span><span class="fl">3.2</span><span class="op">)</span>,
-                     random <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/pdDiag.html">pdDiag</a></span><span class="op">(</span><span class="va">lKe</span> <span class="op">+</span> <span class="va">lKa</span> <span class="op">+</span> <span class="va">lCl</span> <span class="op">~</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span>
-<span class="va">fm0</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/nls.html">nls</a></span><span class="op">(</span><span class="va">conc</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/stats/SSfol.html">SSfol</a></span><span class="op">(</span><span class="va">Dose</span>, <span class="va">Time</span>, <span class="va">lKe</span>, <span class="va">lKa</span>, <span class="va">lCl</span><span class="op">)</span>,
-                     <span class="va">Theoph</span>,
-                     start<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>lKe<span class="op">=</span><span class="op">-</span><span class="fl">2.4</span>,lKa<span class="op">=</span><span class="fl">0.45</span>,lCl<span class="op">=</span><span class="op">-</span><span class="fl">3.2</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="../reference/varCompTest.html">varCompTest</a></span><span class="op">(</span><span class="va">fm1</span>,<span class="va">fm0</span><span class="op">)</span>
-<span class="co">#&gt; Variance components testing in mixed effects models</span>
-<span class="co">#&gt; Testing that the covariance matrix of lKe and lKa and lCl is equal to 0</span>
-<span class="co">#&gt; Likelihood ratio test statistic:</span>
-<span class="co">#&gt;  LRT = 117.172</span>
-<span class="co">#&gt; bounds on p-value: lower 1.31613e-27 upper 1.748295e-25</span>
-<span class="co">#&gt; </span></code></pre></div>
-<p>We can see that there is no need to approximate the weights of the chi-bar-square distribution since the bounds on the p-value are sufficient to reject the null hypothesis at any <code>classical</code> level.</p>
+<code class="sourceCode R"><span><span class="va">fm1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/nlme.html" class="external-link">nlme</a></span><span class="op">(</span><span class="va">conc</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/stats/SSfol.html" class="external-link">SSfol</a></span><span class="op">(</span><span class="va">Dose</span>, <span class="va">Time</span>, <span class="va">lKe</span>, <span class="va">lKa</span>, <span class="va">lCl</span><span class="op">)</span>,</span>
+<span>                     <span class="va">Theoph</span>,</span>
+<span>                     fixed <span class="op">=</span> <span class="va">lKe</span> <span class="op">+</span> <span class="va">lKa</span> <span class="op">+</span> <span class="va">lCl</span> <span class="op">~</span> <span class="fl">1</span>,</span>
+<span>                     start<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span> <span class="op">-</span><span class="fl">2.4</span>, <span class="fl">0.45</span>, <span class="op">-</span><span class="fl">3.2</span><span class="op">)</span>,</span>
+<span>                     random <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/nlme/man/pdDiag.html" class="external-link">pdDiag</a></span><span class="op">(</span><span class="va">lKe</span> <span class="op">+</span> <span class="va">lKa</span> <span class="op">+</span> <span class="va">lCl</span> <span class="op">~</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">fm0</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/nls.html" class="external-link">nls</a></span><span class="op">(</span><span class="va">conc</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/stats/SSfol.html" class="external-link">SSfol</a></span><span class="op">(</span><span class="va">Dose</span>, <span class="va">Time</span>, <span class="va">lKe</span>, <span class="va">lKa</span>, <span class="va">lCl</span><span class="op">)</span>,</span>
+<span>                     <span class="va">Theoph</span>,</span>
+<span>                     start<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>lKe<span class="op">=</span><span class="op">-</span><span class="fl">2.4</span>,lKa<span class="op">=</span><span class="fl">0.45</span>,lCl<span class="op">=</span><span class="op">-</span><span class="fl">3.2</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/varCompTest.html">varCompTest</a></span><span class="op">(</span><span class="va">fm1</span>,<span class="va">fm0</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Variance components testing in mixed effects models</span></span>
+<span><span class="co">#&gt; Testing that the covariance matrix of lKe and lKa and lCl is equal to 0</span></span>
+<span><span class="co">#&gt; Likelihood ratio test statistic:</span></span>
+<span><span class="co">#&gt;  LRT = 117.172</span></span>
+<span><span class="co">#&gt; bounds on p-value: lower 1.31613e-27 upper 1.748295e-25</span></span>
+<span><span class="co">#&gt; </span></span></code></pre></div>
+<p>We can see that there is no need to approximate the weights of the
+chi-bar-square distribution since the bounds on the p-value are
+sufficient to reject the null hypothesis at any <code>classical</code>
+level.</p>
 </div>
   </div>
 
@@ -327,11 +385,13 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by <a href="https://baeyc.github.io/">Charlotte Baey</a>, Estelle Kuhn.</p>
+  <p></p>
+<p>Developed by <a href="https://baeyc.github.io/" class="external-link">Charlotte Baey</a>, Estelle Kuhn.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>
@@ -339,6 +399,8 @@
 
   
 
+
+  
 
   </body>
 </html>
